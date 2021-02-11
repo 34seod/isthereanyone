@@ -49,3 +49,11 @@ ul {
 .game-info {
   margin-left: 20px;
 }
+
+.selected {
+  font-weight: bolder;
+}
+
+.win-cell {
+  background-color: aqua;
+}

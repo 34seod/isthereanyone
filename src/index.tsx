@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Game from './game';
 import './index.css';
+import { RouterApp } from './router_app';
 
 ReactDOM.render(
-  <Game />,
+  <RouterApp />,
   document.getElementById('root')
 );

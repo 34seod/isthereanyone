@@ -6,20 +6,12 @@ import {
 } from 'react-router-dom';
 import New from './pages/new';
 import Room from './pages/room';
-import Waiting from './pages/waiting';
 
 export const RouterApp = () => (
   <Router>
     <Switch>
-      <Route exact path="/">
-        <New />
-      </Route>
-      <Route path="/about">
-        <Waiting />
-      </Route>
-      <Route path="/dashboard">
-        <Room />
-      </Route>
+      <Route exact path="/" component={New} />
+      <Route path='/:roomId' component={Room} />
     </Switch>
   </Router>
 );

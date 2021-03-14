@@ -1,20 +1,35 @@
-/* eslint-disable react/no-array-index-key */
+/* eslint-disable max-len */
 import React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 
-export default class New extends React.Component {
-  static handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    //
-    console.log(event);
+interface INewState {
+  roomId: String
+}
+
+export default class New extends React.Component<RouteComponentProps, INewState> {
+  constructor(props: RouteComponentProps) {
+    super(props);
+    this.state = {
+      roomId: '',
+    };
   }
 
-  render() {
+  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ roomId: event.target.value });
+  };
 
+  handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    this.props.history.push(`/${this.state.roomId}`);
+  };
+
+  render() {
     return (
       <>
         <h1>시작페이지</h1>
-        <form onSubmit={New.handleSubmit}>
-          <input id="roomId" type="text" />
-          <button type="submit">생성</button>
+        <form onSubmit={this.handleSubmit}>
+          <input type="text" onChange={this.handleChange} />
+          <input type="submit" value="Submit" />
         </form>
       </>
     );

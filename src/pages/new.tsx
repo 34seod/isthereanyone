@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
 import React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 interface INewState {
   roomId: String
 }
 
-export default class New extends React.Component<RouteComponentProps, INewState> {
-  constructor(props: RouteComponentProps) {
+export default class New extends React.Component<{}, INewState> {
+  constructor(props: {}) {
     super(props);
     this.state = {
       roomId: '',
@@ -18,19 +18,12 @@ export default class New extends React.Component<RouteComponentProps, INewState>
     this.setState({ roomId: event.target.value });
   };
 
-  handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    this.props.history.push(`/${this.state.roomId}`);
-  };
-
   render() {
     return (
       <>
         <h1>시작페이지</h1>
-        <form onSubmit={this.handleSubmit}>
-          <input type="text" onChange={this.handleChange} />
-          <input type="submit" value="Submit" />
-        </form>
+        <input type="text" onChange={this.handleChange} />
+        <Link to={`/${this.state.roomId}`}>시작</Link>
       </>
     );
   }

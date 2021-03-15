@@ -3,35 +3,53 @@ import React from 'react';
 import {
   RouteComponentProps
 } from 'react-router-dom';
+import Peer from '../lib/peer';
 
-interface INewState {
+interface IRoomState {
   roomId: String | undefined
+  peer: Peer
 }
 type TParams = { roomId?: string | undefined };
 
-export default class Room extends React.Component<RouteComponentProps<TParams>, INewState> {
+export default class Room extends React.Component<RouteComponentProps<TParams>, IRoomState> {
   constructor(props: RouteComponentProps) {
     super(props);
     const { params } = this.props.match;
     this.state = {
-      roomId: params.roomId
+      roomId: params.roomId,
+      peer: new Peer(String(params.roomId)),
     };
   }
 
-  static handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    console.log(event);
-  }
+  handleMuteButton = () => {
+    console.log('mute');
+  };
+
+  handleVideoButton = () => {
+    console.log('video');
+  };
+
+  handleStartButton = () => {
+    console.log('start');
+  };
+
+  handleHangUpButton = () => {
+    console.log('hangup');
+  };
 
   render() {
-
+    console.log(this.state.peer);
     return (
-      <div>
+      <>
         <h1>{`방 페이지-${this.state.roomId}`}</h1>
-        <form onSubmit={Room.handleSubmit}>
-          <input id="roomId" type="text" />
-          <button type="submit">생성</button>
-        </form>
-      </div>
+        <video id="localStream" autoPlay muted playsInline />
+        <div>
+          <button className="btn btn-primary mr-1" type="button" onClick={this.handleMuteButton}>Mute</button>
+          <button className="btn btn-primary mr-1" type="button" onClick={this.handleVideoButton}>Video</button>
+          <button className="btn btn-primary mr-1" type="button" onClick={this.handleStartButton}>Start</button>
+          <button className="btn btn-primary mr-1" type="button" onClick={this.handleHangUpButton}>HangUp</button>
+        </div>
+      </>
     );
   }
 }

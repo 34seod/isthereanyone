@@ -1,38 +1,24 @@
-'use strict';
-
-const port = process.env.PORT || 3001;
-// const httpServer = require("http").createServer();
-// const io = require("socket.io")(httpServer);
-
-var express = require('express');
-var socket = require('socket.io');
-
-var app = express();
-
-var server = app.listen(port, function(){
-  console.log('server is running on port ', port)
+const server = require("http").createServer();
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "*",
+  },
 });
 
-var io = socket(server); // ①
+const PORT = 4000;
+const NEW_CHAT_MESSAGE_EVENT = "newChatMessage";
 
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', '*'); // 편의상 *로 했지만 보안상 문제 있음
-//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-//   next();
-// });
-
-
-// httpServer.listen(port, () => {
-//   console.log(`started on port: ${port}`);
-// });
-
-
-// io.on("connection", function() {
-//   console.log("a user connected");
-// });
-io.sockets.on('connection', function(socket) {
+io.sockets.on("connection", (socket) => {
   console.log(`Client ${socket.id} connected`);
+
+  // Join a conversation
+  const { roomId } = socket.handshake.query;
+  socket.join(roomId);
+
+  // Listen for new messages
+  socket.on(NEW_CHAT_MESSAGE_EVENT, (data) => {
+    io.in(roomId).emit(NEW_CHAT_MESSAGE_EVENT, data);
+  });
 
   // convenience function to log server messages on the client
   function log() {
@@ -60,8 +46,8 @@ io.sockets.on('connection', function(socket) {
     console.log('create or join')
     log('Received request to create or join room ' + room);
 
-    var clientsInRoom = io.sockets.adapter.rooms[room];
-    var numClients = clientsInRoom ? Object.keys(clientsInRoom.sockets).length : 0;
+    var clientsInRoom = io.sockets.adapter.rooms.get(room);
+    var numClients = clientsInRoom ? clientsInRoom.size : 0;
     log('Room ' + room + ' now has ' + numClients + ' client(s)');
 
     if (numClients === 0) {
@@ -82,5 +68,16 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('bye', function(){
     console.log('received bye');
+    socket.leave(roomId);
   });
+
+  // Leave the room if the user closes the socket
+  socket.on("disconnect", () => {
+    console.log(`Client ${socket.id} diconnected`);
+    socket.leave(roomId);
+  });
+});
+
+server.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
 });

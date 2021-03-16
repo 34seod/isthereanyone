@@ -1,35 +1,28 @@
-/* eslint-disable max-len */
+
 import React from 'react';
 import { Link } from 'react-router-dom';
-import io from 'socket.io-client';
 
-interface INewState {
-  roomId: String
-}
+const New = () => {
+  const [roomName, setRoomName] = React.useState('');
 
-export default class New extends React.Component<{}, INewState> {
-  private socket = io.io('localhost:3001');
-
-  constructor(props: {}) {
-    super(props);
-
-    this.state = {
-      roomId: '',
-    };
-  }
-
-  handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.socket.emit('message', event.target.value);
-    this.setState({ roomId: event.target.value });
+  const handleRoomNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRoomName(event.target.value);
   };
 
-  render() {
-    return (
-      <>
-        <h1>시작페이지</h1>
-        <input type="text" onChange={this.handleChange} />
-        <Link to={`/${this.state.roomId}`}>시작</Link>
-      </>
-    );
-  }
-}
+  return (
+    <div className="New-container">
+      <input
+        type="text"
+        placeholder="Room"
+        value={roomName}
+        onChange={handleRoomNameChange}
+        className="text-input-field"
+      />
+      <Link to={`/${roomName}`} className="enter-room-button">
+        Join room
+      </Link>
+    </div>
+  );
+};
+
+export default New;

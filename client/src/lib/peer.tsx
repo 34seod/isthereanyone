@@ -1,8 +1,9 @@
 /* eslint-disable max-len */
 
-import { io } from 'socket.io-client';
+import Socket, { io } from 'socket.io-client';
+import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
 
-const ENDPOINT = 'http://localhost:3001';
+const ENDPOINT = 'http://localhost:4000';
 
 type PeerConnection = {
   [key: string]: {
@@ -25,7 +26,7 @@ export default class Peer {
 
   static localStream: MediaStream;
 
-  private socket = io(ENDPOINT, { transports: ['websocket'] });
+  private socket: Socket.Socket<DefaultEventsMap, DefaultEventsMap> | null = null;
 
   private peers: PeerConnection = {};
 
@@ -35,6 +36,7 @@ export default class Peer {
 
   constructor(roomId: string) {
     Peer.ROOM_ID = roomId;
+    this.socket = io(ENDPOINT, { query: { roomId }, transports: ['websocket'] });
     this.connect();
   }
 
@@ -68,12 +70,12 @@ export default class Peer {
   private sendMessage = (message: string) => {
     console.log('Client sending message: ', message);
     console.log(this.socket);
-    this.socket.emit('message', message);
+    if (this.socket) this.socket?.emit('message', message);
   };
 
   private sendMessageTo = (socketId: string, message: RTCSessionDescriptionInit | RTCSdpType | ICECandidate) => {
     console.log('Client sending message: ', socketId, message);
-    this.socket.emit('messageTo', socketId, message);
+    this.socket?.emit('messageTo', socketId, message);
   };
 
   private maybeStart = (socketId: string) => {
@@ -165,20 +167,20 @@ export default class Peer {
 
   private connect = () => {
     if (Peer.ROOM_ID !== '') {
-      this.socket.emit('create or join', Peer.ROOM_ID);
+      this.socket?.emit('create or join', Peer.ROOM_ID);
       console.log('Attempted to create or join room', Peer.ROOM_ID);
     }
 
-    this.socket.on('created', (room: string, socketId: string) => {
+    this.socket?.on('created', (room: string, socketId: string) => {
       console.log('Created room ', room);
       this.mySocketId = socketId;
     });
 
-    this.socket.on('full', (room: string) => {
+    this.socket?.on('full', (room: string) => {
       console.log('Room ', room, ' is full');
     });
 
-    this.socket.on('join',  (room: string, socketId: string)=> {
+    this.socket?.on('join',  (room: string, socketId: string)=> {
       console.log('Another peer made a request to join room ', room);
       console.log('This peer is the initiator of room ', room, '!');
       this.peers[socketId] = {
@@ -186,16 +188,16 @@ export default class Peer {
       };
     });
 
-    this.socket.on('joined', (room: string, socketId: string) => {
+    this.socket?.on('joined', (room: string, socketId: string) => {
       console.log('joined: ', room);
       this.mySocketId = socketId;
     });
 
-    this.socket.on('log', (array: []) => {
-      console.log(array);
+    this.socket?.on('log', (array: []) => {
+      console.log(...array);
     });
 
-    this.socket.on('message', (socketId: string, message: RTCSessionDescriptionInit | ICECandidate) => {
+    this.socket?.on('message', (socketId: string, message: RTCSessionDescriptionInit | ICECandidate) => {
       if (!this.peers[socketId]) {
         this.peers[socketId] = {
           pc: undefined, isStarted: false, isChannelReady: true, isInitiator: false

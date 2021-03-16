@@ -4,14 +4,17 @@ import {
   Switch,
   Route,
 } from 'react-router-dom';
+import ChatRoom from './pages/ChatRoom';
 import New from './pages/new';
 import Room from './pages/room';
 
-export const RouterApp = () => (
+const App = () => (
   <Router>
     <Switch>
-      <Route exact path="/" component={New} />
       <Route path='/:roomId' component={Room} />
+      <Route path="/" component={New} />
     </Switch>
   </Router>
 );
+
+export default App;

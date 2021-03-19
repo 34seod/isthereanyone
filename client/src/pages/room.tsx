@@ -1,63 +1,48 @@
-/* eslint-disable max-len */
-import React from 'react';
-import {
-  RouteComponentProps
-} from 'react-router-dom';
-import Peer from '../lib/peer';
+import React, { useEffect } from 'react';
+import useSocket from '../lib/useSocket';
 
-interface IRoomState {
-  roomId: String | undefined
-  peer: Peer
-}
-type TParams = { roomId?: string | undefined };
+type MatchParams = {
+  roomId: string
+};
 
-export default class Room extends React.Component<RouteComponentProps<TParams>, IRoomState> {
-  private videoRef: React.RefObject<HTMLVideoElement> | null = null;
+const Room = ({ roomId }: MatchParams) => {
+  const videoRef = React.createRef<HTMLVideoElement>();
+  const { messages, sendMessage, getStream, start, hangup } = useSocket('');
 
-  constructor(props: RouteComponentProps) {
-    super(props);
-    const { params } = this.props.match;
-    this.state = {
-      roomId: params.roomId,
-      peer: new Peer(String(params.roomId)),
-    };
-    this.videoRef = React.createRef<HTMLVideoElement>();
-  }
+  useEffect(() => {
+    getStream(videoRef);
+  }, []);
 
-  componentDidMount() {
-    this.state.peer.getStream(this.videoRef);
-  }
-
-  handleMuteButton = () => {
+  const handleMuteButton = () => {
     console.log('mute');
   };
 
-  handleVideoButton = () => {
+  const handleVideoButton = () => {
     console.log('video');
   };
 
-  handleStartButton = () => {
+  const handleStartButton = () => {
     console.log('start');
-    this.state.peer.start();
+    start();
   };
 
-  handleHangUpButton = () => {
+  const handleHangUpButton = () => {
     console.log('hangup');
   };
 
-  render() {
-    return (
-      <>
-        <h1>{`방 페이지-${this.state.roomId}`}</h1>
-        <video id="localVideo" ref={this.videoRef} autoPlay muted playsInline />
-        <div id="remote" />
-        <div>
-          <button className="btn btn-primary mr-1" type="button" onClick={this.handleMuteButton}>Mute</button>
-          <button className="btn btn-primary mr-1" type="button" onClick={this.handleVideoButton}>Video</button>
-          <button className="btn btn-primary mr-1" type="button" onClick={this.handleStartButton}>Start</button>
-          <button className="btn btn-primary mr-1" type="button" onClick={this.handleHangUpButton}>HangUp</button>
-        </div>
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <h1>{`방 페이지-${roomId}`}</h1>
+      <video id="localVideo" ref={videoRef} autoPlay muted playsInline />
+      <div id="remote" />
+      <div>
+        <button className="btn btn-primary mr-1" type="button" onClick={handleMuteButton}>Mute</button>
+        <button className="btn btn-primary mr-1" type="button" onClick={handleVideoButton}>Video</button>
+        <button className="btn btn-primary mr-1" type="button" onClick={handleStartButton}>Start</button>
+        <button className="btn btn-primary mr-1" type="button" onClick={handleHangUpButton}>HangUp</button>
+      </div>
+    </>
+  );
+};
+
+export default Room;

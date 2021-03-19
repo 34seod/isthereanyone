@@ -6,7 +6,7 @@ import {
   RouteComponentProps
 } from 'react-router-dom';
 
-import useChat from '../lib/useChat';
+import useSocket from '../lib/useSocket';
 
 type TParams = { roomId?: string | undefined };
 
@@ -18,7 +18,7 @@ type Message = {
 
 const ChatRoom = (props: RouteComponentProps<TParams>) => {
   const { roomId } = props.match.params; // Gets roomId from URL
-  const { messages, sendMessage } = useChat(roomId || ''); // Creates a websocket and manages messaging
+  const { messages, sendMessage } = useSocket(roomId || ''); // Creates a websocket and manages messaging
   const [newMessage, setNewMessage] = React.useState(''); // Message to be sent
 
   const handleNewMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -32,7 +32,6 @@ const ChatRoom = (props: RouteComponentProps<TParams>) => {
 
   const list = () => {
     const ms: Message[] = messages;
-    console.log(messages);
 
     return (
       ms.map((message, i) => (

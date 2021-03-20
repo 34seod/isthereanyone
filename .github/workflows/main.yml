@@ -41,4 +41,5 @@ jobs:
             git fetch --all
             git reset --hard origin/main
             docker image prune -a -f
-            sh docker-prod.sh restart
+            chmod 755 docker-prod.sh
+            ./docker-prod.sh restart

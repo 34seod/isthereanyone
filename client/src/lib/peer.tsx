@@ -1,4 +1,4 @@
-/* eslint-disable max-len */ f
+/* eslint-disable max-len */
 
 import Socket, { io } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';

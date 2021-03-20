@@ -1,4 +1,4 @@
-/* eslint-disable max-len */
+/* eslint-disable max-len */ f
 
 import Socket, { io } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
@@ -14,12 +14,12 @@ type PeerConnection = {
   }
 };
 
-// type ICECandidate = {
-//   id: string | null
-//   type: string
-//   label: number | null | undefined
-//   candidate: string
-// };
+type ICECandidate = {
+  id: string | null
+  type: string
+  label: number | null | undefined
+  candidate: string
+};
 
 export default class Peer {
   static ROOM_ID: string;

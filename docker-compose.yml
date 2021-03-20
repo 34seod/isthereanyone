@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  client:
+    build:
+      context: ./client
+    container_name: isthereany-one-client-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/client
+      - /client/node_modules
+    restart: "unless-stopped"
+  api:
+    build:
+      context: ./api
+    container_name: isthereany-one-api-dev
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./api:/api
+      - /api/node_modules
+    restart: "unless-stopped"

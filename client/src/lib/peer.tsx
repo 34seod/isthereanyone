@@ -37,7 +37,7 @@ export default class Peer {
   constructor(roomId: string) {
     Peer.ROOM_ID = roomId;
     this.socket = io(ENDPOINT, { query: { roomId }, transports: ['websocket'] });
-    this.connect();
+    // this.connect();
   }
 
   // getStream = (ref: React.RefObject<HTMLVideoElement> | null) => {

@@ -1,11 +1,13 @@
+require('dotenv').config();
 const server = require("http").createServer();
+
 const io = require("socket.io")(server, {
   cors: {
     origin: "*",
   },
 });
 
-const PORT = 4000;
+const PORT = process.env.API_PORT || 4000;
 const NEW_CHAT_MESSAGE_EVENT = "newChatMessage";
 
 io.sockets.on("connection", (socket) => {

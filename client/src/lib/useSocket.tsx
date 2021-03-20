@@ -5,7 +5,7 @@ import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
 import useChat from './useChat';
 import usePeer from './usePeer';
 
-const SOCKET_SERVER_URL = 'http://localhost:4000';
+const SOCKET_SERVER_URL = process.env.REACT_APP_SERVER || 'http://localhost:4000';
 
 const useSocket = (roomId: string) => {
   const socketRef = useRef<Socket.Socket<DefaultEventsMap, DefaultEventsMap>>();
@@ -20,6 +20,8 @@ const useSocket = (roomId: string) => {
 
   useEffect(() => {
     // Creates a WebSocket connection
+    console.log(process.env.REACT_APP_SERVER);
+
     socketRef.current = io(SOCKET_SERVER_URL, {
       query: { roomId },
     });

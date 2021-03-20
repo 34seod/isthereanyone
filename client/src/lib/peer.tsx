@@ -14,12 +14,12 @@ type PeerConnection = {
   }
 };
 
-type ICECandidate = {
-  id: string | null
-  type: string
-  label: number | null | undefined
-  candidate: string
-};
+// type ICECandidate = {
+//   id: string | null
+//   type: string
+//   label: number | null | undefined
+//   candidate: string
+// };
 
 export default class Peer {
   static ROOM_ID: string;

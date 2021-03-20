@@ -1,0 +1,44 @@
+name: DEPLOY
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: SET HOST
+        run: sed -i 's/API_SERVER/'"$DOMAIN"'/g' ./client/.env.production
+        env:
+          DOMAIN: ${{ secrets.API_SERVER }}
+
+      - name: Run build
+        run: |
+          cd client
+          npm install
+          npm run build
+      - name: Copying files to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER_NAME }}
+          key: ${{ secrets.KEY }}
+          source: "client/build/"
+          target: ${{ secrets.TARGET }}
+
+      - name: 'deploy'
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER_NAME }}
+          key: ${{ secrets.KEY }}
+          script: |
+            cd ${{ secrets.TARGET }}
+            git fetch --all
+            git reset --hard origin/main
+            docker image prune -a -f
+            sh docker-prod.sh restart

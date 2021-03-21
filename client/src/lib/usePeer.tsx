@@ -20,6 +20,19 @@ type ICECandidate = {
 
 type SocketIO = Socket<DefaultEventsMap> | undefined;
 
+const pcConfig = {
+  'iceServers': [
+    { 'urls':'stun:stun.l.google.com:19302' },
+    {
+      'urls': [
+        'turn:13.250.13.83:3478?transport=udp'
+      ],
+      'username': 'YzYNCouZM1mhqhmseWk6',
+      'credential': 'YzYNCouZM1mhqhmseWk6'
+    }
+  ]
+};
+
 const usePeer = (roomId: string) => {
   const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>();
   let localStream: MediaStream = new MediaStream;
@@ -78,7 +91,7 @@ const usePeer = (roomId: string) => {
 
   const createPeerConnection = (socketId: string) => {
     try {
-      const pc = new RTCPeerConnection();
+      const pc = new RTCPeerConnection(pcConfig);
       // pc.onicecandidate = handleIceCandidate;
       pc.onicecandidate = (event) => handleIceCandidate(event, socketId);
       pc.addEventListener('addstream', (event) => handleRemoteStreamAdded(event as MediaStreamEvent, socketId));

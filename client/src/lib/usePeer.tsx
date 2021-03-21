@@ -25,10 +25,10 @@ const pcConfig = {
     { 'urls':'stun:stun.l.google.com:19302' },
     {
       'urls': [
-        'turn:13.250.13.83:3478?transport=udp'
+        'turn:numb.viagenie.ca'
       ],
-      'username': 'YzYNCouZM1mhqhmseWk6',
-      'credential': 'YzYNCouZM1mhqhmseWk6'
+      'username': 'webrtc@live.com',
+      'credential': 'muazkh'
     }
   ]
 };

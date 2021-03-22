@@ -1,27 +1,28 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, Dispatch, SetStateAction } from 'react';
 import Socket, { io } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
-import { RoomState } from '../types';
+import { RoomState, VideoSrc } from '../types';
 import useChat from './useChat';
 import usePeer from './usePeer';
 
 const SOCKET_SERVER_URL = process.env.REACT_APP_SERVER || 'http://localhost:4000';
 
-const useSocket = (roomId: string, roomState: RoomState) => {
+const useSocket = (
+  roomId: string,
+  roomState: RoomState,
+  setVideoSrces: Dispatch<SetStateAction<VideoSrc[]>>
+) => {
   const socketRef = useRef<Socket.Socket<DefaultEventsMap, DefaultEventsMap>>();
   const { messages, sendMessageSocket, newChatMessageOn } = useChat();
   const {
     getStream,
     setSocket,
-    hangup,
     peerConnectOn
-  } = usePeer(roomId, roomState);
+  } = usePeer(roomId, roomState, setVideoSrces);
 
   useEffect(() => {
     // Creates a WebSocket connection
-    console.log(process.env.REACT_APP_SERVER);
-
     socketRef.current = io(SOCKET_SERVER_URL, {
       query: { roomId },
     });
@@ -41,7 +42,7 @@ const useSocket = (roomId: string, roomState: RoomState) => {
     sendMessageSocket(socketRef.current, messageBody);
   };
 
-  return { messages, sendMessage, getStream, hangup };
+  return { messages, sendMessage, getStream };
 };
 
 export default useSocket;

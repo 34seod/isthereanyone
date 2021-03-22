@@ -33,7 +33,7 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
       <h1>{`방 페이지-${roomId}`}</h1>
       <input
         type="text"
-        placeholder="Room"
+        placeholder="insert nickname"
         value={roomState.nickName}
         onChange={handleNickNameChange}
         className="text-input-field"

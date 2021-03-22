@@ -73,6 +73,7 @@ io.sockets.on("connection", (socket) => {
   // Leave the room if the user closes the socket
   socket.on("disconnect", () => {
     console.log(`Client ${socket.id} diconnected`);
+    io.in(roomId).emit('message', socket.id, { type: 'bye' } );
     socket.leave(roomId);
   });
 });

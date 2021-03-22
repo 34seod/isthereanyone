@@ -1,13 +1,13 @@
-/* eslint-disable max-len */
 /* eslint-disable react/no-array-index-key */
 
-import React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import useSocket from '../../lib/useSocket';
-import { RoomState } from '../../types';
+import React, { useState, ChangeEvent } from 'react';
 import './Chat.css';
 
-type TParams = { roomId?: string | undefined };
+type Props = {
+  roomId: string,
+  messages: Message[],
+  sendMessage: (newMessage: string) => void
+};
 
 type Message = {
   ownedByCurrentUser: string
@@ -15,12 +15,10 @@ type Message = {
   senderId: string
 };
 
-const Chat = (props: RouteComponentProps<TParams>, roomState: RoomState) => {
-  const { roomId } = props.match.params; // Gets roomId from URL
-  const { messages, sendMessage } = useSocket(roomId || '', roomState); // Creates a websocket and manages messaging
-  const [newMessage, setNewMessage] = React.useState(''); // Message to be sent
+const Chat = ({ roomId, messages, sendMessage }: Props) => {
+  const [newMessage, setNewMessage] = useState(''); // Message to be sent
 
-  const handleNewMessageChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleNewMessageChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setNewMessage(event.target.value);
   };
 
@@ -48,7 +46,6 @@ const Chat = (props: RouteComponentProps<TParams>, roomState: RoomState) => {
 
   return (
     <div className="chat-room-container">
-      <h1 className="room-name">Room: {roomId}</h1>
       <div className="messages-container">
         <ol className="messages-list">
           {list()}

@@ -1,7 +1,7 @@
-import { useRef } from 'react';
+import { useRef, Dispatch, SetStateAction, RefObject } from 'react';
 import { Socket } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
-import { RoomState } from '../types';
+import { RoomState, VideoSrc } from '../types';
 
 type PeerConnection = {
   [key: string]: {
@@ -35,7 +35,11 @@ const pcConfig = {
   ]
 };
 
-const usePeer = (roomId: string, roomState: RoomState) => {
+const usePeer = (
+  roomId: string,
+  roomState: RoomState,
+  setVideoSrces: Dispatch<SetStateAction<VideoSrc[]>>
+) => {
   const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>();
   let localStream: MediaStream = new MediaStream;
   const peers: PeerConnection = {};
@@ -47,7 +51,7 @@ const usePeer = (roomId: string, roomState: RoomState) => {
     socketRef.current = socket;
   };
 
-  const getStream = (ref: React.RefObject<HTMLVideoElement> | null) => {
+  const getStream = (ref: RefObject<HTMLVideoElement> | null) => {
     console.log('getStream');
     localVideo = ref?.current;
     navigator.mediaDevices.getUserMedia({
@@ -115,8 +119,9 @@ const usePeer = (roomId: string, roomState: RoomState) => {
     event: MediaStreamEvent, socketId: string
   ) => {
     console.log('Remote stream added.');
-    const element = document.getElementById('remote');
-    element?.insertAdjacentHTML('beforeend', `<video id='remoteVideo-${socketId}' autoplay playsinline></video><p>${peers[socketId].nickName}</p>`);
+    setVideoSrces((prev) =>
+      [...prev, { socketId, nickName: peers[socketId].nickName }]);
+
     const remoteVideo: HTMLVideoElement | null = document.querySelector(`#remoteVideo-${socketId}`);
     if (remoteVideo) remoteVideo.srcObject = event.stream;
   };
@@ -242,8 +247,7 @@ const usePeer = (roomId: string, roomState: RoomState) => {
 
   const connectStop = (socketId: string) => {
     peers[socketId]?.pc?.close();
-    const remote = document.getElementById(`remoteVideo-${socketId}`);
-    if (remote) remote.remove();
+    setVideoSrces((prev) => prev.filter((e) => e.socketId === socketId));
     delete peers[socketId];
   };
 
@@ -253,16 +257,9 @@ const usePeer = (roomId: string, roomState: RoomState) => {
     sendMessageRTC('got user media');
   };
 
-  const hangup = (socketId: string) => {
-    console.log('Hanging up.');
-    connectStop(socketId);
-    sendMessageRTC('bye');
-  };
-
   return {
     getStream,
     setSocket,
-    hangup,
     peerConnectOn
   };
 };

@@ -4,3 +4,8 @@ export type RoomState = {
   isRecording: boolean
   nickName: string
 };
+
+export type VideoSrc = {
+  socketId: string
+  nickName: string
+};

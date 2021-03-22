@@ -2,11 +2,9 @@
 /* eslint-disable react/no-array-index-key */
 
 import React from 'react';
-import {
-  RouteComponentProps
-} from 'react-router-dom';
-
-import useSocket from '../lib/useSocket';
+import { RouteComponentProps } from 'react-router-dom';
+import useSocket from '../../lib/useSocket';
+import './Chat.css';
 
 type TParams = { roomId?: string | undefined };
 
@@ -16,7 +14,7 @@ type Message = {
   senderId: string
 };
 
-const ChatRoom = (props: RouteComponentProps<TParams>) => {
+const Chat = (props: RouteComponentProps<TParams>) => {
   const { roomId } = props.match.params; // Gets roomId from URL
   const { messages, sendMessage } = useSocket(roomId || ''); // Creates a websocket and manages messaging
   const [newMessage, setNewMessage] = React.useState(''); // Message to be sent
@@ -68,4 +66,4 @@ const ChatRoom = (props: RouteComponentProps<TParams>) => {
   );
 };
 
-export default ChatRoom;
+export default Chat;

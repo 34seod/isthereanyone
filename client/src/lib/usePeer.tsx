@@ -58,6 +58,7 @@ const usePeer = (roomId: string) => {
     localStream = stream;
     if (localVideo) {
       localVideo.srcObject = stream;
+      start();
     }
   };
 
@@ -260,7 +261,6 @@ const usePeer = (roomId: string) => {
 
   return {
     getStream,
-    start,
     setSocket,
     hangup,
     peerConnectOn

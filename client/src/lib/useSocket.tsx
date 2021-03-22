@@ -12,7 +12,6 @@ const useSocket = (roomId: string) => {
   const { messages, sendMessageSocket, newChatMessageOn } = useChat();
   const {
     getStream,
-    start,
     setSocket,
     hangup,
     peerConnectOn
@@ -41,7 +40,7 @@ const useSocket = (roomId: string) => {
     sendMessageSocket(socketRef.current, messageBody);
   };
 
-  return { messages, sendMessage, getStream, start, hangup };
+  return { messages, sendMessage, getStream, hangup };
 };
 
 export default useSocket;

@@ -2,13 +2,13 @@ import React, { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import { RoomState } from '../../types';
 import './GreenRoom.css';
 
-type MatchParams = {
+type Props = {
   roomId: string
   roomState: RoomState
   setRoomState: Dispatch<SetStateAction<RoomState>>
 };
 
-const GreenRoom = ({ roomId, roomState, setRoomState }: MatchParams) => {
+const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
   const handleNickNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setRoomState((prev) => ({ ...prev, nickName: event.target.value.trim() }));
   };

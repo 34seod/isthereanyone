@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { Socket } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
+import { RoomState } from '../types';
 
 type PeerConnection = {
   [key: string]: {
@@ -8,6 +9,7 @@ type PeerConnection = {
     isInitiator: boolean
     isStarted: boolean
     isChannelReady: boolean
+    nickName: string
   }
 };
 
@@ -33,12 +35,13 @@ const pcConfig = {
   ]
 };
 
-const usePeer = (roomId: string) => {
+const usePeer = (roomId: string, roomState: RoomState) => {
   const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>();
   let localStream: MediaStream = new MediaStream;
   const peers: PeerConnection = {};
   let mySocketId = '';
   let localVideo: HTMLVideoElement | null | undefined = null;
+  const { isMuted, isRecording, nickName } = roomState;
 
   const setSocket = (socket: SocketIO) => {
     socketRef.current = socket;
@@ -48,8 +51,8 @@ const usePeer = (roomId: string) => {
     console.log('getStream');
     localVideo = ref?.current;
     navigator.mediaDevices.getUserMedia({
-      audio: false,
-      video: true
+      audio: true, //! isMuted,
+      video: true, // isRecording
     }).then(gotStream);
   };
 
@@ -64,7 +67,7 @@ const usePeer = (roomId: string) => {
 
   const sendMessageRTC = (message: string) => {
     console.log('Client sending message: ', message);
-    socketRef.current?.emit('message', message);
+    socketRef.current?.emit('message', message, nickName);
   };
 
   const sendMessageRTCTo = (
@@ -72,7 +75,7 @@ const usePeer = (roomId: string) => {
     message: RTCSessionDescriptionInit | RTCSdpType | ICECandidate
   ) => {
     console.log('Client sending message To: ', socketId, message);
-    socketRef.current?.emit('messageTo', socketId, message);
+    socketRef.current?.emit('messageTo', socketId, message, nickName);
   };
 
   const maybeStart = (socketId: string) => {
@@ -113,7 +116,7 @@ const usePeer = (roomId: string) => {
   ) => {
     console.log('Remote stream added.');
     const element = document.getElementById('remote');
-    element?.insertAdjacentHTML('beforeend', `<video id='remoteVideo-${socketId}' autoplay playsinline></video>`);
+    element?.insertAdjacentHTML('beforeend', `<video id='remoteVideo-${socketId}' autoplay playsinline></video><p>${peers[socketId].nickName}</p>`);
     const remoteVideo: HTMLVideoElement | null = document.querySelector(`#remoteVideo-${socketId}`);
     if (remoteVideo) remoteVideo.srcObject = event.stream;
   };
@@ -125,7 +128,7 @@ const usePeer = (roomId: string) => {
   const handleIceCandidate = (
     event: RTCPeerConnectionIceEvent, socketId: string
   ) => {
-    console.log('icecandidate event: ', event);
+    // console.log('icecandidate event: ', event);
     if (event.candidate) {
       sendMessageRTCTo(socketId, {
         type: 'candidate',
@@ -181,34 +184,31 @@ const usePeer = (roomId: string) => {
       console.log('Room ', room, ' is full');
     });
 
-    socketRef.current?.on('join',  (room: string, socketId: string)=> {
+    socketRef.current?.on('join',  (room: string, socketId: string, otherNickName: string)=> {
       console.log('Another peer made a request to join room ', room);
       console.log('This peer is the initiator of room ', room, '!');
       peers[socketId] = {
-        pc: undefined, isStarted: false, isChannelReady: true, isInitiator: true
+        pc: undefined,
+        isStarted: false,
+        isChannelReady: true,
+        isInitiator: true,
+        nickName: otherNickName
       };
+      console.log(peers);
     });
 
-    socketRef.current?.on('joined', (room: string, socketId: string) => {
-      console.log('joined: ', room);
-      mySocketId = socketId;
-    });
-
-    socketRef.current?.on('log', (array: []) => {
-      console.log(...array);
-    });
-
-    socketRef.current?.on('message', (socketId: string, message: RTCSessionDescriptionInit | ICECandidate) => {
+    socketRef.current?.on('message', (socketId: string, message: RTCSessionDescriptionInit | ICECandidate, otherNickName: string) => {
       if (!peers[socketId]) {
         peers[socketId] = {
           pc: undefined,
           isStarted: false,
           isChannelReady: true,
-          isInitiator: false
+          isInitiator: false,
+          nickName: otherNickName
         };
       }
 
-      console.log('Client received message:', socketId, message);
+      // console.log('Client received message:', socketId, message);
       if (message === 'got user media') {
         maybeStart(socketId);
       } else if (message.type === 'offer' && !peers[socketId].isInitiator) {
@@ -248,7 +248,7 @@ const usePeer = (roomId: string) => {
   };
 
   const start = () => {
-    socketRef.current?.emit('create or join', roomId);
+    socketRef.current?.emit('create or join', roomId, nickName);
     console.log('Attempted to create or join room', roomId);
     sendMessageRTC('got user media');
   };

@@ -28,8 +28,8 @@ const New = () => {
         className="text-input-field"
         onKeyPress={e => handleKeyPress(e)}
       />
-      <Link to={`/${roomName}`} className="enter-room-button">
-        Join room
+      <Link to={`/${roomName}`} className="btn btn-primary">
+        Enter
       </Link>
     </div>
   );

@@ -2,12 +2,13 @@
 import { useEffect, useRef, useState } from 'react';
 import Socket, { io } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
+import { RoomState } from '../types';
 import useChat from './useChat';
 import usePeer from './usePeer';
 
 const SOCKET_SERVER_URL = process.env.REACT_APP_SERVER || 'http://localhost:4000';
 
-const useSocket = (roomId: string) => {
+const useSocket = (roomId: string, roomState: RoomState) => {
   const socketRef = useRef<Socket.Socket<DefaultEventsMap, DefaultEventsMap>>();
   const { messages, sendMessageSocket, newChatMessageOn } = useChat();
   const {
@@ -15,7 +16,7 @@ const useSocket = (roomId: string) => {
     setSocket,
     hangup,
     peerConnectOn
-  } = usePeer(roomId);
+  } = usePeer(roomId, roomState);
 
   useEffect(() => {
     // Creates a WebSocket connection

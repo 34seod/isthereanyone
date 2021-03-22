@@ -1,14 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Dispatch, SetStateAction } from 'react';
 import useSocket from '../../lib/useSocket';
+import { RoomState } from '../../types';
 import './VideoRoom.css';
 
-type MatchParams = {
+type Props = {
   roomId: string
+  roomState: RoomState
+  setRoomState: Dispatch<SetStateAction<RoomState>>
 };
 
-const VideoRoom = ({ roomId }: MatchParams) => {
+const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
   const videoRef = React.createRef<HTMLVideoElement>();
-  const { messages, sendMessage, getStream, hangup } = useSocket('');
+  const {
+    messages, sendMessage, getStream, hangup
+  } = useSocket(roomId, roomState);
 
   useEffect(() => {
     getStream(videoRef);

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import GreenRoom from '../components/GreenRoom/GreenRoom';
 import VideoRoom from '../components/VideoRoom/VideoRoom';
-import useSocket from '../lib/useSocket';
 import { RoomState } from '../types';
 
 type MatchParams = {
@@ -20,7 +19,11 @@ const Room = ({ roomId }: MatchParams) => {
     <>
       {
         roomState.isStarted ?
-          <VideoRoom roomId={roomId} /> :
+          <VideoRoom
+            roomId={roomId}
+            roomState={roomState}
+            setRoomState={setRoomState}
+          /> :
           <GreenRoom
             roomId={roomId}
             roomState={roomState}

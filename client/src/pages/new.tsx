@@ -6,8 +6,12 @@ const New = () => {
   const [roomName, setRoomName] = React.useState('');
 
   const handleRoomNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRoomName(event.target.value);
+    setRoomName(escapeUrl(event.target.value.trim()));
   };
+
+  const escapeUrl = (roomId: string) => (
+    roomId.replace(/(`|~|!|@|#|\$|%|\^|&|\*|\(|\)|-|_|=|\+|{|}|\[|\]|\\|\||'|"|;|:|,|<|>|\.|\/|\?|\s)/g, '')
+  );
 
   return (
     <div className="New-container">

@@ -1,5 +1,6 @@
 import React, { useEffect, Dispatch, SetStateAction, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { setInterval } from 'timers';
 import useSocket from '../../lib/useSocket';
 import { RoomState, VideoSrc } from '../../types';
 import Chat from '../Chat/Chat';
@@ -35,6 +36,7 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
   const handleHangUpButton = () => {
     hangup();
     history.push('/');
+    setInterval(() => history.go(0), 100);
   };
 
   return (

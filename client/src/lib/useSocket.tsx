@@ -18,6 +18,7 @@ const useSocket = (
   const {
     getStream,
     setSocket,
+    hangup,
     peerConnectOn
   } = usePeer(roomId, roomState, setVideoSrces);
 
@@ -42,7 +43,7 @@ const useSocket = (
     sendMessageSocket(socketRef.current, messageBody);
   };
 
-  return { messages, sendMessage, getStream };
+  return { messages, sendMessage, getStream, hangup };
 };
 
 export default useSocket;

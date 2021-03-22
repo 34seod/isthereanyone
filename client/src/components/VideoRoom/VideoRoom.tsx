@@ -17,7 +17,7 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
   const history = useHistory();
   const [videoSrces, setVideoSrces] = useState<VideoSrc[]>([]);
   const {
-    messages, sendMessage, getStream
+    messages, sendMessage, getStream, hangup
   } = useSocket(roomId, roomState, setVideoSrces);
 
   useEffect(() => {
@@ -33,6 +33,7 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
   };
 
   const handleHangUpButton = () => {
+    hangup();
     history.push('/');
   };
 

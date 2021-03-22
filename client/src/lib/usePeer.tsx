@@ -257,9 +257,14 @@ const usePeer = (
     sendMessageRTC('got user media');
   };
 
+  const hangup = () => {
+    localStream.getTracks().forEach(track => track.stop());
+  };
+
   return {
     getStream,
     setSocket,
+    hangup,
     peerConnectOn
   };
 };

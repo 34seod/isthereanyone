@@ -24,7 +24,6 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
   };
 
   const handleStartButton = () => {
-    console.log('start', roomState.isStarted);
     setRoomState((prev) => ({ ...prev, isStarted: true }));
   };
 

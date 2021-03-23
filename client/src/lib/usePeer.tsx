@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { useRef, Dispatch, SetStateAction, RefObject } from 'react';
 import { Socket } from 'socket.io-client';
+import { useHistory } from 'react-router-dom';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
 import { RoomState, VideoSrc } from '../types';
 
@@ -39,13 +40,15 @@ const pcConfig = {
 const usePeer = (
   roomId: string,
   roomState: RoomState,
-  setVideoSrces: Dispatch<SetStateAction<VideoSrc[]>>
+  setVideoSrces: Dispatch<SetStateAction<VideoSrc[]>>,
+  setLock: Dispatch<SetStateAction<boolean>>
 ) => {
   const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>();
   const senderRef = useRef<RTCRtpSender[]>([]);
   const localStreamRef = useRef<MediaStream>();
   const peersRef = useRef<PeerConnection>({});
   const localVideoRef = useRef<HTMLVideoElement | null | undefined>(null);
+  const history = useHistory();
   const { isMuted, isRecording, nickName } = roomState;
 
   const setSocket = (socket: SocketIO) => {
@@ -61,7 +64,6 @@ const usePeer = (
   };
 
   const gotStream = (stream: MediaStream) => {
-    console.log('Adding local stream.');
     localStreamRef.current = stream;
     if (isMuted) handleMute();
     if (isRecording) handleScreen();
@@ -72,7 +74,6 @@ const usePeer = (
   };
 
   const sendMessageRTC = (message: string) => {
-    console.log('Client sending message: ', message);
     socketRef.current?.emit('message', message, nickName);
   };
 
@@ -80,15 +81,12 @@ const usePeer = (
     socketId: string,
     message: RTCSessionDescriptionInit | RTCSdpType | ICECandidate
   ) => {
-    console.log('Client sending message To: ', socketId, message);
     socketRef.current?.emit('messageTo', socketId, message, nickName);
   };
 
   const maybeStart = (socketId: string) => {
 
-    console.log('>>>>>>> maybeStart() ', peersRef.current[socketId].isStarted, peersRef.current[socketId].isChannelReady);
     if (!peersRef.current[socketId].isStarted && typeof localStreamRef.current !== 'undefined' && peersRef.current[socketId].isChannelReady) {
-      console.log('>>>>>> creating peer connection');
       const pc = createPeerConnection(socketId);
       localStreamRef.current.getTracks().forEach((track) => {
         if (localStreamRef.current) {
@@ -99,7 +97,6 @@ const usePeer = (
         }
       });
       peersRef.current[socketId].isStarted = true;
-      console.log('isInitiator', peersRef.current[socketId].isInitiator);
       if (peersRef.current[socketId].isInitiator) {
         doCall(socketId);
       }
@@ -112,12 +109,10 @@ const usePeer = (
       pc.onicecandidate = (event) => handleIceCandidate(event, socketId);
       pc.addEventListener('addstream', (event) => handleRemoteStreamAdded(event as MediaStreamEvent, socketId));
       pc.addEventListener('onremovestream', handleRemoteStreamRemoved);
-      console.log('Created RTCPeerConnnection');
       peersRef.current[socketId].pc = pc;
       return pc;
     } catch (e) {
       console.log('Failed to create PeerConnection, exception: ', e.message);
-      alert('Cannot create RTCPeerConnection object.');
       return undefined;
     }
   };
@@ -126,7 +121,6 @@ const usePeer = (
   const handleRemoteStreamAdded = (
     event: MediaStreamEvent, socketId: string
   ) => {
-    console.log('Remote stream added.');
     setVideoSrces((prev) =>
       [...prev, { socketId, nickName: peersRef.current[socketId].nickName }]);
 
@@ -150,9 +144,7 @@ const usePeer = (
         candidate: event.candidate.candidate
       });
     } else {
-      console.log(peersRef.current);
       peersRef.current[socketId].isInitiator = true;
-      console.log('End of candidates.', peersRef.current[socketId].isInitiator);
     }
   };
 
@@ -161,14 +153,12 @@ const usePeer = (
   };
 
   const doCall = (socketId: string) => {
-    console.log('Sending offer to peer');
     peersRef.current[socketId]?.pc?.createOffer().then((offer) => {
       setLocalAndSendMessage(offer, socketId);
     }).catch((error) => handleCreateOfferError(error));
   };
 
   const doAnswer = (socketId: string) => {
-    console.log('Sending answer to peer.');
     peersRef.current[socketId]?.pc?.createAnswer().then((answer) => {
       setLocalAndSendMessage(answer, socketId);
     }).catch((error: Error) => onCreateSessionDescriptionError(error));
@@ -179,7 +169,6 @@ const usePeer = (
     socketId: string
   ) => {
     peersRef.current[socketId]?.pc?.setLocalDescription(sessionDescription);
-    console.log('setLocalAndSendMessage sending message', sessionDescription);
     sendMessageRTCTo(socketId, sessionDescription);
   };
 
@@ -188,13 +177,16 @@ const usePeer = (
   };
 
   const peerConnectOn = () => {
-    socketRef.current?.on('full', (room: string) => {
-      console.log('Room ', room, ' is full');
+    socketRef.current?.on('lock', (isLock: boolean) => {
+      setLock(isLock);
+    });
+
+    socketRef.current?.on('full', () => {
+      hangup();
+      history.push('/');
     });
 
     socketRef.current?.on('join',  (room: string, socketId: string, otherNickName: string)=> {
-      console.log('Another peer made a request to join room ', room);
-      console.log('This peer is the initiator of room ', room, '!');
       peersRef.current[socketId] = {
         pc: undefined,
         isStarted: false,
@@ -215,7 +207,7 @@ const usePeer = (
         };
       }
 
-      // console.log('Client received message:', socketId, message);
+      console.log(message?.type);
       if (message === 'got user media') {
         maybeStart(socketId);
       } else if (message.type === 'offer' && !peersRef.current[socketId].isInitiator) {
@@ -237,25 +229,23 @@ const usePeer = (
         });
         peersRef.current[socketId]?.pc?.addIceCandidate(candidate);
       } else if (message.type === 'bye' && peersRef.current[socketId].isStarted) {
-        handleRemoteHangup(message.id || '');
+        handleRemoteHangup(socketId || '');
       }
     });
   };
 
   const handleRemoteHangup = (socketId: string) => {
-    console.log('Session terminated.');
     connectStop(socketId);
   };
 
   const connectStop = (socketId: string) => {
     peersRef.current[socketId]?.pc?.close();
-    setVideoSrces((prev) => prev.filter((e) => e.socketId === socketId));
     delete peersRef.current[socketId];
+    setVideoSrces((prev) => prev.filter((e) => e.socketId !== socketId));
   };
 
   const start = () => {
     socketRef.current?.emit('create or join', roomId, nickName);
-    console.log('Attempted to create or join room', roomId);
     sendMessageRTC('got user media');
   };
 
@@ -281,13 +271,18 @@ const usePeer = (
     }
   };
 
+  const handleLock = () => {
+    socketRef.current?.emit('lock');
+  };
+
   return {
     getStream,
     setSocket,
     hangup,
     peerConnectOn,
     handleMute,
-    handleScreen
+    handleScreen,
+    handleLock
   };
 };
 

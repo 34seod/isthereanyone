@@ -11,7 +11,8 @@ const SOCKET_SERVER_URL = process.env.REACT_APP_SERVER || 'http://localhost:4000
 const useSocket = (
   roomId: string,
   roomState: RoomState,
-  setVideoSrces: Dispatch<SetStateAction<VideoSrc[]>>
+  setVideoSrces: Dispatch<SetStateAction<VideoSrc[]>>,
+  setLock: Dispatch<SetStateAction<boolean>>
 ) => {
   const socketRef = useRef<Socket.Socket<DefaultEventsMap, DefaultEventsMap>>();
   const { messages, sendMessageSocket, newChatMessageOn } = useChat();
@@ -21,8 +22,9 @@ const useSocket = (
     hangup,
     peerConnectOn,
     handleMute,
-    handleScreen
-  } = usePeer(roomId, roomState, setVideoSrces);
+    handleScreen,
+    handleLock
+  } = usePeer(roomId, roomState, setVideoSrces, setLock);
 
   useEffect(() => {
     // Creates a WebSocket connection
@@ -51,7 +53,8 @@ const useSocket = (
     getStream,
     hangup,
     handleMute,
-    handleScreen
+    handleScreen,
+    handleLock
   };
 };
 

@@ -15,7 +15,7 @@ io.sockets.on("connection", (socket) => {
 
   // Join a conversation
   const { roomId } = socket.handshake.query;
-  socket.join(roomId);
+  // socket.join(roomId);
 
   // Listen for new messages
   socket.on(NEW_CHAT_MESSAGE_EVENT, (data) => {
@@ -23,45 +23,37 @@ io.sockets.on("connection", (socket) => {
     io.in(roomId).emit(NEW_CHAT_MESSAGE_EVENT, data);
   });
 
-  // convenience function to log server messages on the client
-  function log() {
-    var array = ['Message from server:'];
-    array.push.apply(array, arguments);
-    console.log(...array);
-  }
-
   socket.on('message', function(message, nickName) {
     console.log('message', message, nickName)
-    log('Client said: ', message);
     // sending to all clients in "game" room except sender
     socket.to(roomId).emit('message', socket.id, message, nickName);
   });
 
   socket.on('messageTo', function(socketId, message, nickName) {
-    log('Client said To: ', socketId, message);
     // sending to individual socketid (private message)
     io.to(socketId).emit('message', socket.id, message, nickName)
   });
 
   socket.on('create or join', function(room, nickName) {
     console.log('create or join')
-    log('Received request to create or join room ' + room);
 
     var clientsInRoom = io.sockets.adapter.rooms.get(room);
     var numClients = clientsInRoom ? clientsInRoom.size : 0;
-    log('Room ' + room + ' now has ' + numClients + ' client(s)');
 
     if (numClients === 0) {
       socket.join(room);
-      log('Client ID ' + socket.id + ' created room ' + room);
-
-    } else if (numClients < 4) {
-      log('Client ID ' + socket.id + ' joined room ' + room);
+      io.sockets.adapter.rooms.get(room).isLock = false
+    } else if (!io.sockets.adapter.rooms.get(room).isLock) {
       io.in(room).emit('join', room, socket.id, nickName); // sending to all clients in "game" room, including sender
       socket.join(room);
     } else {
-      socket.emit('full', room); // sending to the client
+      io.to(socket.id).emit('full');
     }
+  });
+
+  socket.on('lock', function() {
+    io.sockets.adapter.rooms.get(roomId).isLock = !io.sockets.adapter.rooms.get(roomId).isLock;
+    socket.to(roomId).emit('lock', io.sockets.adapter.rooms.get(roomId).isLock);
   });
 
   socket.on('bye', function(){

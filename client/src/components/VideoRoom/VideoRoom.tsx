@@ -9,16 +9,22 @@ import './VideoRoom.css';
 type Props = {
   roomId: string
   roomState: RoomState
-  setRoomState: Dispatch<SetStateAction<RoomState>>
 };
 
-const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
+const VideoRoom = ({ roomId, roomState }: Props) => {
   const videoRef = React.createRef<HTMLVideoElement>();
   const history = useHistory();
   const [videoSrces, setVideoSrces] = useState<VideoSrc[]>([]);
+  const [lock, setLock] = useState<boolean>(false);
   const {
-    messages, sendMessage, getStream, hangup, handleMute, handleScreen
-  } = useSocket(roomId, roomState, setVideoSrces);
+    messages,
+    sendMessage,
+    getStream,
+    hangup,
+    handleMute,
+    handleScreen,
+    handleLock
+  } = useSocket(roomId, roomState, setVideoSrces, setLock);
 
   useEffect(() => {
     getStream(videoRef);
@@ -35,6 +41,10 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
   const handleHangUpButton = () => {
     hangup();
     history.push('/');
+  };
+
+  const handleLockButton = () => {
+    handleLock();
   };
 
   return (
@@ -54,6 +64,7 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
         <button className="btn btn-primary mr-1" type="button" onClick={handleMuteButton}>Mute</button>
         <button className="btn btn-primary mr-1" type="button" onClick={handleVideoButton}>Video</button>
         <button className="btn btn-primary mr-1" type="button" onClick={handleHangUpButton}>HangUp</button>
+        <button className="btn btn-primary mr-1" type="button" onClick={handleLockButton}>Lock</button>
       </div>
       <hr />
       <Chat roomId={roomId} messages={messages} sendMessage={sendMessage} />

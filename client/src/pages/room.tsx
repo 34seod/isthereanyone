@@ -22,7 +22,6 @@ const Room = ({ roomId }: MatchParams) => {
           <VideoRoom
             roomId={roomId}
             roomState={roomState}
-            setRoomState={setRoomState}
           /> :
           <GreenRoom
             roomId={roomId}

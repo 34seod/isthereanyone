@@ -1,6 +1,5 @@
 import React, { useEffect, Dispatch, SetStateAction, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { setInterval } from 'timers';
 import useSocket from '../../lib/useSocket';
 import { RoomState, VideoSrc } from '../../types';
 import Chat from '../Chat/Chat';
@@ -18,7 +17,7 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
   const history = useHistory();
   const [videoSrces, setVideoSrces] = useState<VideoSrc[]>([]);
   const {
-    messages, sendMessage, getStream, hangup
+    messages, sendMessage, getStream, hangup, handleMute, handleScreen
   } = useSocket(roomId, roomState, setVideoSrces);
 
   useEffect(() => {
@@ -26,22 +25,30 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
   }, []);
 
   const handleMuteButton = () => {
-    console.log('mute');
+    handleMute();
   };
 
   const handleVideoButton = () => {
-    console.log('video');
+    handleScreen();
   };
 
   const handleHangUpButton = () => {
     hangup();
-    window.location.href = '/';
+    history.push('/');
   };
 
   return (
     <>
       <h1>{`방 페이지-${roomId}`}</h1>
-      <video id="localVideo" ref={videoRef} autoPlay muted playsInline />
+      <video
+        id="localVideo"
+        ref={videoRef}
+        autoPlay={true}
+        muted={false}
+        playsInline={true}
+      >
+        <track kind="captions" />
+      </video>
       {videoSrces.map((videoSrc) => <Video key={`${videoSrc.socketId}`} videoSrc={videoSrc} />)}
       <div>
         <button className="btn btn-primary mr-1" type="button" onClick={handleMuteButton}>Mute</button>

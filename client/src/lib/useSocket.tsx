@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef, useState, Dispatch, SetStateAction } from 'react';
+import { useEffect, useRef, Dispatch, SetStateAction } from 'react';
 import Socket, { io } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
 import { RoomState, VideoSrc } from '../types';
@@ -19,7 +19,9 @@ const useSocket = (
     getStream,
     setSocket,
     hangup,
-    peerConnectOn
+    peerConnectOn,
+    handleMute,
+    handleScreen
   } = usePeer(roomId, roomState, setVideoSrces);
 
   useEffect(() => {
@@ -43,7 +45,14 @@ const useSocket = (
     sendMessageSocket(socketRef.current, messageBody);
   };
 
-  return { messages, sendMessage, getStream, hangup };
+  return {
+    messages,
+    sendMessage,
+    getStream,
+    hangup,
+    handleMute,
+    handleScreen
+  };
 };
 
 export default useSocket;

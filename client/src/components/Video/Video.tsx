@@ -8,7 +8,14 @@ type Props = {
 
 const Video = ({ videoSrc }: Props) => (
   <>
-    <video id={`remoteVideo-${videoSrc.socketId}`} autoPlay muted playsInline />
+    <video
+      id={`remoteVideo-${videoSrc.socketId}`}
+      autoPlay={true}
+      muted={false}
+      playsInline={true}
+    >
+      <track kind="captions" />
+    </video>
     <p>{videoSrc.nickName}</p>
   </>
 );

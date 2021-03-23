@@ -54,7 +54,6 @@ io.sockets.on("connection", (socket) => {
     if (numClients === 0) {
       socket.join(room);
       log('Client ID ' + socket.id + ' created room ' + room);
-      socket.emit('created', room, socket.id); // sending to the client
 
     } else if (numClients < 4) {
       log('Client ID ' + socket.id + ' joined room ' + room);

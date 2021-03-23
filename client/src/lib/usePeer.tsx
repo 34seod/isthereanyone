@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { useRef, Dispatch, SetStateAction, RefObject } from 'react';
 import { Socket } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
@@ -41,10 +42,10 @@ const usePeer = (
   setVideoSrces: Dispatch<SetStateAction<VideoSrc[]>>
 ) => {
   const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>();
-  let localStream: MediaStream = new MediaStream;
-  const peers: PeerConnection = {};
-  let mySocketId = '';
-  let localVideo: HTMLVideoElement | null | undefined = null;
+  const senderRef = useRef<RTCRtpSender[]>([]);
+  const localStreamRef = useRef<MediaStream>();
+  const peersRef = useRef<PeerConnection>({});
+  const localVideoRef = useRef<HTMLVideoElement | null | undefined>(null);
   const { isMuted, isRecording, nickName } = roomState;
 
   const setSocket = (socket: SocketIO) => {
@@ -52,19 +53,20 @@ const usePeer = (
   };
 
   const getStream = (ref: RefObject<HTMLVideoElement> | null) => {
-    console.log('getStream');
-    localVideo = ref?.current;
+    localVideoRef.current = ref?.current;
     navigator.mediaDevices.getUserMedia({
-      audio: true, //! isMuted,
-      video: true, // isRecording
+      audio: true,
+      video: true,
     }).then(gotStream);
   };
 
   const gotStream = (stream: MediaStream) => {
     console.log('Adding local stream.');
-    localStream = stream;
-    if (localVideo) {
-      localVideo.srcObject = stream;
+    localStreamRef.current = stream;
+    if (isMuted) handleMute();
+    if (isRecording) handleScreen();
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = stream;
       start();
     }
   };
@@ -83,15 +85,22 @@ const usePeer = (
   };
 
   const maybeStart = (socketId: string) => {
-    console.log('>>>>>>> maybeStart() ', peers[socketId].isStarted, localStream, peers[socketId].isChannelReady);
-    if (!peers[socketId].isStarted && typeof localStream !== 'undefined' && peers[socketId].isChannelReady) {
+
+    console.log('>>>>>>> maybeStart() ', peersRef.current[socketId].isStarted, peersRef.current[socketId].isChannelReady);
+    if (!peersRef.current[socketId].isStarted && typeof localStreamRef.current !== 'undefined' && peersRef.current[socketId].isChannelReady) {
       console.log('>>>>>> creating peer connection');
       const pc = createPeerConnection(socketId);
-      localStream.getTracks().forEach((track) =>
-        pc?.addTrack(track, localStream));
-      peers[socketId].isStarted = true;
-      console.log('isInitiator', peers[socketId].isInitiator);
-      if (peers[socketId].isInitiator) {
+      localStreamRef.current.getTracks().forEach((track) => {
+        if (localStreamRef.current) {
+          const sender = pc?.addTrack(track, localStreamRef.current);
+          if (sender !== undefined) {
+            senderRef.current = [...senderRef.current, sender];
+          }
+        }
+      });
+      peersRef.current[socketId].isStarted = true;
+      console.log('isInitiator', peersRef.current[socketId].isInitiator);
+      if (peersRef.current[socketId].isInitiator) {
         doCall(socketId);
       }
     }
@@ -100,12 +109,11 @@ const usePeer = (
   const createPeerConnection = (socketId: string) => {
     try {
       const pc = new RTCPeerConnection(pcConfig);
-      // pc.onicecandidate = handleIceCandidate;
       pc.onicecandidate = (event) => handleIceCandidate(event, socketId);
       pc.addEventListener('addstream', (event) => handleRemoteStreamAdded(event as MediaStreamEvent, socketId));
       pc.addEventListener('onremovestream', handleRemoteStreamRemoved);
       console.log('Created RTCPeerConnnection');
-      peers[socketId].pc = pc;
+      peersRef.current[socketId].pc = pc;
       return pc;
     } catch (e) {
       console.log('Failed to create PeerConnection, exception: ', e.message);
@@ -120,7 +128,7 @@ const usePeer = (
   ) => {
     console.log('Remote stream added.');
     setVideoSrces((prev) =>
-      [...prev, { socketId, nickName: peers[socketId].nickName }]);
+      [...prev, { socketId, nickName: peersRef.current[socketId].nickName }]);
 
     const remoteVideo: HTMLVideoElement | null = document.querySelector(`#remoteVideo-${socketId}`);
     if (remoteVideo) remoteVideo.srcObject = event.stream;
@@ -142,9 +150,9 @@ const usePeer = (
         candidate: event.candidate.candidate
       });
     } else {
-      console.log(peers);
-      peers[socketId].isInitiator = true;
-      console.log('End of candidates.', peers[socketId].isInitiator);
+      console.log(peersRef.current);
+      peersRef.current[socketId].isInitiator = true;
+      console.log('End of candidates.', peersRef.current[socketId].isInitiator);
     }
   };
 
@@ -154,14 +162,14 @@ const usePeer = (
 
   const doCall = (socketId: string) => {
     console.log('Sending offer to peer');
-    peers[socketId]?.pc?.createOffer().then((offer) => {
+    peersRef.current[socketId]?.pc?.createOffer().then((offer) => {
       setLocalAndSendMessage(offer, socketId);
     }).catch((error) => handleCreateOfferError(error));
   };
 
   const doAnswer = (socketId: string) => {
     console.log('Sending answer to peer.');
-    peers[socketId]?.pc?.createAnswer().then((answer) => {
+    peersRef.current[socketId]?.pc?.createAnswer().then((answer) => {
       setLocalAndSendMessage(answer, socketId);
     }).catch((error: Error) => onCreateSessionDescriptionError(error));
   };
@@ -170,7 +178,7 @@ const usePeer = (
     sessionDescription: RTCSessionDescriptionInit,
     socketId: string
   ) => {
-    peers[socketId]?.pc?.setLocalDescription(sessionDescription);
+    peersRef.current[socketId]?.pc?.setLocalDescription(sessionDescription);
     console.log('setLocalAndSendMessage sending message', sessionDescription);
     sendMessageRTCTo(socketId, sessionDescription);
   };
@@ -180,11 +188,6 @@ const usePeer = (
   };
 
   const peerConnectOn = () => {
-    socketRef.current?.on('created', (room: string, socketId: string) => {
-      console.log('Created room ', room);
-      mySocketId = socketId;
-    });
-
     socketRef.current?.on('full', (room: string) => {
       console.log('Room ', room, ' is full');
     });
@@ -192,19 +195,18 @@ const usePeer = (
     socketRef.current?.on('join',  (room: string, socketId: string, otherNickName: string)=> {
       console.log('Another peer made a request to join room ', room);
       console.log('This peer is the initiator of room ', room, '!');
-      peers[socketId] = {
+      peersRef.current[socketId] = {
         pc: undefined,
         isStarted: false,
         isChannelReady: true,
         isInitiator: true,
         nickName: otherNickName
       };
-      console.log(peers);
     });
 
     socketRef.current?.on('message', (socketId: string, message: RTCSessionDescriptionInit | ICECandidate, otherNickName: string) => {
-      if (!peers[socketId]) {
-        peers[socketId] = {
+      if (!peersRef.current[socketId]) {
+        peersRef.current[socketId] = {
           pc: undefined,
           isStarted: false,
           isChannelReady: true,
@@ -216,25 +218,25 @@ const usePeer = (
       // console.log('Client received message:', socketId, message);
       if (message === 'got user media') {
         maybeStart(socketId);
-      } else if (message.type === 'offer' && !peers[socketId].isInitiator) {
-        if (!peers[socketId].isStarted) {
+      } else if (message.type === 'offer' && !peersRef.current[socketId].isInitiator) {
+        if (!peersRef.current[socketId].isStarted) {
           maybeStart(socketId);
         }
         const newSDP = new RTCSessionDescription(
           message as RTCSessionDescriptionInit);
-        peers[socketId]?.pc?.setRemoteDescription(newSDP);
+        peersRef.current[socketId]?.pc?.setRemoteDescription(newSDP);
         doAnswer(socketId);
-      } else if (message.type === 'answer' && peers[socketId].isStarted) {
+      } else if (message.type === 'answer' && peersRef.current[socketId].isStarted) {
         const newSDP = new RTCSessionDescription(
           message as RTCSessionDescriptionInit);
-        peers[socketId]?.pc?.setRemoteDescription(newSDP);
-      } else if (message.type === 'candidate' && peers[socketId].isStarted) {
+        peersRef.current[socketId]?.pc?.setRemoteDescription(newSDP);
+      } else if (message.type === 'candidate' && peersRef.current[socketId].isStarted) {
         const candidate = new RTCIceCandidate({
           sdpMLineIndex: message.label,
           candidate: message.candidate
         });
-        peers[socketId]?.pc?.addIceCandidate(candidate);
-      } else if (message.type === 'bye' && peers[socketId].isStarted) {
+        peersRef.current[socketId]?.pc?.addIceCandidate(candidate);
+      } else if (message.type === 'bye' && peersRef.current[socketId].isStarted) {
         handleRemoteHangup(message.id || '');
       }
     });
@@ -246,9 +248,9 @@ const usePeer = (
   };
 
   const connectStop = (socketId: string) => {
-    peers[socketId]?.pc?.close();
+    peersRef.current[socketId]?.pc?.close();
     setVideoSrces((prev) => prev.filter((e) => e.socketId === socketId));
-    delete peers[socketId];
+    delete peersRef.current[socketId];
   };
 
   const start = () => {
@@ -258,14 +260,34 @@ const usePeer = (
   };
 
   const hangup = () => {
-    localStream.getTracks().forEach(track => track.stop());
+    if (localStreamRef.current) {
+      localStreamRef.current.getTracks().forEach(track => track.stop());
+    }
+  };
+
+  const handleMute = () => {
+    if (localStreamRef.current) {
+      localStreamRef.current.getAudioTracks().forEach((track) => {
+        track.enabled = !track.enabled;
+      });
+    }
+  };
+
+  const handleScreen = () => {
+    if (localStreamRef.current) {
+      localStreamRef.current.getVideoTracks().forEach((track) => {
+        track.enabled = !track.enabled;
+      });
+    }
   };
 
   return {
     getStream,
     setSocket,
     hangup,
-    peerConnectOn
+    peerConnectOn,
+    handleMute,
+    handleScreen
   };
 };
 

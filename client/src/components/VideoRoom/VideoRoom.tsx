@@ -35,8 +35,7 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
 
   const handleHangUpButton = () => {
     hangup();
-    history.push('/');
-    setInterval(() => history.go(0), 100);
+    window.location.href = '/';
   };
 
   return (

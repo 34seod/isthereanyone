@@ -44,7 +44,7 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
         id="localVideo"
         ref={videoRef}
         autoPlay={true}
-        muted={false}
+        muted={true}
         playsInline={true}
       >
         <track kind="captions" />

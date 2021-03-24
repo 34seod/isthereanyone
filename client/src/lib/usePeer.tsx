@@ -70,7 +70,8 @@ const usePeer = (
     if (isRecording) handleScreen();
     if (localVideoRef.current) {
       localVideoRef.current.srcObject = stream;
-      start();
+      socketRef.current?.emit('create or join', roomId, nickName);
+      sendMessageRTC('got user media');
     }
   };
 
@@ -86,7 +87,6 @@ const usePeer = (
   };
 
   const maybeStart = (socketId: string) => {
-
     if (!peersRef.current[socketId].isStarted && typeof localStreamRef.current !== 'undefined' && peersRef.current[socketId].isChannelReady) {
       const pc = createPeerConnection(socketId);
       localStreamRef.current.getTracks().forEach((track) => {
@@ -117,7 +117,6 @@ const usePeer = (
       return undefined;
     }
   };
-
 
   const handleRemoteStreamAdded = (
     event: RTCTrackEvent, socketId: string
@@ -247,11 +246,6 @@ const usePeer = (
     peersRef.current[socketId]?.pc?.close();
     delete peersRef.current[socketId];
     setVideoSrces((prev) => prev.filter((e) => e.socketId !== socketId));
-  };
-
-  const start = () => {
-    socketRef.current?.emit('create or join', roomId, nickName);
-    sendMessageRTC('got user media');
   };
 
   const hangup = () => {

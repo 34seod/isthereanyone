@@ -9,3 +9,7 @@ export type VideoSrc = {
   socketId: string
   nickName: string
 };
+
+export const urlEscape = (roomId: string) => (
+  roomId.replace(/(`|~|!|@|#|\$|%|\^|&|\*|\(|\)|-|_|=|\+|{|}|\[|\]|\\|\||'|"|;|:|,|<|>|\.|\/|\?|\s)/g, '')
+);

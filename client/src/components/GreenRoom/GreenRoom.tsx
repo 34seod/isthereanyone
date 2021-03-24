@@ -1,6 +1,14 @@
 import React, { ChangeEvent, Dispatch, SetStateAction } from 'react';
+import {
+  faMicrophone,
+  faMicrophoneSlash, 
+  faVideo,
+  faVideoSlash,
+  faSignInAlt,
+} from '@fortawesome/free-solid-svg-icons';
 import { RoomState } from '../../types';
 import './GreenRoom.css';
+import IconButton from '../IconButton/IconButton';
 
 type Props = {
   roomId: string
@@ -9,17 +17,19 @@ type Props = {
 };
 
 const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') handleStartButton();
+  };
+
   const handleNickNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setRoomState((prev) => ({ ...prev, nickName: event.target.value.trim() }));
   };
 
   const handleMuteButton = () => {
-    console.log('mute', roomState.isMuted);
     setRoomState((prev) => ({ ...prev, isMuted: !prev.isMuted }));
   };
 
   const handleVideoButton = () => {
-    console.log('video', roomState.isRecording);
     setRoomState((prev) => ({ ...prev, isRecording: !prev.isRecording }));
   };
 
@@ -32,14 +42,23 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
       <h1>{`방 페이지-${roomId}`}</h1>
       <input
         type="text"
-        placeholder="insert nickname"
+        placeholder="Insert nickname"
         value={roomState.nickName}
         onChange={handleNickNameChange}
+        onKeyPress={handleKeyPress}
         className="text-input-field"
       />
-      <button className="btn btn-primary mr-1" type="button" onClick={handleMuteButton}>Mute</button>
-      <button className="btn btn-primary mr-1" type="button" onClick={handleVideoButton}>Video</button>
-      <button className="btn btn-primary mr-1" type="button" onClick={handleStartButton}>Start</button>
+      <div>
+        <IconButton
+          icon={roomState.isMuted ? faMicrophoneSlash : faMicrophone}
+          handleOnclick={handleMuteButton}
+        />
+        <IconButton
+          icon={roomState.isRecording ? faVideoSlash : faVideo}
+          handleOnclick={handleVideoButton}
+        />
+        <IconButton icon={faSignInAlt} handleOnclick={handleStartButton} />
+      </div>
     </>
   );
 };

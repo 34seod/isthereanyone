@@ -1,18 +1,15 @@
 
 import React from 'react';
 import { Link, useHistory  } from 'react-router-dom';
+import { urlEscape } from '../types';
 
 const New = () => {
   const [roomName, setRoomName] = React.useState('');
   const history = useHistory();
 
   const handleRoomNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRoomName(escapeUrl(event.target.value.trim()));
+    setRoomName(urlEscape(event.target.value.trim()));
   };
-
-  const escapeUrl = (roomId: string) => (
-    roomId.replace(/(`|~|!|@|#|\$|%|\^|&|\*|\(|\)|-|_|=|\+|{|}|\[|\]|\\|\||'|"|;|:|,|<|>|\.|\/|\?|\s)/g, '')
-  );
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') history.push(`/${roomName}`);

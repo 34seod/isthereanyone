@@ -1,19 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import GreenRoom from '../components/GreenRoom/GreenRoom';
 import VideoRoom from '../components/VideoRoom/VideoRoom';
-import { RoomState } from '../types';
+import { RoomState, urlEscape } from '../types';
 
 type MatchParams = {
   roomId: string
 };
 
 const Room = ({ roomId }: MatchParams) => {
+  const history = useHistory();
+  const location = useLocation();
   const [roomState, setRoomState] = useState<RoomState>({
     isStarted: false,
     isMuted: false,
     isRecording: false,
-    nickName: ''
+    nickName: 'Guest'
   });
+
+  useEffect(() => {
+    const url = urlEscape(location.pathname);
+    if (location.pathname !== url) {
+      history.push(url);
+    }
+  }, []);
 
   return (
     <>

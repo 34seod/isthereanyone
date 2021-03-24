@@ -1,4 +1,4 @@
-import React, { useEffect, Dispatch, SetStateAction, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import useSocket from '../../lib/useSocket';
 import { RoomState, VideoSrc } from '../../types';
@@ -28,7 +28,7 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
 
   useEffect(() => {
     getStream(videoRef);
-  }, []);
+  }, [roomId]);
 
   const handleMuteButton = () => {
     handleMute();

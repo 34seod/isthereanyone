@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-param-reassign */
 import { useRef, Dispatch, SetStateAction, RefObject } from 'react';
 import { Socket } from 'socket.io-client';
@@ -107,8 +108,8 @@ const usePeer = (
     try {
       const pc = new RTCPeerConnection(pcConfig);
       pc.onicecandidate = (event) => handleIceCandidate(event, socketId);
-      pc.addEventListener('addstream', (event) => handleRemoteStreamAdded(event as MediaStreamEvent, socketId));
-      pc.addEventListener('onremovestream', handleRemoteStreamRemoved);
+      pc.ontrack = (event) => 
+        handleRemoteStreamAdded(event as RTCTrackEvent, socketId);
       peersRef.current[socketId].pc = pc;
       return pc;
     } catch (e) {
@@ -119,17 +120,21 @@ const usePeer = (
 
 
   const handleRemoteStreamAdded = (
-    event: MediaStreamEvent, socketId: string
+    event: RTCTrackEvent, socketId: string
   ) => {
-    setVideoSrces((prev) =>
-      [...prev, { socketId, nickName: peersRef.current[socketId].nickName }]);
+    setVideoSrces((prev) => {
+      const prevData = prev.filter((p) => p.socketId === socketId);
+      if (prevData.length === 0) {
+        return [
+          ...prev, { socketId, nickName: peersRef.current[socketId].nickName }
+        ];
+      }
+
+      return [...prev];
+    });
 
     const remoteVideo: HTMLVideoElement | null = document.querySelector(`#remoteVideo-${socketId}`);
-    if (remoteVideo) remoteVideo.srcObject = event.stream;
-  };
-
-  const handleRemoteStreamRemoved = (e: Event) => {
-    console.log('Remote stream removed. Event: ', e.toString());
+    if (remoteVideo) remoteVideo.srcObject = event.streams[0];
   };
 
   const handleIceCandidate = (

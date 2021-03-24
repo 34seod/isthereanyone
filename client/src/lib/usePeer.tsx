@@ -2,7 +2,6 @@
 /* eslint-disable no-param-reassign */
 import { useRef, Dispatch, SetStateAction, RefObject } from 'react';
 import { Socket } from 'socket.io-client';
-import { useHistory } from 'react-router-dom';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
 import { RoomState, VideoSrc } from '../types';
 
@@ -49,7 +48,6 @@ const usePeer = (
   const localStreamRef = useRef<MediaStream>();
   const peersRef = useRef<PeerConnection>({});
   const localVideoRef = useRef<HTMLVideoElement | null | undefined>(null);
-  const history = useHistory();
   const { isMuted, isRecording, nickName } = roomState;
 
   const setSocket = (socket: SocketIO) => {
@@ -57,6 +55,7 @@ const usePeer = (
   };
 
   const getStream = (ref: RefObject<HTMLVideoElement> | null) => {
+    socketRef.current?.emit('create or join', roomId, nickName);
     localVideoRef.current = ref?.current;
     navigator.mediaDevices.getUserMedia({
       audio: true,
@@ -70,7 +69,6 @@ const usePeer = (
     if (isRecording) handleScreen();
     if (localVideoRef.current) {
       localVideoRef.current.srcObject = stream;
-      socketRef.current?.emit('create or join', roomId, nickName);
       sendMessageRTC('got user media');
     }
   };
@@ -186,8 +184,7 @@ const usePeer = (
     });
 
     socketRef.current?.on('full', () => {
-      hangup();
-      history.push('/');
+      window.location.href = '/';
     });
 
     socketRef.current?.on('join',  (room: string, socketId: string, otherNickName: string)=> {
@@ -248,11 +245,11 @@ const usePeer = (
     setVideoSrces((prev) => prev.filter((e) => e.socketId !== socketId));
   };
 
-  const hangup = () => {
-    if (localStreamRef.current) {
-      localStreamRef.current.getTracks().forEach(track => track.stop());
-    }
-  };
+  // const hangup = () => {
+  //   if (localStreamRef.current) {
+  //     localStreamRef.current.getTracks().forEach(track => track.stop());
+  //   }
+  // };
 
   const handleMute = () => {
     if (localStreamRef.current) {
@@ -277,7 +274,6 @@ const usePeer = (
   return {
     getStream,
     setSocket,
-    hangup,
     peerConnectOn,
     handleMute,
     handleScreen,

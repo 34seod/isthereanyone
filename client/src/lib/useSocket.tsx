@@ -19,7 +19,6 @@ const useSocket = (
   const {
     getStream,
     setSocket,
-    hangup,
     peerConnectOn,
     handleMute,
     handleScreen,
@@ -51,7 +50,6 @@ const useSocket = (
     messages,
     sendMessage,
     getStream,
-    hangup,
     handleMute,
     handleScreen,
     handleLock

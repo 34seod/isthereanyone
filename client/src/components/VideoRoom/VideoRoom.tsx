@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import {
   faMicrophone,
   faMicrophoneSlash, 
@@ -26,7 +25,6 @@ type Props = {
 
 const VideoRoom = ({ roomId, roomState }: Props) => {
   const videoRef = React.createRef<HTMLVideoElement>();
-  const history = useHistory();
   const [videoSrces, setVideoSrces] = useState<VideoSrc[]>([]);
   const [lock, setLock] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(roomState.isMuted);
@@ -36,7 +34,6 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
     messages,
     sendMessage,
     getStream,
-    hangup,
     handleMute,
     handleScreen,
     handleLock
@@ -57,8 +54,7 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
   };
 
   const handleHangUpButton = () => {
-    hangup();
-    history.push('/');
+    window.location.href = '/';
   };
 
   const handleLockButton = () => {

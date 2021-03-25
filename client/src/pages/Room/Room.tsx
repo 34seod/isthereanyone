@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import GreenRoom from '../components/GreenRoom/GreenRoom';
-import VideoRoom from '../components/VideoRoom/VideoRoom';
-import { RoomState, urlEscape } from '../types';
+import GreenRoom from '../../components/GreenRoom/GreenRoom';
+import VideoRoom from '../../components/VideoRoom/VideoRoom';
+import { RoomState, urlEscape } from '../../types';
+import './Room.css';
 
 type MatchParams = {
   roomId: string

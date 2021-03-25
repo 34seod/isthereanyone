@@ -5,8 +5,8 @@ import {
   Route,
   RouteComponentProps
 } from 'react-router-dom';
-import New from './pages/new';
-import Room from './pages/room';
+import New from './pages/New/New';
+import Room from './pages/Room/Room';
 
 type MatchParams = {
   roomId: string;

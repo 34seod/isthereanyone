@@ -1,0 +1,53 @@
+p,
+span {
+  color: black;
+  text-shadow: -2px 0 white, 0 2px white, 2px 0 white, 0 -2px white;
+}
+
+.background-icon {
+  color: darkslateblue;
+  position: absolute;
+  bottom: 0;
+  left: -40%;
+  font-size: 60vw;
+  z-index: -2;
+}
+
+.title {
+  font-size: 4rem;
+}
+
+.text-input-field {
+  font-size: 2rem;
+  max-width: 20rem;
+}
+
+.enter-btn-size {
+  font-size: 2rem !important;
+  min-width: 20rem;
+}
+
+@media only screen and (max-width: 600px) {
+  .background-icon {
+    color: darkslateblue;
+    position: absolute;
+    bottom: 0;
+    left: -46%;
+    font-size: 75vw;
+    z-index: -2;
+  }
+
+  .title {
+    font-size: 10vw;
+  }
+
+  .text-input-field {
+    font-size: 4vw;
+    max-width: 40vw;
+  }
+
+  .enter-btn-size {
+    font-size: 4vw !important;
+    min-width: 40vw;
+  }
+}

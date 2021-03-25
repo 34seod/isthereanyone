@@ -45,12 +45,6 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
 
   useEffect(() => {
     start(videoRef);
-
-    // if ((navigator.mediaDevices && 'getDisplayMedia' in navigator.mediaDevices)) {
-    //   startButton.disabled = false;
-    // } else {
-    //   console.log('getDisplayMedia is not supported');
-    // }
   }, [roomId]);
 
   const handleMuteButton = () => {
@@ -127,6 +121,7 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
       </div>
       <video
         id="localVideo"
+        className="reverse"
         ref={videoRef}
         autoPlay={true}
         muted={true}

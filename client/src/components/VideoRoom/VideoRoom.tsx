@@ -80,6 +80,18 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
     }
   };
 
+  const screenShareButton = () => {
+    if (navigator.mediaDevices && 'getDisplayMedia' in navigator.mediaDevices) {
+      return (
+        <IconButton
+          icon={faDesktop}
+          handleOnclick={handleScreenShareButton}
+        />
+      );
+    }
+    return null;
+  };
+
   return (
     <>
       <h1>{`방 페이지-${roomId}`}</h1>
@@ -92,10 +104,7 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
           icon={isRecording ? faVideoSlash : faVideo}
           handleOnclick={handleVideoButton}
         />
-        <IconButton
-          icon={faDesktop}
-          handleOnclick={handleScreenShareButton}
-        />
+        {screenShareButton()}
         <IconButton icon={faSignOutAlt} handleOnclick={handleHangUpButton} />
         <IconButton
           icon={lock ? faLock : faLockOpen}

@@ -179,7 +179,7 @@ const usePeer = (
     });
 
     socketRef.current?.on('full', () => {
-      window.location.href = '/';
+      window.location.href = '/?locked=true';
     });
 
     socketRef.current?.on('join',  (room: string, socketId: string, othernickname: string)=> {

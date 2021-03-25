@@ -16,6 +16,7 @@ import Chat from '../Chat/Chat';
 import Video from '../Video/Video';
 import './VideoRoom.css';
 import IconButton from '../IconButton/IconButton';
+import FlashMessage from '../FlashMessage/FlashMessage';
 
 type Props = {
   roomId: string
@@ -27,6 +28,7 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
   const [videoSrces, setVideoSrces] = useState<VideoSrc[]>([]);
   const [lock, setLock] = useState<boolean>(false);
   const [isScreenShare, setIsScreenShare] = useState<boolean>(false);
+  const [showFlashMessage, setShowFlashMessage] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(roomState.isMuted);
   const [isRecording, setIsRecording] =
     useState<boolean>(roomState.isRecording);
@@ -80,6 +82,16 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
     }
   };
 
+  const handleLinkCopyButton = () => {
+    const el = document.createElement('textarea');
+    el.value = window.location.href;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    setShowFlashMessage(true);
+  };
+
   const screenShareButton = () => {
     if (navigator.mediaDevices && 'getDisplayMedia' in navigator.mediaDevices) {
       return (
@@ -94,6 +106,7 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
 
   return (
     <>
+      {showFlashMessage ? <FlashMessage message="Current url is copied to clipboard." during={1000} unmount={setShowFlashMessage} /> : null}
       <h1>{`방 페이지-${roomId}`}</h1>
       <div>
         <IconButton
@@ -105,6 +118,7 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
           handleOnclick={handleVideoButton}
         />
         {screenShareButton()}
+        <IconButton icon={faLink} handleOnclick={handleLinkCopyButton} />
         <IconButton icon={faSignOutAlt} handleOnclick={handleHangUpButton} />
         <IconButton
           icon={lock ? faLock : faLockOpen}

@@ -51,3 +51,8 @@ span {
     min-width: 40vw;
   }
 }
+
+.fix {
+  position: fixed;
+  overflow: hidden;
+}

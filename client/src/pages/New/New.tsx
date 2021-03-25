@@ -31,7 +31,7 @@ const New = () => {
   };
 
   return (
-    <div className="h-100 w-100">
+    <div className="fix h-100 w-100">
       <FontAwesomeIcon icon={faDoorClosed} className="background-icon" />
       <div className="d-flex h-100 w-100">
         {showFlashMessage ? <FlashMessage message="The room is locked." during={3000} unmount={setShowFlashMessage} /> : null}

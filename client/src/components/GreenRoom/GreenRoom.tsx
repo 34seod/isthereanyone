@@ -1,7 +1,7 @@
-import React, { ChangeEvent, Dispatch, SetStateAction } from 'react';
+import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, createRef } from 'react';
 import {
   faMicrophone,
-  faMicrophoneSlash, 
+  faMicrophoneSlash,
   faVideo,
   faVideoSlash,
   faSignInAlt,
@@ -17,6 +17,12 @@ type Props = {
 };
 
 const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
+  const inputRef = createRef<HTMLInputElement>();
+
+  useEffect(() => {
+    inputRef?.current?.focus();
+  });
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') handleStartButton();
   };
@@ -41,6 +47,7 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
     <>
       <h1>{`방 페이지-${roomId}`}</h1>
       <input
+        ref={inputRef}
         type="text"
         placeholder="Insert nickname"
         value={roomState.nickName}

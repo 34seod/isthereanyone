@@ -1,11 +1,16 @@
 
-import React from 'react';
+import React, { useEffect, createRef } from 'react';
 import { Link, useHistory  } from 'react-router-dom';
 import { urlEscape } from '../types';
 
 const New = () => {
   const [roomName, setRoomName] = React.useState('');
+  const inputRef = createRef<HTMLInputElement>();
   const history = useHistory();
+
+  useEffect(() => {
+    inputRef?.current?.focus();
+  });
 
   const handleRoomNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRoomName(urlEscape(event.target.value.trim()));
@@ -18,6 +23,7 @@ const New = () => {
   return (
     <div className="New-container">
       <input
+        ref={inputRef}
         type="text"
         placeholder="Room"
         value={roomName}

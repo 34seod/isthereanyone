@@ -8,7 +8,6 @@ const io = require("socket.io")(server, {
 });
 
 const PORT = process.env.API_PORT || 4000;
-const NEW_CHAT_MESSAGE_EVENT = "newChatMessage";
 
 io.sockets.on("connection", (socket) => {
   console.log(`Client ${socket.id} connected`);
@@ -18,23 +17,23 @@ io.sockets.on("connection", (socket) => {
   // socket.join(roomId);
 
   // Listen for new messages
-  socket.on(NEW_CHAT_MESSAGE_EVENT, (data) => {
+  socket.on("newChatMessage", (data) => {
     // sending to all clients in "game" room, including sender
-    io.in(roomId).emit(NEW_CHAT_MESSAGE_EVENT, data);
+    io.in(roomId).emit("newChatMessage", data);
   });
 
-  socket.on('message', function(message, nickName) {
-    console.log('message', message, nickName)
+  socket.on('message', function(message, nickname) {
+    console.log('message', message, nickname)
     // sending to all clients in "game" room except sender
-    socket.to(roomId).emit('message', socket.id, message, nickName);
+    socket.to(roomId).emit('message', socket.id, message, nickname);
   });
 
-  socket.on('messageTo', function(socketId, message, nickName) {
+  socket.on('messageTo', function(socketId, message, nickname) {
     // sending to individual socketid (private message)
-    io.to(socketId).emit('message', socket.id, message, nickName)
+    io.to(socketId).emit('message', socket.id, message, nickname)
   });
 
-  socket.on('create or join', function(room, nickName) {
+  socket.on('create or join', function(room, nickname) {
     console.log('create or join')
 
     var clientsInRoom = io.sockets.adapter.rooms.get(room);
@@ -44,7 +43,7 @@ io.sockets.on("connection", (socket) => {
       socket.join(room);
       io.sockets.adapter.rooms.get(room).isLock = false
     } else if (!io.sockets.adapter.rooms.get(room).isLock) {
-      io.in(room).emit('join', room, socket.id, nickName); // sending to all clients in "game" room, including sender
+      io.in(room).emit('join', room, socket.id, nickname); // sending to all clients in "game" room, including sender
       socket.join(room);
     } else {
       io.to(socket.id).emit('full');

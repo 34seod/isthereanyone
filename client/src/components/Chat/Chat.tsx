@@ -1,21 +1,16 @@
 /* eslint-disable react/no-array-index-key */
 
 import React, { useState, ChangeEvent } from 'react';
+import { Message } from '../../types';
 import './Chat.css';
 
 type Props = {
-  roomId: string,
+  nickname: string,
   messages: Message[],
-  sendMessage: (newMessage: string) => void
+  sendMessage: (newMessage: string, nickname: string) => void
 };
 
-type Message = {
-  ownedByCurrentUser: string
-  body: string
-  senderId: string
-};
-
-const Chat = ({ roomId, messages, sendMessage }: Props) => {
+const Chat = ({ nickname, messages, sendMessage }: Props) => {
   const [newMessage, setNewMessage] = useState(''); // Message to be sent
 
   const handleNewMessageChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -23,7 +18,7 @@ const Chat = ({ roomId, messages, sendMessage }: Props) => {
   };
 
   const handleSendMessage = () => {
-    sendMessage(newMessage);
+    sendMessage(newMessage, nickname);
     setNewMessage('');
   };
 
@@ -38,7 +33,7 @@ const Chat = ({ roomId, messages, sendMessage }: Props) => {
             message.ownedByCurrentUser ? 'my-message' : 'received-message'
           }`}
         >
-          {message.body}
+          {`${message.nickname}(${message.sendedAt}) : ${message.body}`}
         </li>
       ))
     );

@@ -15,7 +15,7 @@ const Room = ({ roomId }: MatchParams) => {
     isStarted: false,
     isMuted: false,
     isRecording: false,
-    nickName: 'Guest'
+    nickname: 'Guest'
   });
 
   useEffect(() => {

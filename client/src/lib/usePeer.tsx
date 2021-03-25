@@ -12,7 +12,7 @@ type PeerConnection = {
     isInitiator: boolean
     isStarted: boolean
     isChannelReady: boolean
-    nickName: string
+    nickname: string
   }
 };
 
@@ -50,14 +50,14 @@ const usePeer = (
   const screenShareStreamRef = useRef<MediaStream>(new MediaStream);
   const peersRef = useRef<PeerConnection>({});
   const localVideoRef = useRef<HTMLVideoElement | null | undefined>(null);
-  const { isMuted, isRecording, nickName } = roomState;
+  const { isMuted, isRecording, nickname } = roomState;
 
   const setSocket = (socket: SocketIO) => {
     socketRef.current = socket;
   };
 
   const getStream = (ref: RefObject<HTMLVideoElement> | null) => {
-    socketRef.current?.emit('create or join', roomId, nickName);
+    socketRef.current?.emit('create or join', roomId, nickname);
     localVideoRef.current = ref?.current;
     navigator.mediaDevices.getUserMedia({
       audio: {
@@ -79,14 +79,14 @@ const usePeer = (
   };
 
   const sendMessageRTC = (message: string) => {
-    socketRef.current?.emit('message', message, nickName);
+    socketRef.current?.emit('message', message, nickname);
   };
 
   const sendMessageRTCTo = (
     socketId: string,
     message: RTCSessionDescriptionInit | RTCSdpType | ICECandidate
   ) => {
-    socketRef.current?.emit('messageTo', socketId, message, nickName);
+    socketRef.current?.emit('messageTo', socketId, message, nickname);
   };
 
   const maybeStart = (socketId: string) => {
@@ -127,7 +127,7 @@ const usePeer = (
       const prevData = prev.filter((p) => p.socketId === socketId);
       if (prevData.length === 0) {
         return [
-          ...prev, { socketId, nickName: peersRef.current[socketId].nickName }
+          ...prev, { socketId, nickname: peersRef.current[socketId].nickname }
         ];
       }
       return [...prev];
@@ -182,24 +182,24 @@ const usePeer = (
       window.location.href = '/';
     });
 
-    socketRef.current?.on('join',  (room: string, socketId: string, otherNickName: string)=> {
+    socketRef.current?.on('join',  (room: string, socketId: string, othernickname: string)=> {
       peersRef.current[socketId] = {
         pc: undefined,
         isStarted: false,
         isChannelReady: true,
         isInitiator: true,
-        nickName: otherNickName
+        nickname: othernickname
       };
     });
 
-    socketRef.current?.on('message', (socketId: string, message: RTCSessionDescriptionInit | ICECandidate, otherNickName: string) => {
+    socketRef.current?.on('message', (socketId: string, message: RTCSessionDescriptionInit | ICECandidate, othernickname: string) => {
       if (!peersRef.current[socketId]) {
         peersRef.current[socketId] = {
           pc: undefined,
           isStarted: false,
           isChannelReady: true,
           isInitiator: false,
-          nickName: otherNickName
+          nickname: othernickname
         };
       }
 

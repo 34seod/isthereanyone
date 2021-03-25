@@ -44,8 +44,8 @@ const useSocket = (
     };
   }, [roomId]);
 
-  const sendMessage = (messageBody: string) => {
-    sendMessageSocket(socketRef.current, messageBody);
+  const sendMessage = (messageBody: string, nickname: string) => {
+    sendMessageSocket(socketRef.current, messageBody, nickname);
   };
 
   return {

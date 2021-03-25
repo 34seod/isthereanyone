@@ -19,7 +19,7 @@ const Video = ({ videoSrc }: Props) => (
     >
       <track kind="captions" />
     </video>
-    <p>{videoSrc.nickName}</p>
+    <p>{videoSrc.nickname}</p>
   </>
 );
 

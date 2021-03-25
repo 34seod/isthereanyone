@@ -115,7 +115,11 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
       </video>
       {videoSrces.map((videoSrc) => <Video key={`${videoSrc.socketId}`} videoSrc={videoSrc} />)}
       <hr />
-      <Chat roomId={roomId} messages={messages} sendMessage={sendMessage} />
+      <Chat
+        nickname={roomState.nickname}
+        messages={messages}
+        sendMessage={sendMessage}
+      />
     </>
   );
 };

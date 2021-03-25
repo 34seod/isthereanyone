@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, createRef } from 'react';
 import {
   faMicrophone,
-  faMicrophoneSlash, 
+  faMicrophoneSlash,
   faVideo,
   faVideoSlash,
   faDesktop,
   faLink,
-  faSignInAlt,
   faSignOutAlt,
   faLock,
   faLockOpen
@@ -24,11 +23,12 @@ type Props = {
 };
 
 const VideoRoom = ({ roomId, roomState }: Props) => {
-  const videoRef = React.createRef<HTMLVideoElement>();
+  const videoRef = createRef<HTMLVideoElement>();
   const [videoSrces, setVideoSrces] = useState<VideoSrc[]>([]);
   const [lock, setLock] = useState<boolean>(false);
+  const [isScreenShare, setIsScreenShare] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(roomState.isMuted);
-  const [isRecording, setIsRecording] = 
+  const [isRecording, setIsRecording] =
     useState<boolean>(roomState.isRecording);
   const {
     messages,
@@ -36,20 +36,28 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
     getStream,
     handleMute,
     handleScreen,
-    handleLock
+    handleLock,
+    handleScreenShare,
+    stopCapture
   } = useSocket(roomId, roomState, setVideoSrces, setLock);
 
   useEffect(() => {
     getStream(videoRef);
+
+    // if ((navigator.mediaDevices && 'getDisplayMedia' in navigator.mediaDevices)) {
+    //   startButton.disabled = false;
+    // } else {
+    //   console.log('getDisplayMedia is not supported');
+    // }
   }, [roomId]);
 
   const handleMuteButton = () => {
-    setIsMuted((prev) => !prev);
+    setIsMuted((prev: boolean) => !prev);
     handleMute();
   };
 
   const handleVideoButton = () => {
-    setIsRecording((prev) => !prev);
+    setIsRecording((prev: boolean) => !prev);
     handleScreen();
   };
 
@@ -58,8 +66,18 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
   };
 
   const handleLockButton = () => {
-    setLock((prev) => !prev);
+    setLock((prev: boolean) => !prev);
     handleLock();
+  };
+
+  const handleScreenShareButton = () => {
+    if (isScreenShare) {
+      setIsScreenShare(false);
+      stopCapture();
+    } else {
+      setIsScreenShare(true);
+      handleScreenShare();
+    }
   };
 
   return (
@@ -74,6 +92,10 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
           icon={isRecording ? faVideoSlash : faVideo}
           handleOnclick={handleVideoButton}
         />
+        <IconButton
+          icon={faDesktop}
+          handleOnclick={handleScreenShareButton}
+        />
         <IconButton icon={faSignOutAlt} handleOnclick={handleHangUpButton} />
         <IconButton
           icon={lock ? faLock : faLockOpen}
@@ -86,6 +108,8 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
         autoPlay={true}
         muted={true}
         playsInline={true}
+        width={320}
+        height={240}
       >
         <track kind="captions" />
       </video>

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-param-reassign */
 import { useRef, Dispatch, SetStateAction, RefObject } from 'react';
@@ -45,7 +46,8 @@ const usePeer = (
 ) => {
   const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>();
   const senderRef = useRef<RTCRtpSender[]>([]);
-  const localStreamRef = useRef<MediaStream>();
+  const localStreamRef = useRef<MediaStream | null>(null);
+  const screenShareStreamRef = useRef<MediaStream>(new MediaStream);
   const peersRef = useRef<PeerConnection>({});
   const localVideoRef = useRef<HTMLVideoElement | null | undefined>(null);
   const { isMuted, isRecording, nickName } = roomState;
@@ -58,7 +60,10 @@ const usePeer = (
     socketRef.current?.emit('create or join', roomId, nickName);
     localVideoRef.current = ref?.current;
     navigator.mediaDevices.getUserMedia({
-      audio: true,
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+      },
       video: true,
     }).then(gotStream);
   };
@@ -85,7 +90,7 @@ const usePeer = (
   };
 
   const maybeStart = (socketId: string) => {
-    if (!peersRef.current[socketId].isStarted && typeof localStreamRef.current !== 'undefined' && peersRef.current[socketId].isChannelReady) {
+    if (!peersRef.current[socketId].isStarted && localStreamRef.current !== null && peersRef.current[socketId].isChannelReady) {
       const pc = createPeerConnection(socketId);
       localStreamRef.current.getTracks().forEach((track) => {
         if (localStreamRef.current) {
@@ -106,8 +111,7 @@ const usePeer = (
     try {
       const pc = new RTCPeerConnection(pcConfig);
       pc.onicecandidate = (event) => handleIceCandidate(event, socketId);
-      pc.ontrack = (event) => 
-        handleRemoteStreamAdded(event as RTCTrackEvent, socketId);
+      pc.ontrack = (event) => handleRemoteStreamAdded(event as RTCTrackEvent, socketId);
       peersRef.current[socketId].pc = pc;
       return pc;
     } catch (e) {
@@ -126,7 +130,6 @@ const usePeer = (
           ...prev, { socketId, nickName: peersRef.current[socketId].nickName }
         ];
       }
-
       return [...prev];
     });
 
@@ -150,20 +153,16 @@ const usePeer = (
     }
   };
 
-  const handleCreateOfferError = (error: Error) => {
-    console.log('createOffer() error: ', error);
-  };
-
   const doCall = (socketId: string) => {
     peersRef.current[socketId]?.pc?.createOffer().then((offer) => {
       setLocalAndSendMessage(offer, socketId);
-    }).catch((error) => handleCreateOfferError(error));
+    }).catch((error) => console.log('createOffer() error: ', error.toString()));
   };
 
   const doAnswer = (socketId: string) => {
     peersRef.current[socketId]?.pc?.createAnswer().then((answer) => {
       setLocalAndSendMessage(answer, socketId);
-    }).catch((error: Error) => onCreateSessionDescriptionError(error));
+    }).catch((error: Error) => console.log('Failed to create session description: ', error.toString()));
   };
 
   const setLocalAndSendMessage = (
@@ -172,10 +171,6 @@ const usePeer = (
   ) => {
     peersRef.current[socketId]?.pc?.setLocalDescription(sessionDescription);
     sendMessageRTCTo(socketId, sessionDescription);
-  };
-
-  const onCreateSessionDescriptionError = (error: Error) => {
-    console.log('Failed to create session description: ', error.toString());
   };
 
   const peerConnectOn = () => {
@@ -236,10 +231,6 @@ const usePeer = (
   };
 
   const handleRemoteHangup = (socketId: string) => {
-    connectStop(socketId);
-  };
-
-  const connectStop = (socketId: string) => {
     peersRef.current[socketId]?.pc?.close();
     delete peersRef.current[socketId];
     setVideoSrces((prev) => prev.filter((e) => e.socketId !== socketId));
@@ -271,13 +262,44 @@ const usePeer = (
     socketRef.current?.emit('lock');
   };
 
+  const handleScreenShare = () => {
+    const mediaDevices = navigator.mediaDevices as any // eslint-disable-line
+    mediaDevices.getDisplayMedia({ video: { cursor: 'always' }, audio: false })
+      .then(handleSuccess, (e: Error) => console.log(e));
+  };
+
+  const handleSuccess = (stream: MediaStream) => {
+    screenShareStreamRef.current = stream;
+    senderRef.current.forEach((sender) => {
+      if (sender?.track?.kind === 'video') {
+        sender.replaceTrack(stream.getVideoTracks()[0]);
+      }
+    });
+
+    stream.getVideoTracks()[0].addEventListener('ended', () => {
+      stopCapture();
+    });
+  };
+
+  const stopCapture = () => {
+    senderRef.current.forEach((sender) => {
+      if (sender?.track?.kind === 'video' && localStreamRef.current !== null) {
+        sender.replaceTrack(localStreamRef.current.getVideoTracks()[0]);
+      }
+    });
+
+    screenShareStreamRef.current.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+  };
+
   return {
     getStream,
     setSocket,
     peerConnectOn,
     handleMute,
     handleScreen,
-    handleLock
+    handleLock,
+    handleScreenShare,
+    stopCapture
   };
 };
 

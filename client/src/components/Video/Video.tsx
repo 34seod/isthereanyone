@@ -14,6 +14,8 @@ const Video = ({ videoSrc }: Props) => (
       muted={false}
       playsInline={true}
       controls={true}
+      width={320}
+      height={240}
     >
       <track kind="captions" />
     </video>

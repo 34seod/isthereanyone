@@ -22,7 +22,9 @@ const useSocket = (
     peerConnectOn,
     handleMute,
     handleScreen,
-    handleLock
+    handleLock,
+    handleScreenShare,
+    stopCapture
   } = usePeer(roomId, roomState, setVideoSrces, setLock);
 
   useEffect(() => {
@@ -52,7 +54,9 @@ const useSocket = (
     getStream,
     handleMute,
     handleScreen,
-    handleLock
+    handleLock,
+    handleScreenShare,
+    stopCapture
   };
 };
 

@@ -17,7 +17,7 @@ const useSocket = (
   const socketRef = useRef<Socket.Socket<DefaultEventsMap, DefaultEventsMap>>();
   const { messages, sendMessageSocket, newChatMessageOn } = useChat();
   const {
-    getStream,
+    start,
     setSocket,
     peerConnectOn,
     handleMute,
@@ -51,7 +51,7 @@ const useSocket = (
   return {
     messages,
     sendMessage,
-    getStream,
+    start,
     handleMute,
     handleScreen,
     handleLock,

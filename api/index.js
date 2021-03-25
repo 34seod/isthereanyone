@@ -18,7 +18,6 @@ io.sockets.on("connection", (socket) => {
 
   // Listen for new messages
   socket.on("newChatMessage", (data) => {
-    // sending to all clients in "game" room, including sender
     io.in(roomId).emit("newChatMessage", data);
   });
 
@@ -42,8 +41,10 @@ io.sockets.on("connection", (socket) => {
     if (numClients === 0) {
       socket.join(room);
       io.sockets.adapter.rooms.get(room).isLock = false
+      io.to(socket.id).emit('getin');
     } else if (!io.sockets.adapter.rooms.get(room).isLock) {
-      io.in(room).emit('join', room, socket.id, nickname); // sending to all clients in "game" room, including sender
+      io.to(socket.id).emit('getin');
+      io.in(room).emit('join', socket.id, nickname);
       socket.join(room);
     } else {
       io.to(socket.id).emit('full');
@@ -51,8 +52,10 @@ io.sockets.on("connection", (socket) => {
   });
 
   socket.on('lock', function() {
-    io.sockets.adapter.rooms.get(roomId).isLock = !io.sockets.adapter.rooms.get(roomId).isLock;
-    socket.to(roomId).emit('lock', io.sockets.adapter.rooms.get(roomId).isLock);
+    if (io.sockets.adapter.rooms.get(roomId)) {
+      io.sockets.adapter.rooms.get(roomId).isLock = !io.sockets.adapter.rooms.get(roomId).isLock;
+      socket.to(roomId).emit('lock', io.sockets.adapter.rooms.get(roomId).isLock);
+    }
   });
 
   socket.on('bye', function(){

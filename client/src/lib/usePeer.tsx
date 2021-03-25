@@ -56,9 +56,12 @@ const usePeer = (
     socketRef.current = socket;
   };
 
-  const getStream = (ref: RefObject<HTMLVideoElement> | null) => {
+  const start = (ref: RefObject<HTMLVideoElement> | null) => {
     socketRef.current?.emit('create or join', roomId, nickname);
     localVideoRef.current = ref?.current;
+  };
+
+  const getStream = () => {
     navigator.mediaDevices.getUserMedia({
       audio: {
         echoCancellation: true,
@@ -140,7 +143,6 @@ const usePeer = (
   const handleIceCandidate = (
     event: RTCPeerConnectionIceEvent, socketId: string
   ) => {
-    // console.log('icecandidate event: ', event);
     if (event.candidate) {
       sendMessageRTCTo(socketId, {
         type: 'candidate',
@@ -182,7 +184,11 @@ const usePeer = (
       window.location.href = '/?locked=true';
     });
 
-    socketRef.current?.on('join',  (room: string, socketId: string, othernickname: string)=> {
+    socketRef.current?.on('getin', () => {
+      getStream();
+    });
+
+    socketRef.current?.on('join', (socketId: string, othernickname: string)=> {
       peersRef.current[socketId] = {
         pc: undefined,
         isStarted: false,
@@ -203,7 +209,7 @@ const usePeer = (
         };
       }
 
-      console.log(message?.type);
+      // console.log(message?.type);
       if (message === 'got user media') {
         maybeStart(socketId);
       } else if (message.type === 'offer' && !peersRef.current[socketId].isInitiator) {
@@ -265,7 +271,7 @@ const usePeer = (
   const handleScreenShare = () => {
     const mediaDevices = navigator.mediaDevices as any // eslint-disable-line
     mediaDevices.getDisplayMedia({ video: { cursor: 'always' }, audio: false })
-      .then(handleSuccess, (e: Error) => console.log(e));
+      .then(handleSuccess, (e: Error) => console.log('getDisplayMedia error: ', e.toString()));
   };
 
   const handleSuccess = (stream: MediaStream) => {
@@ -292,7 +298,7 @@ const usePeer = (
   };
 
   return {
-    getStream,
+    start,
     setSocket,
     peerConnectOn,
     handleMute,

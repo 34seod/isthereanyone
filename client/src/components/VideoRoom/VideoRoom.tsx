@@ -35,7 +35,7 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
   const {
     messages,
     sendMessage,
-    getStream,
+    start,
     handleMute,
     handleScreen,
     handleLock,
@@ -44,7 +44,7 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
   } = useSocket(roomId, roomState, setVideoSrces, setLock);
 
   useEffect(() => {
-    getStream(videoRef);
+    start(videoRef);
 
     // if ((navigator.mediaDevices && 'getDisplayMedia' in navigator.mediaDevices)) {
     //   startButton.disabled = false;

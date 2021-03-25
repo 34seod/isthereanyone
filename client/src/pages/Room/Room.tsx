@@ -21,7 +21,7 @@ const Room = ({ roomId }: MatchParams) => {
 
   useEffect(() => {
     const url = urlEscape(location.pathname);
-    if (location.pathname !== url) {
+    if (location.pathname !== `/${url}`) {
       history.push(url);
     }
   }, []);

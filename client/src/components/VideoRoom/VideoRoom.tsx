@@ -100,7 +100,7 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
 
   return (
     <>
-      {showFlashMessage ? <FlashMessage message="Current url is copied to clipboard." during={1000} unmount={setShowFlashMessage} /> : null}
+      {showFlashMessage ? <FlashMessage message="Current url is copied to clipboard." during={2000} unmount={setShowFlashMessage} /> : null}
       <h1>{`방 페이지-${roomId}`}</h1>
       <div>
         <IconButton

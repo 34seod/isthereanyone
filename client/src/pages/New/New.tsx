@@ -20,7 +20,7 @@ const New = () => {
       setShowFlashMessage(true);
       history.push('/');
     }
-  });
+  }, []);
 
   const handleRoomNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setRoomName(urlEscape(event.target.value.trim()));

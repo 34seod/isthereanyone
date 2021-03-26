@@ -8,8 +8,8 @@ span {
   color: darkslateblue;
   position: absolute;
   bottom: 0;
-  left: -40%;
-  font-size: 60vw;
+  left: -20rem;
+  font-size: 35rem;
   z-index: -2;
 }
 
@@ -18,13 +18,48 @@ span {
 }
 
 .text-input-field {
-  font-size: 2rem;
+  font-size: 1.5rem;
   max-width: 20rem;
 }
 
 .enter-btn-size {
-  font-size: 2rem !important;
-  min-width: 20rem;
+  font-size: 1.5rem !important;
+  min-width: 18rem;
+}
+
+.fix {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.group_title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.group_title .title_tf {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  position: relative;
+  min-width: 30px;
+  height: 3rem;
+  align-items: center;
+}
+.group_title .title_tf .tf {
+  position: absolute;
+  right: 0;
+  /* bottom: 0; */
+  left: 12px;
+  width: 92%;
+  top: 2.3rem;
 }
 
 @media only screen and (max-width: 600px) {
@@ -50,13 +85,13 @@ span {
     font-size: 4vw !important;
     min-width: 40vw;
   }
-}
 
-.fix {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
+  .group_title .title_tf .tf {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 12px;
+    width: 86%;
+    top: 1rem;
+  }
 }

@@ -36,17 +36,24 @@ const New = () => {
       <div className="d-flex h-100 w-100">
         {showFlashMessage ? <FlashMessage message="The room is locked." during={3000} unmount={setShowFlashMessage} /> : null}
         <div className="m-auto">
-          <p className="title text-center">Is there anyone ?</p>
+          <p className="title text-center mb-0">Is there anyone</p>
           <div className="text-center">
-            <input
-              ref={inputRef}
-              type="text"
-              placeholder="Room"
-              value={roomName}
-              onChange={handleRoomNameChange}
-              className="text-input-field border border-dark rounded"
-              onKeyPress={e => handleKeyPress(e)}
-            />
+            <div className="group_title">
+              <span className="title">in</span>
+              <span className="title_tf">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  placeholder="Room"
+                  value={roomName}
+                  onChange={handleRoomNameChange}
+                  className="tf text-input-field border border-dark rounded"
+                  onKeyPress={e => handleKeyPress(e)}
+                />
+              </span>
+              <span className="title">?</span>
+            </div>
+
           </div>
 
           <div className="text-center">

@@ -8,14 +8,14 @@
       "type": "image/svg+xml"
     },
     {
-      "src": "door256.png",
+      "src": "door180.png",
       "type": "image/png",
-      "sizes": "256x256"
+      "sizes": "180x180"
     },
     {
-      "src": "door512.png",
+      "src": "door192.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "192x192"
     }
   ],
   "start_url": ".",

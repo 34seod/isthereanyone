@@ -31,10 +31,10 @@ const New = () => {
   };
 
   return (
-    <div className="fix h-100 w-100">
+    <div className="new fix h-100 w-100">
       <FontAwesomeIcon icon={faDoorClosed} className="background-icon" />
+      {showFlashMessage ? <FlashMessage message="The room is locked." during={3000} unmount={setShowFlashMessage} /> : null}
       <div className="d-flex h-100 w-100">
-        {showFlashMessage ? <FlashMessage message="The room is locked." during={3000} unmount={setShowFlashMessage} /> : null}
         <div className="m-auto">
           <p className="title text-center mb-0">Is there anyone</p>
           <div className="text-center">

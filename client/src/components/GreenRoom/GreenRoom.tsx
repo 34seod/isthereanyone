@@ -5,7 +5,9 @@ import {
   faVideo,
   faVideoSlash,
   faSignInAlt,
+  faDoorOpen,
 } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { RoomState } from '../../types';
 import './GreenRoom.css';
 import IconButton from '../IconButton/IconButton';
@@ -44,29 +46,44 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
   };
 
   return (
-    <>
-      <h1>{`방 페이지-${roomId}`}</h1>
-      <input
-        ref={inputRef}
-        type="text"
-        placeholder="Insert nickname"
-        value={roomState.nickname}
-        onChange={handlenicknameChange}
-        onKeyPress={handleKeyPress}
-        className="text-input-field"
-      />
-      <div>
-        <IconButton
-          icon={roomState.isMuted ? faMicrophoneSlash : faMicrophone}
-          handleOnclick={handleMuteButton}
-        />
-        <IconButton
-          icon={roomState.isRecording ? faVideoSlash : faVideo}
-          handleOnclick={handleVideoButton}
-        />
-        <IconButton icon={faSignInAlt} handleOnclick={handleStartButton} />
+    <div className="green-room fix h-100 w-100">
+      <FontAwesomeIcon icon={faDoorOpen} className="background-icon" />
+      <div className="d-flex h-100 w-100">
+        <div className="m-auto">
+          <p className="title text-center mb-0">Who are you ?</p>
+          <div className="d-flex mt-3">
+            <input
+              ref={inputRef}
+              type="text"
+              placeholder="Insert nickname"
+              value={roomState.nickname}
+              onChange={handlenicknameChange}
+              onKeyPress={handleKeyPress}
+              className="text-input-field ml-auto mr-auto"
+            />
+          </div>
+          <div className="d-flex mt-3">
+            <div className="ml-auto mr-auto">
+              <IconButton
+                icon={roomState.isMuted ? faMicrophoneSlash : faMicrophone}
+                handleOnclick={handleMuteButton}
+                className={roomState.isMuted ? 'bg-danger text-white' : 'bg-white'}
+              />
+              <IconButton
+                icon={roomState.isRecording ? faVideoSlash : faVideo}
+                handleOnclick={handleVideoButton}
+                className={roomState.isRecording ? 'bg-danger text-white' : 'bg-white'}
+              />
+              <IconButton
+                icon={faSignInAlt}
+                handleOnclick={handleStartButton}
+                className="bg-primary text-white"
+              />
+            </div>
+          </div>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

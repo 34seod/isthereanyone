@@ -4,7 +4,7 @@ span {
   text-shadow: -2px 0 white, 0 2px white, 2px 0 white, 0 -2px white;
 }
 
-.background-icon {
+.new .background-icon {
   color: darkslateblue;
   position: absolute;
   bottom: 0;
@@ -27,15 +27,6 @@ span {
   min-width: 18rem;
 }
 
-.fix {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
-}
-
 .group_title {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -50,20 +41,22 @@ span {
   flex: 1 1 auto;
   position: relative;
   min-width: 30px;
-  height: 3rem;
+  /* height: 3rem; */
+  margin-top: auto;
+  margin-bottom: 1rem;
   align-items: center;
 }
 .group_title .title_tf .tf {
-  position: absolute;
-  right: 0;
+  /* position: absolute; */
+  /* right: 0; */
   /* bottom: 0; */
-  left: 12px;
+  /* left: 12px; */
   width: 92%;
-  top: 2.3rem;
+  /* top: 2.3rem; */
 }
 
 @media only screen and (max-width: 600px) {
-  .background-icon {
+  .new .background-icon {
     color: darkslateblue;
     position: absolute;
     bottom: 0;
@@ -77,8 +70,8 @@ span {
   }
 
   .text-input-field {
-    font-size: 4vw;
-    max-width: 40vw;
+    font-size: 1.4rem;
+    max-width: 10rem;
   }
 
   .enter-btn-size {
@@ -86,12 +79,24 @@ span {
     min-width: 40vw;
   }
 
+  .group_title .title_tf {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    position: relative;
+    min-width: 30px;
+    /* height: 3rem; */
+    margin-top: auto;
+    margin-bottom: 0.5rem;
+    align-items: center;
+  }
+
   .group_title .title_tf .tf {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 12px;
+    /* position: absolute; */
+    /* right: 0; */
+    /* bottom: 0; */
+    /* left: 12px; */
     width: 86%;
-    top: 1rem;
+    /* top: 1rem; */
   }
 }

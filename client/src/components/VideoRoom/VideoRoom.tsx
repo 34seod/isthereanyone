@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import useSocket from '../../lib/useSocket';
 import { RoomState, VideoSrc } from '../../types';
 import Chat from '../Chat/Chat';
@@ -6,6 +6,7 @@ import Video from '../Video/Video';
 import './VideoRoom.css';
 import FlashMessage from '../FlashMessage/FlashMessage';
 import VideoRoomButtons from '../VideoRoomButtons';
+import MyCam from '../MyCam/MyCam';
 
 type Props = {
   roomId: string
@@ -13,7 +14,7 @@ type Props = {
 };
 
 const VideoRoom = ({ roomId, roomState }: Props) => {
-  const videoRef = createRef<HTMLVideoElement>();
+  const videoRef = useRef<HTMLVideoElement>(document.createElement('video'));
   const [videoSrces, setVideoSrces] = useState<VideoSrc[]>([]);
   const [lock, setLock] = useState<boolean>(false);
   const [isScreenShare, setIsScreenShare] = useState<boolean>(false);
@@ -46,20 +47,7 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
   return (
     <div className="video-room fix h-100 w-100">
       {showFlashMessage ? <FlashMessage message="URL has been copied. Share with others." during={3000} unmount={setShowFlashMessage} /> : null}
-      <div className="my-cam rounded p-1 bg-danger">
-        <video
-          id="localVideo"
-          className="reverse"
-          ref={videoRef}
-          autoPlay={true}
-          muted={true}
-          playsInline={true}
-          width="100%"
-          height="100%"
-        >
-          <track kind="captions" />
-        </video>
-      </div>
+      <MyCam videoRef={videoRef} />
       {
         videoSrces.length > 0 ?
           <div className="container">

@@ -1,0 +1,12 @@
+.my-cam {
+  position: absolute;
+  width: 12rem;
+  height: 9rem;
+  z-index: 1000;
+  bottom: 4rem;
+  left: 1rem;
+}
+
+.my-cam video {
+  cursor: move;
+}

@@ -8,13 +8,6 @@ video {
   object-fit: fill;
 }
 
-.my-cam {
-  position: absolute;
-  width: 12rem;
-  height: 9rem;
-  z-index: 1000;
-}
-
 .video-room {
   background-color: dimgray;
 }

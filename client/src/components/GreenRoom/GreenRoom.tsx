@@ -1,18 +1,11 @@
 import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, createRef } from 'react';
-import { useHistory  } from 'react-router-dom';
 import {
-  faMicrophone,
-  faMicrophoneSlash,
-  faVideo,
-  faVideoSlash,
-  faSignInAlt,
-  faSignOutAlt,
   faDoorOpen,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { RoomState } from '../../types';
 import './GreenRoom.css';
-import IconButton from '../IconButton/IconButton';
+import GreenRoomButtons from '../GreenRoomButtons';
 
 type Props = {
   roomId: string
@@ -22,7 +15,6 @@ type Props = {
 
 const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
   const inputRef = createRef<HTMLInputElement>();
-  const history = useHistory();
 
   useEffect(() => {
     inputRef?.current?.focus();
@@ -36,19 +28,8 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
     setRoomState((prev) => ({ ...prev, nickname: event.target.value.trim() }));
   };
 
-  const handleMuteButton = () => {
-    setRoomState((prev) => ({ ...prev, isMuted: !prev.isMuted }));
-  };
-
-  const handleVideoButton = () => {
-    setRoomState((prev) => ({ ...prev, isRecording: !prev.isRecording }));
-  };
-
   const handleStartButton = () => {
     setRoomState((prev) => ({ ...prev, isStarted: true }));
-  };
-  const handleLeaveButton = () => {
-    history.push('/');
   };
 
   return (
@@ -68,30 +49,11 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
               className="text-input-field ml-auto mr-auto border border-dark rounded"
             />
           </div>
-          <div className="d-flex mt-3">
-            <div className="ml-auto mr-auto">
-              <IconButton
-                icon={roomState.isMuted ? faMicrophoneSlash : faMicrophone}
-                handleOnclick={handleMuteButton}
-                className={roomState.isMuted ? 'bg-danger text-white' : 'bg-success text-white'}
-              />
-              <IconButton
-                icon={roomState.isRecording ? faVideoSlash : faVideo}
-                handleOnclick={handleVideoButton}
-                className={roomState.isRecording ? 'bg-danger text-white' : 'bg-success text-white'}
-              />
-              <IconButton
-                icon={faSignInAlt}
-                handleOnclick={handleStartButton}
-                className="bg-primary text-white"
-              />
-              <IconButton
-                icon={faSignOutAlt}
-                handleOnclick={handleLeaveButton}
-                className="bg-danger text-white"
-              />
-            </div>
-          </div>
+          <GreenRoomButtons
+            roomState={roomState}
+            setRoomState={setRoomState}
+            handleStartButton={handleStartButton}
+          />
         </div>
       </div>
     </div>

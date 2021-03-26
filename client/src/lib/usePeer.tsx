@@ -301,6 +301,7 @@ const usePeer = (
     });
 
     screenShareStreamRef.current.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+    setIsScreenShare(false);
   };
 
   return {

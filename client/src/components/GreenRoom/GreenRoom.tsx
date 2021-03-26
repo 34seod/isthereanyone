@@ -1,10 +1,12 @@
 import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, createRef } from 'react';
+import { useHistory  } from 'react-router-dom';
 import {
   faMicrophone,
   faMicrophoneSlash,
   faVideo,
   faVideoSlash,
   faSignInAlt,
+  faSignOutAlt,
   faDoorOpen,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -20,6 +22,7 @@ type Props = {
 
 const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
   const inputRef = createRef<HTMLInputElement>();
+  const history = useHistory();
 
   useEffect(() => {
     inputRef?.current?.focus();
@@ -44,18 +47,21 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
   const handleStartButton = () => {
     setRoomState((prev) => ({ ...prev, isStarted: true }));
   };
+  const handleLeaveButton = () => {
+    history.push('/');
+  };
 
   return (
     <div className="green-room fix h-100 w-100">
       <FontAwesomeIcon icon={faDoorOpen} className="background-icon" />
       <div className="d-flex h-100 w-100">
         <div className="m-auto">
-          <p className="title text-center mb-0">Who are you ?</p>
+          <p className="title text-center mb-0">Who's there?</p>
           <div className="d-flex mt-3">
             <input
               ref={inputRef}
               type="text"
-              placeholder="Insert nickname"
+              placeholder="name"
               value={roomState.nickname}
               onChange={handlenicknameChange}
               onKeyPress={handleKeyPress}
@@ -80,6 +86,12 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
                 icon={faSignInAlt}
                 handleOnclick={handleStartButton}
                 className="bg-primary text-white"
+                borderClass=""
+              />
+              <IconButton
+                icon={faSignOutAlt}
+                handleOnclick={handleLeaveButton}
+                className="bg-danger text-white"
                 borderClass=""
               />
             </div>

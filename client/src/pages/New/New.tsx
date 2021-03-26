@@ -58,7 +58,7 @@ const New = () => {
 
           <div className="text-center">
             <Link to={`/${roomName}`} className="mt-3 btn enter-btn-size btn-primary">
-              Enter
+              Knock! Knock!
             </Link>
           </div>
         </div>

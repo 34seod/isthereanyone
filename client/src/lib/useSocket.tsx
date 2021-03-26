@@ -12,7 +12,8 @@ const useSocket = (
   roomId: string,
   roomState: RoomState,
   setVideoSrces: Dispatch<SetStateAction<VideoSrc[]>>,
-  setLock: Dispatch<SetStateAction<boolean>>
+  setLock: Dispatch<SetStateAction<boolean>>,
+  setIsScreenShare: Dispatch<SetStateAction<boolean>>
 ) => {
   const socketRef = useRef<Socket.Socket<DefaultEventsMap, DefaultEventsMap>>();
   const { messages, sendMessageSocket, newChatMessageOn } = useChat();
@@ -25,7 +26,7 @@ const useSocket = (
     handleLock,
     handleScreenShare,
     stopCapture
-  } = usePeer(roomId, roomState, setVideoSrces, setLock);
+  } = usePeer(roomId, roomState, setVideoSrces, setLock, setIsScreenShare);
 
   useEffect(() => {
     // Creates a WebSocket connection

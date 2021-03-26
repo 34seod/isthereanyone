@@ -1,23 +1,34 @@
 audio::-webkit-media-controls-timeline,
 video::-webkit-media-controls-timeline {
-    display: none;
-    -webkit-appearance: none;
+  display: none;
+  -webkit-appearance: none;
 }
 
 audio::-webkit-media-controls-play-button,
 video::-webkit-media-controls-play-button {
-    display: none;
-    -webkit-appearance: none;
+  display: none;
+  -webkit-appearance: none;
 }
 
 audio::-webkit-media-controls-current-time-display,
 video::-webkit-media-controls-current-time-display {
-    display: none;
-    -webkit-appearance: none;
+  display: none;
+  -webkit-appearance: none;
 }
 
 audio::-webkit-media-controls-time-remaining-display,
 video::-webkit-media-controls-time-remaining-display {
-    display: none;
-    -webkit-appearance: none;
+  display: none;
+  -webkit-appearance: none;
+}
+
+.nickname {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0.2rem;
+  color: white;
+  background-color: black;
+  opacity: 0.7;
+  padding: 0.3rem;
+  margin: 0;
 }

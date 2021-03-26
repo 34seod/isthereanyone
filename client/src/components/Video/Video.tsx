@@ -7,20 +7,20 @@ type Props = {
 };
 
 const Video = ({ videoSrc }: Props) => (
-  <>
+  <div className="position-relative">
     <video
       id={`remoteVideo-${videoSrc.socketId}`}
       autoPlay={true}
       muted={false}
       playsInline={true}
       controls={true}
-      width={320}
-      height={240}
+      width="100%"
+      height="100%"
     >
       <track kind="captions" />
     </video>
-    <p>{videoSrc.nickname}</p>
-  </>
+    <p className="nickname">{videoSrc.nickname}</p>
+  </div>
 );
 
 export default Video;

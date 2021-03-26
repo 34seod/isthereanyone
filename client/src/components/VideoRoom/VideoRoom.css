@@ -1,5 +1,24 @@
 .reverse {
   transform: rotateY(180deg);
-  -webkit-transform:rotateY(180deg); /* Safari and Chrome */
-  -moz-transform:rotateY(180deg); /* Firefox */
+  -webkit-transform: rotateY(180deg); /* Safari and Chrome */
+  -moz-transform: rotateY(180deg); /* Firefox */
+}
+
+video {
+  object-fit: fill;
+}
+
+.my-cam {
+  position: absolute;
+  width: 12rem;
+  height: 9rem;
+  z-index: 1000;
+}
+
+.video-room {
+  background-color: dimgray;
+}
+
+.video-padding {
+  padding: 0.25rem 0.25rem 0 0.25rem !important;
 }

@@ -13,7 +13,7 @@ const FlashMessage = ({ message, during, unmount }: Props) => {
   });
 
   return (
-    <strong>{message}</strong>
+    <div className="fixed-top">{message}</div>
   );
 };
 

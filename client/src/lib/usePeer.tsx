@@ -42,7 +42,8 @@ const usePeer = (
   roomId: string,
   roomState: RoomState,
   setVideoSrces: Dispatch<SetStateAction<VideoSrc[]>>,
-  setLock: Dispatch<SetStateAction<boolean>>
+  setLock: Dispatch<SetStateAction<boolean>>,
+  setIsScreenShare: Dispatch<SetStateAction<boolean>>
 ) => {
   const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>();
   const senderRef = useRef<RTCRtpSender[]>([]);
@@ -271,10 +272,15 @@ const usePeer = (
   const handleScreenShare = () => {
     const mediaDevices = navigator.mediaDevices as any // eslint-disable-line
     mediaDevices.getDisplayMedia({ video: { cursor: 'always' }, audio: false })
-      .then(handleSuccess, (e: Error) => console.log('getDisplayMedia error: ', e.toString()));
+      .then(handleScreenShareSuccess, handleScreenShareError);
   };
 
-  const handleSuccess = (stream: MediaStream) => {
+  const handleScreenShareError = (e: Error) => {
+    setIsScreenShare(false);
+    console.log('getDisplayMedia error: ', e.toString());
+  };
+
+  const handleScreenShareSuccess = (stream: MediaStream) => {
     screenShareStreamRef.current = stream;
     senderRef.current.forEach((sender) => {
       if (sender?.track?.kind === 'video') {

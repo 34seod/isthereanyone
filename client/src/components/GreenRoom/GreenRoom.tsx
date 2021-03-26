@@ -73,26 +73,22 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
               <IconButton
                 icon={roomState.isMuted ? faMicrophoneSlash : faMicrophone}
                 handleOnclick={handleMuteButton}
-                className={roomState.isMuted ? 'bg-danger text-white' : 'bg-white'}
-                borderClass={roomState.isMuted ? '' : 'border-secondary'}
+                className={roomState.isMuted ? 'bg-danger text-white' : 'bg-success text-white'}
               />
               <IconButton
                 icon={roomState.isRecording ? faVideoSlash : faVideo}
                 handleOnclick={handleVideoButton}
-                className={roomState.isRecording ? 'bg-danger text-white' : 'bg-white'}
-                borderClass={roomState.isRecording ? '' : 'border-secondary'}
+                className={roomState.isRecording ? 'bg-danger text-white' : 'bg-success text-white'}
               />
               <IconButton
                 icon={faSignInAlt}
                 handleOnclick={handleStartButton}
                 className="bg-primary text-white"
-                borderClass=""
               />
               <IconButton
                 icon={faSignOutAlt}
                 handleOnclick={handleLeaveButton}
                 className="bg-danger text-white"
-                borderClass=""
               />
             </div>
           </div>

@@ -41,7 +41,7 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
     handleLock,
     handleScreenShare,
     stopCapture
-  } = useSocket(roomId, roomState, setVideoSrces, setLock);
+  } = useSocket(roomId, roomState, setVideoSrces, setLock, setIsScreenShare);
 
   useEffect(() => {
     start(videoRef);
@@ -92,53 +92,79 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
         <IconButton
           icon={faDesktop}
           handleOnclick={handleScreenShareButton}
+          className={isScreenShare ? 'bg-danger text-white' : 'bg-success text-white'}
+          borderClass=""
         />
       );
     }
     return null;
   };
 
-  return (
-    <>
-      {showFlashMessage ? <FlashMessage message="Current url is copied to clipboard." during={2000} unmount={setShowFlashMessage} /> : null}
-      <h1>{`방 페이지-${roomId}`}</h1>
-      <div>
-        <IconButton
-          icon={isMuted ? faMicrophoneSlash : faMicrophone}
-          handleOnclick={handleMuteButton}
-        />
-        <IconButton
-          icon={isRecording ? faVideoSlash : faVideo}
-          handleOnclick={handleVideoButton}
-        />
-        {screenShareButton()}
-        <IconButton icon={faLink} handleOnclick={handleLinkCopyButton} />
-        <IconButton icon={faSignOutAlt} handleOnclick={handleHangUpButton} />
-        <IconButton
-          icon={lock ? faLock : faLockOpen}
-          handleOnclick={handleLockButton}
-        />
+  const remoteVideoes = () =>
+    videoSrces.map((videoSrc) =>
+      <div className="col video-padding" key={`${videoSrc.socketId}`}>
+        <Video videoSrc={videoSrc} />
       </div>
-      <video
-        id="localVideo"
-        className="reverse"
-        ref={videoRef}
-        autoPlay={true}
-        muted={true}
-        playsInline={true}
-        width={320}
-        height={240}
-      >
-        <track kind="captions" />
-      </video>
-      {videoSrces.map((videoSrc) => <Video key={`${videoSrc.socketId}`} videoSrc={videoSrc} />)}
-      <hr />
-      <Chat
+    );
+
+  return (
+    <div className="video-room fix h-100 w-100">
+      {showFlashMessage ? <FlashMessage message="Current url is copied to clipboard." during={2000} unmount={setShowFlashMessage} /> : null}
+      <div className="my-cam rounded p-1 bg-danger">
+        <video
+          id="localVideo"
+          className="reverse"
+          ref={videoRef}
+          autoPlay={true}
+          muted={true}
+          playsInline={true}
+          width="100%"
+          height="100%"
+        >
+          <track kind="captions" />
+        </video>
+      </div>
+      <div className="container">
+        <div className={`row row-cols-${videoSrces.length > 2 ? Math.ceil(videoSrces.length / 2) : videoSrces.length}`}>
+          {remoteVideoes()}
+        </div>
+      </div>
+      <div className="fixed-bottom mb-2 d-flex">
+        <div className="ml-auto mr-auto">
+          <IconButton
+            icon={isMuted ? faMicrophoneSlash : faMicrophone}
+            handleOnclick={handleMuteButton}
+            className={isMuted ? 'bg-danger text-white' : 'bg-success text-white'}
+          />
+          <IconButton
+            icon={isRecording ? faVideoSlash : faVideo}
+            handleOnclick={handleVideoButton}
+            className={isRecording ? 'bg-danger text-white' : 'bg-success text-white'}
+          />
+          {screenShareButton()}
+          <IconButton
+            icon={faLink}
+            handleOnclick={handleLinkCopyButton}
+            className="bg-info text-white"
+          />
+          <IconButton
+            icon={lock ? faLock : faLockOpen}
+            handleOnclick={handleLockButton}
+            className={lock ? 'bg-danger text-white' : 'bg-warning'}
+          />
+          <IconButton
+            icon={faSignOutAlt}
+            handleOnclick={handleHangUpButton}
+            className="bg-danger text-white"
+          />
+        </div>
+      </div>
+      {/* <Chat
         nickname={roomState.nickname}
         messages={messages}
         sendMessage={sendMessage}
-      />
-    </>
+      /> */}
+    </div>
   );
 };
 

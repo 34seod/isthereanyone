@@ -11,14 +11,14 @@ type Props = {
 };
 
 const IconButton = ({ icon, className, borderClass, handleOnclick }: Props) => (
-  <button type="button" className={`btn shadow-none rounded-circle ${borderClass} mr-3 icon-button ${className}`} onClick={handleOnclick}>
+  <button type="button" className={`btn shadow-none rounded-circle ${borderClass} mr-2 icon-button ${className}`} onClick={handleOnclick}>
     <FontAwesomeIcon icon={icon} />
   </button>
 );
 
 IconButton.defaultProps = {
   className: '',
-  borderClass: 'border-secondary'
+  borderClass: ''
 };
 
 export default IconButton;

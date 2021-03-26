@@ -31,4 +31,5 @@ video::-webkit-media-controls-time-remaining-display {
   opacity: 0.7;
   padding: 0.3rem;
   margin: 0;
+  max-width: 15rem;
 }

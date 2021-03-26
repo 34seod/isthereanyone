@@ -19,7 +19,7 @@ const Video = ({ videoSrc }: Props) => (
     >
       <track kind="captions" />
     </video>
-    <p className="nickname">{videoSrc.nickname}</p>
+    <p className="nickname text-truncate">{videoSrc.nickname}</p>
   </div>
 );
 

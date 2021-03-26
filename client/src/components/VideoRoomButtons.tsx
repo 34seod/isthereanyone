@@ -96,17 +96,19 @@ const VideoRoomButtons = ({
   return (
     <>
       <div className="fixed-top">
-        <div className="d-flex flex-column p-2 pt-5">
-          <IconButton
-            icon={lock ? faLock : faLockOpen}
-            handleOnclick={handleLockButton}
-            className={lock ? 'bg-danger text-white' : 'bg-warning'}
-          />
-          <IconButton
-            icon={faLink}
-            handleOnclick={handleLinkCopyButton}
-            className="mt-3 bg-info text-white"
-          />
+        <div className="d-flex justify-content-end p-2 top-button">
+          <div className="d-flex flex-column">
+            <IconButton
+              icon={lock ? faLock : faLockOpen}
+              handleOnclick={handleLockButton}
+              className={lock ? 'bg-danger text-white' : 'bg-warning'}
+            />
+            <IconButton
+              icon={faLink}
+              handleOnclick={handleLinkCopyButton}
+              className="mt-3 bg-info text-white"
+            />
+          </div>
         </div>
       </div>
       <div className="fixed-bottom mb-2 d-flex">

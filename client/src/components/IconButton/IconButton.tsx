@@ -6,17 +6,19 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 type Props = {
   icon: IconProp
   className?: string
+  borderClass?: string
   handleOnclick: () => void
 };
 
-const IconButton = ({ icon, className, handleOnclick }: Props) => (
-  <button type="button" className={`btn rounded-circle border-secondary mr-3 icon-button ${className}`} onClick={handleOnclick}>
-    <FontAwesomeIcon icon={icon} className="icon-size" />
+const IconButton = ({ icon, className, borderClass, handleOnclick }: Props) => (
+  <button type="button" className={`btn shadow-none rounded-circle ${borderClass} mr-3 icon-button ${className}`} onClick={handleOnclick}>
+    <FontAwesomeIcon icon={icon} />
   </button>
 );
 
 IconButton.defaultProps = {
-  className: ''
+  className: '',
+  borderClass: 'border-secondary'
 };
 
 export default IconButton;

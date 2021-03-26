@@ -23,7 +23,7 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
 
   useEffect(() => {
     inputRef?.current?.focus();
-  });
+  }, []);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') handleStartButton();
@@ -59,7 +59,7 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
               value={roomState.nickname}
               onChange={handlenicknameChange}
               onKeyPress={handleKeyPress}
-              className="text-input-field ml-auto mr-auto"
+              className="text-input-field ml-auto mr-auto border border-dark rounded"
             />
           </div>
           <div className="d-flex mt-3">
@@ -68,16 +68,19 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
                 icon={roomState.isMuted ? faMicrophoneSlash : faMicrophone}
                 handleOnclick={handleMuteButton}
                 className={roomState.isMuted ? 'bg-danger text-white' : 'bg-white'}
+                borderClass={roomState.isMuted ? '' : 'border-secondary'}
               />
               <IconButton
                 icon={roomState.isRecording ? faVideoSlash : faVideo}
                 handleOnclick={handleVideoButton}
                 className={roomState.isRecording ? 'bg-danger text-white' : 'bg-white'}
+                borderClass={roomState.isRecording ? '' : 'border-secondary'}
               />
               <IconButton
                 icon={faSignInAlt}
                 handleOnclick={handleStartButton}
                 className="bg-primary text-white"
+                borderClass=""
               />
             </div>
           </div>

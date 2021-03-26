@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import useSocket from '../../lib/useSocket';
 import { RoomState, VideoSrc } from '../../types';
 import Chat from '../Chat/Chat';
@@ -20,6 +21,7 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
   const [isScreenShare, setIsScreenShare] = useState<boolean>(false);
   const [showFlashMessage, setShowFlashMessage] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(roomState.isMuted);
+  const [showMessage, setShowMessage] = useState<boolean>(false);
   const [isRecording, setIsRecording] =
     useState<boolean>(roomState.isRecording);
   const {
@@ -50,8 +52,8 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
       <MyCam videoRef={videoRef} />
       {
         videoSrces.length > 0 ?
-          <div className="container">
-            <div className={`row row-cols-${videoSrces.length > 2 ? Math.ceil(videoSrces.length / 2) : videoSrces.length}`}>
+          <div className="container h-100 d-flex">
+            <div className={`m-auto row row-cols-${videoSrces.length > 2 ? Math.ceil(videoSrces.length / 2) : videoSrces.length}`}>
               {remoteVideoes()}
             </div>
           </div> :
@@ -71,15 +73,18 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
         stopCapture={stopCapture}
         handleScreenShare={handleScreenShare}
         setShowFlashMessage={setShowFlashMessage}
+        setShowMessage={setShowMessage}
         isMuted={isMuted}
         isRecording={isRecording}
         lock={lock}
       />
-      {/* <Chat
+      <Chat
+        showMessage={showMessage}
+        setShowMessage={setShowMessage}
         nickname={roomState.nickname}
         messages={messages}
         sendMessage={sendMessage}
-      /> */}
+      />
     </div>
   );
 };

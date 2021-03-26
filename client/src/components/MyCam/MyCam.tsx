@@ -17,7 +17,7 @@ const MyCam = ({ videoRef }: Props) => {
   }, []);
 
   const dragElement = (element: HTMLElement) => {
-    element.onmousedown = (e2) => dragMouseDown(e2, element);
+    element.onmousedown = (e) => dragMouseDown(e, element);
   };
 
   const dragMouseDown = (e: MouseEvent, element: HTMLElement) => {

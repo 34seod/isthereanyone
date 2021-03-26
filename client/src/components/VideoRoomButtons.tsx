@@ -8,7 +8,8 @@ import {
   faLink,
   faSignOutAlt,
   faLock,
-  faLockOpen
+  faLockOpen,
+  faComments
 } from '@fortawesome/free-solid-svg-icons';
 import IconButton from './IconButton/IconButton';
 
@@ -24,6 +25,7 @@ type Props = {
   stopCapture: () => void
   handleScreenShare: () => void
   setShowFlashMessage: Dispatch<SetStateAction<boolean>>
+  setShowMessage: Dispatch<SetStateAction<boolean>>
   isMuted: boolean
   isRecording: boolean
   lock: boolean
@@ -32,7 +34,7 @@ type Props = {
 const VideoRoomButtons = ({
   setIsMuted, handleMute, setIsRecording, handleScreen, setLock, handleLock,
   isScreenShare, setIsScreenShare, stopCapture, handleScreenShare,
-  setShowFlashMessage, isMuted, isRecording, lock
+  setShowFlashMessage, setShowMessage, isMuted, isRecording, lock
 }: Props) => {
 
   const handleMuteButton = () => {
@@ -80,44 +82,60 @@ const VideoRoomButtons = ({
         <IconButton
           icon={faDesktop}
           handleOnclick={handleScreenShareButton}
-          className={isScreenShare ? 'bg-danger text-white' : 'bg-success text-white'}
+          className={isScreenShare ? 'bg-danger text-white' : 'bg-primary text-white'}
         />
       );
     }
     return null;
   };
 
+  const handleOpenMessage = () => {
+    setShowMessage((prev) => !prev);
+  };
+
   return (
-    <div className="fixed-bottom mb-2 d-flex">
-      <div className="ml-auto mr-auto">
-        <IconButton
-          icon={isMuted ? faMicrophoneSlash : faMicrophone}
-          handleOnclick={handleMuteButton}
-          className={isMuted ? 'bg-danger text-white' : 'bg-success text-white'}
-        />
-        <IconButton
-          icon={isRecording ? faVideoSlash : faVideo}
-          handleOnclick={handleVideoButton}
-          className={isRecording ? 'bg-danger text-white' : 'bg-success text-white'}
-        />
-        {screenShareButton()}
-        <IconButton
-          icon={faLink}
-          handleOnclick={handleLinkCopyButton}
-          className="bg-info text-white"
-        />
-        <IconButton
-          icon={lock ? faLock : faLockOpen}
-          handleOnclick={handleLockButton}
-          className={lock ? 'bg-danger text-white' : 'bg-warning'}
-        />
-        <IconButton
-          icon={faSignOutAlt}
-          handleOnclick={handleHangUpButton}
-          className="bg-danger text-white"
-        />
+    <>
+      <div className="fixed-top">
+        <div className="d-flex flex-column p-2 pt-5">
+          <IconButton
+            icon={lock ? faLock : faLockOpen}
+            handleOnclick={handleLockButton}
+            className={lock ? 'bg-danger text-white' : 'bg-warning'}
+          />
+          <IconButton
+            icon={faLink}
+            handleOnclick={handleLinkCopyButton}
+            className="mt-3 bg-info text-white"
+          />
+        </div>
       </div>
-    </div>
+      <div className="fixed-bottom mb-2 d-flex">
+        <div className="ml-auto mr-auto">
+          <IconButton
+            icon={isMuted ? faMicrophoneSlash : faMicrophone}
+            handleOnclick={handleMuteButton}
+            className={isMuted ? 'bg-danger text-white' : 'bg-success text-white'}
+          />
+          <IconButton
+            icon={isRecording ? faVideoSlash : faVideo}
+            handleOnclick={handleVideoButton}
+            className={isRecording ? 'bg-danger text-white' : 'bg-success text-white'}
+          />
+          {screenShareButton()}
+          <IconButton
+            icon={faComments}
+            handleOnclick={handleOpenMessage}
+            className="bg-warning text-white"
+          />
+          <IconButton
+            icon={faSignOutAlt}
+            handleOnclick={handleHangUpButton}
+            className="bg-danger text-white"
+            mr={0}
+          />
+        </div>
+      </div>
+    </>
   );
 };
 

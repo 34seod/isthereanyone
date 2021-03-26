@@ -1,0 +1,35 @@
+.message-item {
+  max-width: 85%;
+}
+
+.chat-room-container {
+  position: absolute;
+  left: 1rem;
+  top: 25%;
+  background-color: white;
+}
+
+.body-size {
+  /* min-width: 17rem; */
+  height: 18rem;
+  overflow: auto;
+}
+
+.new-message-input-field {
+  height: 2.4rem;
+}
+
+@media screen and (max-width: 600px) {
+  .body-height {
+    height: 10rem;
+    overflow: auto;
+  }
+}
+
+.move-cursor {
+  cursor: move;
+}
+
+.name-with {
+  max-width: 5rem;
+}

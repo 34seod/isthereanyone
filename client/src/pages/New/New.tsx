@@ -48,7 +48,7 @@ const New = () => {
                   value={roomName}
                   onChange={handleRoomNameChange}
                   className="tf text-input-field border border-dark rounded"
-                  onKeyPress={e => handleKeyPress(e)}
+                  onKeyPress={handleKeyPress}
                 />
               </span>
               <span className="title">?</span>

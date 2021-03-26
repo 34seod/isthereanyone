@@ -8,7 +8,7 @@ span {
   color: darkslateblue;
   position: absolute;
   bottom: 0;
-  left: -5rem;
+  left: -7rem;
   font-size: 20rem;
   z-index: -2;
 }
@@ -60,8 +60,8 @@ span {
     color: darkslateblue;
     position: absolute;
     bottom: 0;
-    left: -3rem;
-    font-size: 10rem;
+    left: -8rem;
+    font-size: 17rem;
     z-index: -2;
   }
 

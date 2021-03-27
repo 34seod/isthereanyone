@@ -141,7 +141,6 @@ const usePeer = (
         };
       }
 
-      // console.log(message?.type);
       if (message === 'got user media') {
         maybeStart(socketId);
       } else if (message.type === 'offer' && !peersRef.current[socketId].isInitiator) {

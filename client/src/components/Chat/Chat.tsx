@@ -22,7 +22,7 @@ const Chat = ({
   sendMessage,
   setShowMessage
 }: Props) => {
-  const [newMessage, setNewMessage] = useState(''); // Message to be sent
+  const [newMessage, setNewMessage] = useState('');
   const chatRef = useRef(document.createElement('div'));
   const chatheaderRef = useRef(document.createElement('div'));
   const chatBodyRef = useRef(document.createElement('div'));

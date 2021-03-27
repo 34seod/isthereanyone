@@ -3,12 +3,12 @@ import Socket from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
 import { formatDate, Message } from '../types';
 
-const NEW_CHAT_MESSAGE_EVENT = 'newChatMessage'; // Name of the event
+const NEW_CHAT_MESSAGE_EVENT = 'newChatMessage';
 
 type SocketIO = Socket.Socket<DefaultEventsMap> | undefined;
 
 const useChat = () => {
-  const [messages, setMessages] = useState<Message[] | []>([]); // Sent and received messages
+  const [messages, setMessages] = useState<Message[] | []>([]);
 
   const newChatMessageOn = (socket: SocketIO) => {
     socket?.on(NEW_CHAT_MESSAGE_EVENT, (message) => {
@@ -20,8 +20,6 @@ const useChat = () => {
     });
   };
 
-  // Sends a message to the server that
-  // forwards it to all users in the same room
   const sendMessageSocket = (
     socket: SocketIO,
     messageBody: string,

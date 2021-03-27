@@ -29,7 +29,6 @@ const useSocket = (
   } = usePeer(roomId, roomState, setVideoSrces, setLock, setIsScreenShare);
 
   useEffect(() => {
-    // Creates a WebSocket connection
     socketRef.current = io(SOCKET_SERVER_URL, {
       query: { roomId },
     });
@@ -38,8 +37,6 @@ const useSocket = (
     setSocket(socketRef.current);
     peerConnectOn();
 
-    // Destroys the socket reference
-    // when the connection is closed
     return () => {
       socketRef?.current?.disconnect();
     };

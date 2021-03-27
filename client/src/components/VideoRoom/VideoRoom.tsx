@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, Dispatch, SetStateAction } from 'react';
-import useSocket from '../../lib/useSocket';
+import useSocket from '../../hooks/useSocket';
 import { RoomState, VideoSrc } from '../../types';
 import Chat from '../Chat/Chat';
 import Video from '../Video/Video';

@@ -1,9 +1,9 @@
 /* eslint-disable react/no-array-index-key */
-/* eslint-disable no-param-reassign */
 
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { KeyboardEvent, useState, ChangeEvent, Dispatch, SetStateAction, useRef, useEffect } from 'react';
+import useDraggable from '../../hooks/useDraggable';
 import { Message } from '../../types';
 import './Chat.css';
 
@@ -26,10 +26,7 @@ const Chat = ({
   const chatRef = useRef(document.createElement('div'));
   const chatheaderRef = useRef(document.createElement('div'));
   const chatBodyRef = useRef(document.createElement('div'));
-  const pos1 = useRef(0);
-  const pos2 = useRef(0);
-  const pos3 = useRef(0);
-  const pos4 = useRef(0);
+  const { dragElement } = useDraggable(chatRef, chatheaderRef);
 
   useEffect(() => {
     chatBodyRef.current.scrollTop = chatRef.current.scrollHeight;
@@ -39,39 +36,6 @@ const Chat = ({
     dragElement();
   }, []);
 
-  const dragElement = () => {
-    chatheaderRef.current.onmousedown = dragMouseDown;
-  };
-
-  const dragMouseDown = (e: MouseEvent) => {
-    e = e || window.event;
-    e.preventDefault();
-    // get the mouse cursor position at startup:
-    pos3.current = e.clientX;
-    pos4.current = e.clientY;
-    document.onmouseup = closeDragElement;
-    // call a const whenever the cursor moves:
-    document.onmousemove = elementDrag;
-  };
-
-  const elementDrag = (e: MouseEvent) => {
-    e = e || window.event;
-    e.preventDefault();
-    // calculate the new cursor position:
-    pos1.current = pos3.current - e.clientX;
-    pos2.current = pos4.current - e.clientY;
-    pos3.current = e.clientX;
-    pos4.current = e.clientY;
-    // set the element's new position:
-    chatRef.current.style.top = `${chatRef.current.offsetTop - pos2.current}px`;
-    chatRef.current.style.left = `${chatRef.current.offsetLeft - pos1.current}px`;
-  };
-
-  const closeDragElement = () => {
-    // stop moving when mouse button is released:
-    document.onmouseup = null;
-    document.onmousemove = null;
-  };
 
   const handleNewMessageChange = (event: ChangeEvent<HTMLInputElement>) => {
     setNewMessage(event.target.value);

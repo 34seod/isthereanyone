@@ -1,10 +1,11 @@
 /* eslint-disable max-len */
-/* eslint-disable prefer-destructuring */
 /* eslint-disable no-param-reassign */
 import { useRef, Dispatch, SetStateAction, RefObject } from 'react';
 import { Socket } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
 import { RoomState, VideoSrc } from '../types';
+import handShake from './peer/handShake';
+import screenShare from './peer/screenShare';
 
 type PeerConnection = {
   [key: string]: {
@@ -30,19 +31,6 @@ type RoomStateShare = {
 
 type SocketIO = Socket<DefaultEventsMap> | undefined;
 
-const pcConfig = {
-  'iceServers': [
-    { 'urls':'stun:stun.l.google.com:19302' },
-    {
-      'urls': [
-        'turn:numb.viagenie.ca'
-      ],
-      'username': 'webrtc@live.com',
-      'credential': 'muazkh'
-    }
-  ]
-};
-
 const usePeer = (
   roomId: string,
   roomState: RoomState,
@@ -57,6 +45,12 @@ const usePeer = (
   const myRoomState = useRef<RoomState>({ ...roomState });
   const peersRef = useRef<PeerConnection>({});
   const localVideoRef = useRef<HTMLVideoElement | null | undefined>(null);
+  const { handleScreenShare, stopCapture } = screenShare(
+    setIsScreenShare, localVideoRef, senderRef, screenShareStreamRef, localStreamRef
+  );
+  const { createPeerConnection, doCall, doAnswer } = handShake(
+    setVideoSrces, peersRef, myRoomState, socketRef
+  );
 
   const setSocket = (socket: SocketIO) => {
     socketRef.current = socket;
@@ -91,13 +85,6 @@ const usePeer = (
     socketRef.current?.emit('message', message, myRoomState.current.nickname);
   };
 
-  const sendMessageRTCTo = (
-    socketId: string,
-    message: RTCSessionDescriptionInit | RTCSdpType | ICECandidate | RoomStateShare
-  ) => {
-    socketRef.current?.emit('messageTo', socketId, message, myRoomState.current.nickname);
-  };
-
   const maybeStart = (socketId: string) => {
     if (!peersRef.current[socketId].isStarted && localStreamRef.current !== null && peersRef.current[socketId].isChannelReady) {
       const pc = createPeerConnection(socketId);
@@ -114,89 +101,6 @@ const usePeer = (
         doCall(socketId);
       }
     }
-  };
-
-  const createPeerConnection = (socketId: string) => {
-    try {
-      const pc = new RTCPeerConnection(pcConfig);
-      pc.onicecandidate = (event) => handleIceCandidate(event, socketId);
-      pc.ontrack = (event) => handleRemoteStreamAdded(event as RTCTrackEvent, socketId);
-      peersRef.current[socketId].pc = pc;
-      return pc;
-    } catch (e) {
-      console.log('Failed to create PeerConnection, exception: ', e.message);
-      return undefined;
-    }
-  };
-
-  const handleRemoteStreamAdded = (event: RTCTrackEvent, socketId: string) => {
-    setVideoSrces((prev) => {
-      const prevData = prev.find((p) => p.socketId === socketId);
-      if (!prevData) {
-        return [ ...prev, {
-          socketId,
-          nickname: peersRef.current[socketId].nickname,
-          isScreenOn: true,
-          isVoiceOn: true,
-        }];
-      }
-      return prev;
-    });
-
-    const remoteVideo: HTMLVideoElement | null = document.querySelector(`#remoteVideo-${socketId}`);
-    if (remoteVideo) remoteVideo.srcObject = event.streams[0];
-  };
-
-  const handleIceCandidate = (event: RTCPeerConnectionIceEvent, socketId: string) => {
-    if (event.candidate) {
-      sendMessageRTCTo(socketId, {
-        type: 'candidate',
-        label: event.candidate.sdpMLineIndex,
-        id: event.candidate.sdpMid,
-        candidate: event.candidate.candidate
-      });
-    } else {
-      peersRef.current[socketId].isInitiator = true;
-    }
-  };
-
-  const doCall = (socketId: string) => {
-    peersRef.current[socketId]?.pc?.createOffer().then((offer) => {
-      setLocalAndSendMessage(offer, socketId);
-    }).catch((error) => console.log('createOffer() error: ', error.toString()));
-  };
-
-  const doAnswer = (socketId: string) => {
-    peersRef.current[socketId]?.pc?.createAnswer().then((answer) => {
-      setLocalAndSendMessage(answer, socketId);
-    }).catch((error: Error) => console.log('Failed to create session description: ', error.toString()));
-  };
-
-  const setLocalAndSendMessage = (
-    sessionDescription: RTCSessionDescriptionInit,
-    socketId: string
-  ) => {
-    peersRef.current[socketId]?.pc?.setLocalDescription(sessionDescription);
-    sendMessageRTCTo(socketId, sessionDescription);
-    sendMessageRTCTo(socketId, { type: 'roomStateShare', roomState: myRoomState.current });
-  };
-
-  const updateVideoSrces = (socketId: string, nickname: string, isScreenOn: boolean, isVoiceOn: boolean) => {
-    setVideoSrces((prev) => {
-      const tmp = prev.slice();
-      const index = tmp.findIndex((p) => p.socketId === socketId);
-
-      if (index > -1) {
-        tmp.splice(index, 1, { ...tmp[index], isScreenOn, isVoiceOn });
-        // tmp[index].isScreenOn = isScreenOn;
-        // tmp[index].isVoiceOn = isVoiceOn;
-      } else {
-        const newData = { socketId, nickname, isScreenOn, isVoiceOn };
-        tmp.push(newData);
-      }
-
-      return tmp;
-    });
   };
 
   const peerConnectOn = () => {
@@ -268,17 +172,26 @@ const usePeer = (
     });
   };
 
+  const updateVideoSrces = (socketId: string, nickname: string, isScreenOn: boolean, isVoiceOn: boolean) => {
+    setVideoSrces((prev) => {
+      const tmp = prev.slice();
+      const index = tmp.findIndex((p) => p.socketId === socketId);
+
+      if (index > -1) {
+        tmp.splice(index, 1, { ...tmp[index], isScreenOn, isVoiceOn });
+      } else {
+        const newData = { socketId, nickname, isScreenOn, isVoiceOn };
+        tmp.push(newData);
+      }
+      return tmp;
+    });
+  };
+
   const handleRemoteHangup = (socketId: string) => {
     peersRef.current[socketId]?.pc?.close();
     delete peersRef.current[socketId];
     setVideoSrces((prev) => prev.filter((e) => e.socketId !== socketId));
   };
-
-  // const hangup = () => {
-  //   if (localStreamRef.current) {
-  //     localStreamRef.current.getTracks().forEach(track => track.stop());
-  //   }
-  // };
 
   const handleMute = (isVoiceOn: boolean, doUpdate = true) => {
     if (localStreamRef.current) {
@@ -302,43 +215,6 @@ const usePeer = (
 
   const handleLock = () => {
     socketRef.current?.emit('lock');
-  };
-
-  const handleScreenShare = () => {
-    const mediaDevices = navigator.mediaDevices as any // eslint-disable-line
-    mediaDevices.getDisplayMedia({ video: { cursor: 'always' }, audio: false })
-      .then(handleScreenShareSuccess, handleScreenShareError);
-  };
-
-  const handleScreenShareError = (e: Error) => {
-    setIsScreenShare(false);
-    console.log('getDisplayMedia error: ', e.toString());
-  };
-
-  const handleScreenShareSuccess = (stream: MediaStream) => {
-    if (localVideoRef.current) localVideoRef.current.srcObject = stream;
-    screenShareStreamRef.current = stream;
-    senderRef.current.forEach((sender) => {
-      if (sender?.track?.kind === 'video') {
-        sender.replaceTrack(stream.getVideoTracks()[0]);
-      }
-    });
-
-    stream.getVideoTracks()[0].addEventListener('ended', () => {
-      stopCapture();
-    });
-  };
-
-  const stopCapture = () => {
-    senderRef.current.forEach((sender) => {
-      if (sender?.track?.kind === 'video' && localStreamRef.current !== null) {
-        sender.replaceTrack(localStreamRef.current.getVideoTracks()[0]);
-      }
-    });
-
-    screenShareStreamRef.current.getTracks().forEach((track: MediaStreamTrack) => track.stop());
-    if (localVideoRef.current) localVideoRef.current.srcObject = localStreamRef.current;
-    setIsScreenShare(false);
   };
 
   return {

@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config();
 const server = require("http").createServer();
 
 const io = require("socket.io")(server, {
@@ -12,9 +12,7 @@ const PORT = process.env.API_PORT || 4000;
 io.sockets.on("connection", (socket) => {
   console.log(`Client ${socket.id} connected`);
 
-  // Join a conversation
   const { roomId } = socket.handshake.query;
-  // socket.join(roomId);
 
   // Listen for new messages
   socket.on("newChatMessage", (data) => {
@@ -22,24 +20,18 @@ io.sockets.on("connection", (socket) => {
   });
 
   socket.on('message', function(message, nickname) {
-    console.log('message', message, nickname)
-    // sending to all clients in "game" room except sender
     socket.to(roomId).emit('message', socket.id, message, nickname);
   });
 
   socket.on('roomStateShare', function(nickname, isScreenOn, isVoiceOn) {
-    // sending to all clients in "game" room except sender
     socket.to(roomId).emit('roomStateShare', socket.id, nickname, isScreenOn, isVoiceOn);
   });
 
   socket.on('messageTo', function(socketId, message, nickname) {
-    // sending to individual socketid (private message)
     io.to(socketId).emit('message', socket.id, message, nickname)
   });
 
   socket.on('create or join', function(room, nickname) {
-    console.log('create or join')
-
     var clientsInRoom = io.sockets.adapter.rooms.get(room);
     var numClients = clientsInRoom ? clientsInRoom.size : 0;
 
@@ -64,7 +56,6 @@ io.sockets.on("connection", (socket) => {
   });
 
   socket.on('bye', function(){
-    console.log('received bye');
     socket.leave(roomId);
   });
 
@@ -77,5 +68,5 @@ io.sockets.on("connection", (socket) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+  // console.log(`Listening on port ${PORT}`);
 });

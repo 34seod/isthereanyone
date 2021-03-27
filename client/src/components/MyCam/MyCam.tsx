@@ -4,9 +4,10 @@ import './MyCam.css';
 
 type Props = {
   videoRef: RefObject<HTMLVideoElement>
+  nickname: string
 };
 
-const MyCam = ({ videoRef }: Props) => {
+const MyCam = ({ videoRef, nickname }: Props) => {
   const pos1 = useRef(0);
   const pos2 = useRef(0);
   const pos3 = useRef(0);
@@ -64,6 +65,7 @@ const MyCam = ({ videoRef }: Props) => {
       >
         <track kind="captions" />
       </video>
+      <p className="text-truncate my-cam-nickname">{nickname}</p>
     </div>
   );
 };

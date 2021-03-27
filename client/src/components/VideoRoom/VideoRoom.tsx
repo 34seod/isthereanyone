@@ -43,11 +43,10 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
       </div>
     );
 
-  console.log(videoSrces);
   return (
     <div className="video-room fix h-100 w-100">
       {showFlashMessage ? <FlashMessage message="URL has been copied. Share with others." during={3000} unmount={setShowFlashMessage} /> : null}
-      <MyCam videoRef={videoRef} />
+      <MyCam videoRef={videoRef} nickname={roomState.nickname} />
       {
         videoSrces.length > 0 ?
           <div className="container h-100 d-flex">

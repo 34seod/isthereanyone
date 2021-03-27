@@ -102,7 +102,7 @@ const Chat = ({
             messages.map((message, i) => (
               <div key={i} className="mt-1">
                 <small className={message.ownedByCurrentUser ? 'd-flex justify-content-end' : 'd-flex'}>
-                  <span className="d-inline-block text-truncate name-with">{message.nickname}</span>
+                  <span className="d-inline-block text-truncate name-with font-weight-bold">{message.nickname}</span>
                   <span>{`(${message.sendedAt})`}</span>
                 </small>
                 <div className={`message-item p-1 rounded text-white ${message.ownedByCurrentUser ? 'bg-primary ml-auto' : 'bg-success'}`}>

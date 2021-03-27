@@ -29,7 +29,10 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
   };
 
   const handleStartButton = () => {
-    setRoomState((prev) => ({ ...prev, isStarted: true }));
+    setRoomState((prev) => {
+      const newNickname = `${prev.nickname}#${Math.floor(Math.random() * (99999 - 10000) + 10000)}`;
+      return { ...prev, isStarted: true, nickname: newNickname };
+    });
   };
 
   return (

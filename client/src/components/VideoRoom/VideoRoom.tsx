@@ -46,7 +46,11 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
   return (
     <div className="video-room fix h-100 w-100">
       {showFlashMessage ? <FlashMessage message="URL has been copied. Share with others." during={3000} unmount={setShowFlashMessage} /> : null}
-      <MyCam videoRef={videoRef} nickname={roomState.nickname} />
+      <MyCam
+        videoRef={videoRef}
+        nickname={roomState.nickname}
+        isScreenShare={isScreenShare}
+      />
       {
         videoSrces.length > 0 ?
           <div className="container h-100 d-flex">

@@ -24,6 +24,12 @@
   font-size: 0.8rem;
 }
 
+.reverse {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg); /* Safari and Chrome */
+  -moz-transform: rotateY(180deg); /* Firefox */
+}
+
 @media screen and (max-width: 600px) {
   .my-cam {
     position: absolute;

@@ -5,9 +5,10 @@ import './MyCam.css';
 type Props = {
   videoRef: RefObject<HTMLVideoElement>
   nickname: string
+  isScreenShare: boolean
 };
 
-const MyCam = ({ videoRef, nickname }: Props) => {
+const MyCam = ({ videoRef, nickname, isScreenShare }: Props) => {
   const pos1 = useRef(0);
   const pos2 = useRef(0);
   const pos3 = useRef(0);
@@ -55,7 +56,7 @@ const MyCam = ({ videoRef, nickname }: Props) => {
     <div id="my-cam-id" className="my-cam rounded p-1 bg-white">
       <video
         id="localVideo"
-        className="reverse"
+        className={isScreenShare ? '' : 'reverse'}
         ref={videoRef}
         autoPlay={true}
         muted={true}

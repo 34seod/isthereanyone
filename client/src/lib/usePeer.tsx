@@ -316,6 +316,7 @@ const usePeer = (
   };
 
   const handleScreenShareSuccess = (stream: MediaStream) => {
+    if (localVideoRef.current) localVideoRef.current.srcObject = stream;
     screenShareStreamRef.current = stream;
     senderRef.current.forEach((sender) => {
       if (sender?.track?.kind === 'video') {
@@ -336,6 +337,7 @@ const usePeer = (
     });
 
     screenShareStreamRef.current.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+    if (localVideoRef.current) localVideoRef.current.srcObject = localStreamRef.current;
     setIsScreenShare(false);
   };
 

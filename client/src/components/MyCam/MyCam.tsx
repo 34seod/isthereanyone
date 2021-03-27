@@ -31,7 +31,7 @@ const MyCam = ({ videoRef, nickname, isScreenShare }: Props) => {
       >
         <track kind="captions" />
       </video>
-      <p className="text-truncate my-cam-nickname">{nickname}</p>
+      <p className="text-truncate my-cam-nickname" title={nickname}>{nickname}</p>
     </div>
   );
 };

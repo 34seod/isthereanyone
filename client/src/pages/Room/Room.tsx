@@ -14,8 +14,8 @@ const Room = ({ roomId }: MatchParams) => {
   const location = useLocation();
   const [roomState, setRoomState] = useState<RoomState>({
     isStarted: false,
-    isMuted: false,
-    isRecording: false,
+    isVoiceOn: true,
+    isScreenOn: true,
     nickname: 'Guest'
   });
 
@@ -33,6 +33,7 @@ const Room = ({ roomId }: MatchParams) => {
           <VideoRoom
             roomId={roomId}
             roomState={roomState}
+            setRoomState={setRoomState}
           /> :
           <GreenRoom
             roomId={roomId}

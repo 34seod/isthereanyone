@@ -12,12 +12,11 @@ import {
   faComments
 } from '@fortawesome/free-solid-svg-icons';
 import IconButton from './IconButton/IconButton';
+import { RoomState } from '../types';
 
 type Props = {
-  setIsMuted: Dispatch<SetStateAction<boolean>>
-  handleMute: () => void
-  setIsRecording: Dispatch<SetStateAction<boolean>>
-  handleScreen: () => void
+  handleMute: (isVoiceOn: boolean) => void
+  handleScreen: (isScreenOn: boolean) => void
   setLock: Dispatch<SetStateAction<boolean>>
   handleLock: () => void
   isScreenShare: boolean
@@ -26,25 +25,29 @@ type Props = {
   handleScreenShare: () => void
   setShowFlashMessage: Dispatch<SetStateAction<boolean>>
   setShowMessage: Dispatch<SetStateAction<boolean>>
-  isMuted: boolean
-  isRecording: boolean
+  setRoomState: Dispatch<SetStateAction<RoomState>>
+  roomState: RoomState
   lock: boolean
 };
 
 const VideoRoomButtons = ({
-  setIsMuted, handleMute, setIsRecording, handleScreen, setLock, handleLock,
+  handleMute, handleScreen, setLock, handleLock, roomState,
   isScreenShare, setIsScreenShare, stopCapture, handleScreenShare,
-  setShowFlashMessage, setShowMessage, isMuted, isRecording, lock
+  setShowFlashMessage, setShowMessage, setRoomState, lock
 }: Props) => {
 
   const handleMuteButton = () => {
-    setIsMuted((prev: boolean) => !prev);
-    handleMute();
+    setRoomState((prev: RoomState) => {
+      handleMute(!prev.isVoiceOn);
+      return { ...prev, isVoiceOn: !prev.isVoiceOn };
+    });
   };
 
   const handleVideoButton = () => {
-    setIsRecording((prev: boolean) => !prev);
-    handleScreen();
+    setRoomState((prev: RoomState) => {
+      handleScreen(!prev.isScreenOn);
+      return { ...prev, isScreenOn: !prev.isScreenOn };
+    });
   };
 
   const handleHangUpButton = () => {
@@ -114,14 +117,14 @@ const VideoRoomButtons = ({
       <div className="fixed-bottom mb-2 d-flex">
         <div className="ml-auto mr-auto">
           <IconButton
-            icon={isMuted ? faMicrophoneSlash : faMicrophone}
+            icon={roomState.isVoiceOn ? faMicrophone : faMicrophoneSlash}
             handleOnclick={handleMuteButton}
-            className={isMuted ? 'bg-danger text-white' : 'bg-success text-white'}
+            className={roomState.isVoiceOn ? 'bg-success text-white' : 'bg-danger text-white'}
           />
           <IconButton
-            icon={isRecording ? faVideoSlash : faVideo}
+            icon={roomState.isScreenOn ? faVideo : faVideoSlash}
             handleOnclick={handleVideoButton}
-            className={isRecording ? 'bg-danger text-white' : 'bg-success text-white'}
+            className={roomState.isScreenOn ? 'bg-success text-white' : 'bg-danger text-white'}
           />
           {screenShareButton()}
           <IconButton

@@ -23,6 +23,11 @@ type ICECandidate = {
   candidate: string
 };
 
+type RoomStateShare = {
+  type: string
+  roomState: RoomState
+};
+
 type SocketIO = Socket<DefaultEventsMap> | undefined;
 
 const pcConfig = {
@@ -49,16 +54,16 @@ const usePeer = (
   const senderRef = useRef<RTCRtpSender[]>([]);
   const localStreamRef = useRef<MediaStream | null>(null);
   const screenShareStreamRef = useRef<MediaStream>(new MediaStream);
+  const myRoomState = useRef<RoomState>({ ...roomState });
   const peersRef = useRef<PeerConnection>({});
   const localVideoRef = useRef<HTMLVideoElement | null | undefined>(null);
-  const { isMuted, isRecording, nickname } = roomState;
 
   const setSocket = (socket: SocketIO) => {
     socketRef.current = socket;
   };
 
   const start = (ref: RefObject<HTMLVideoElement> | null) => {
-    socketRef.current?.emit('create or join', roomId, nickname);
+    socketRef.current?.emit('create or join', roomId, myRoomState.current.nickname);
     localVideoRef.current = ref?.current;
   };
 
@@ -74,8 +79,8 @@ const usePeer = (
 
   const gotStream = (stream: MediaStream) => {
     localStreamRef.current = stream;
-    if (isMuted) handleMute();
-    if (isRecording) handleScreen();
+    if (!myRoomState.current.isVoiceOn) handleMute(myRoomState.current.isVoiceOn, false);
+    if (!myRoomState.current.isScreenOn) handleScreen(myRoomState.current.isScreenOn, false);
     if (localVideoRef.current) {
       localVideoRef.current.srcObject = stream;
       sendMessageRTC('got user media');
@@ -83,14 +88,14 @@ const usePeer = (
   };
 
   const sendMessageRTC = (message: string) => {
-    socketRef.current?.emit('message', message, nickname);
+    socketRef.current?.emit('message', message, myRoomState.current.nickname);
   };
 
   const sendMessageRTCTo = (
     socketId: string,
-    message: RTCSessionDescriptionInit | RTCSdpType | ICECandidate
+    message: RTCSessionDescriptionInit | RTCSdpType | ICECandidate | RoomStateShare
   ) => {
-    socketRef.current?.emit('messageTo', socketId, message, nickname);
+    socketRef.current?.emit('messageTo', socketId, message, myRoomState.current.nickname);
   };
 
   const maybeStart = (socketId: string) => {
@@ -124,26 +129,25 @@ const usePeer = (
     }
   };
 
-  const handleRemoteStreamAdded = (
-    event: RTCTrackEvent, socketId: string
-  ) => {
+  const handleRemoteStreamAdded = (event: RTCTrackEvent, socketId: string) => {
     setVideoSrces((prev) => {
-      const prevData = prev.filter((p) => p.socketId === socketId);
-      if (prevData.length === 0) {
-        return [
-          ...prev, { socketId, nickname: peersRef.current[socketId].nickname }
-        ];
+      const prevData = prev.find((p) => p.socketId === socketId);
+      if (!prevData) {
+        return [ ...prev, {
+          socketId,
+          nickname: peersRef.current[socketId].nickname,
+          isScreenOn: true,
+          isVoiceOn: true,
+        }];
       }
-      return [...prev];
+      return prev;
     });
 
     const remoteVideo: HTMLVideoElement | null = document.querySelector(`#remoteVideo-${socketId}`);
     if (remoteVideo) remoteVideo.srcObject = event.streams[0];
   };
 
-  const handleIceCandidate = (
-    event: RTCPeerConnectionIceEvent, socketId: string
-  ) => {
+  const handleIceCandidate = (event: RTCPeerConnectionIceEvent, socketId: string) => {
     if (event.candidate) {
       sendMessageRTCTo(socketId, {
         type: 'candidate',
@@ -174,11 +178,34 @@ const usePeer = (
   ) => {
     peersRef.current[socketId]?.pc?.setLocalDescription(sessionDescription);
     sendMessageRTCTo(socketId, sessionDescription);
+    sendMessageRTCTo(socketId, { type: 'roomStateShare', roomState: myRoomState.current });
+  };
+
+  const updateVideoSrces = (socketId: string, nickname: string, isScreenOn: boolean, isVoiceOn: boolean) => {
+    setVideoSrces((prev) => {
+      const tmp = prev.slice();
+      const index = tmp.findIndex((p) => p.socketId === socketId);
+
+      if (index > -1) {
+        tmp.splice(index, 1, { ...tmp[index], isScreenOn, isVoiceOn });
+        // tmp[index].isScreenOn = isScreenOn;
+        // tmp[index].isVoiceOn = isVoiceOn;
+      } else {
+        const newData = { socketId, nickname, isScreenOn, isVoiceOn };
+        tmp.push(newData);
+      }
+
+      return tmp;
+    });
   };
 
   const peerConnectOn = () => {
     socketRef.current?.on('lock', (isLock: boolean) => {
       setLock(isLock);
+    });
+
+    socketRef.current?.on('roomStateShare', (socketId: string, nickname: string, isScreenOn: boolean, isVoiceOn: boolean) => {
+      updateVideoSrces(socketId, nickname, isScreenOn, isVoiceOn);
     });
 
     socketRef.current?.on('full', () => {
@@ -189,24 +216,24 @@ const usePeer = (
       getStream();
     });
 
-    socketRef.current?.on('join', (socketId: string, othernickname: string)=> {
+    socketRef.current?.on('join', (socketId: string, nickname: string)=> {
       peersRef.current[socketId] = {
         pc: undefined,
         isStarted: false,
         isChannelReady: true,
         isInitiator: true,
-        nickname: othernickname
+        nickname
       };
     });
 
-    socketRef.current?.on('message', (socketId: string, message: RTCSessionDescriptionInit | ICECandidate, othernickname: string) => {
+    socketRef.current?.on('message', (socketId: string, message: RTCSessionDescriptionInit | ICECandidate | RoomStateShare, nickname: string) => {
       if (!peersRef.current[socketId]) {
         peersRef.current[socketId] = {
           pc: undefined,
           isStarted: false,
           isChannelReady: true,
           isInitiator: false,
-          nickname: othernickname
+          nickname
         };
       }
 
@@ -226,13 +253,17 @@ const usePeer = (
           message as RTCSessionDescriptionInit);
         peersRef.current[socketId]?.pc?.setRemoteDescription(newSDP);
       } else if (message.type === 'candidate' && peersRef.current[socketId].isStarted) {
+        const msg = message as ICECandidate;
         const candidate = new RTCIceCandidate({
-          sdpMLineIndex: message.label,
-          candidate: message.candidate
+          sdpMLineIndex: msg.label,
+          candidate: msg.candidate
         });
         peersRef.current[socketId]?.pc?.addIceCandidate(candidate);
       } else if (message.type === 'bye' && peersRef.current[socketId].isStarted) {
         handleRemoteHangup(socketId || '');
+      } else if (message.type === 'roomStateShare') {
+        const msg = message as RoomStateShare;
+        updateVideoSrces(socketId, msg.roomState.nickname, msg.roomState.isScreenOn, msg.roomState.isVoiceOn);
       }
     });
   };
@@ -249,19 +280,23 @@ const usePeer = (
   //   }
   // };
 
-  const handleMute = () => {
+  const handleMute = (isVoiceOn: boolean, doUpdate = true) => {
     if (localStreamRef.current) {
+      myRoomState.current.isVoiceOn = isVoiceOn;
       localStreamRef.current.getAudioTracks().forEach((track) => {
         track.enabled = !track.enabled;
       });
+      if (doUpdate) socketRef.current?.emit('roomStateShare', myRoomState.current.nickname, myRoomState.current.isScreenOn, isVoiceOn);
     }
   };
 
-  const handleScreen = () => {
+  const handleScreen = (isScreenOn: boolean, doUpdate = true) => {
     if (localStreamRef.current) {
+      myRoomState.current.isScreenOn = isScreenOn;
       localStreamRef.current.getVideoTracks().forEach((track) => {
         track.enabled = !track.enabled;
       });
+      if (doUpdate) socketRef.current?.emit('roomStateShare', myRoomState.current.nickname, isScreenOn, myRoomState.current.isVoiceOn);
     }
   };
 

@@ -27,25 +27,25 @@ const GreenRoomButtons = ({
   };
 
   const handleMuteButton = () => {
-    setRoomState((prev) => ({ ...prev, isMuted: !prev.isMuted }));
+    setRoomState((prev) => ({ ...prev, isVoiceOn: !prev.isVoiceOn }));
   };
 
   const handleVideoButton = () => {
-    setRoomState((prev) => ({ ...prev, isRecording: !prev.isRecording }));
+    setRoomState((prev) => ({ ...prev, isScreenOn: !prev.isScreenOn }));
   };
 
   return (
     <div className="d-flex mt-3">
       <div className="ml-auto mr-auto">
         <IconButton
-          icon={roomState.isMuted ? faMicrophoneSlash : faMicrophone}
+          icon={roomState.isVoiceOn ? faMicrophone : faMicrophoneSlash}
           handleOnclick={handleMuteButton}
-          className={roomState.isMuted ? 'bg-danger text-white' : 'bg-success text-white'}
+          className={roomState.isVoiceOn ? 'bg-success text-white' : 'bg-danger text-white'}
         />
         <IconButton
-          icon={roomState.isRecording ? faVideoSlash : faVideo}
+          icon={roomState.isScreenOn ? faVideo : faVideoSlash}
           handleOnclick={handleVideoButton}
-          className={roomState.isRecording ? 'bg-danger text-white' : 'bg-success text-white'}
+          className={roomState.isScreenOn ? 'bg-success text-white' : 'bg-danger text-white'}
         />
         <IconButton
           icon={faSignInAlt}

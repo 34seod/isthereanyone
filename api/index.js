@@ -27,6 +27,11 @@ io.sockets.on("connection", (socket) => {
     socket.to(roomId).emit('message', socket.id, message, nickname);
   });
 
+  socket.on('roomStateShare', function(nickname, isScreenOn, isVoiceOn) {
+    // sending to all clients in "game" room except sender
+    socket.to(roomId).emit('roomStateShare', socket.id, nickname, isScreenOn, isVoiceOn);
+  });
+
   socket.on('messageTo', function(socketId, message, nickname) {
     // sending to individual socketid (private message)
     io.to(socketId).emit('message', socket.id, message, nickname)

@@ -1,3 +1,5 @@
+import { faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { VideoSrc } from '../../types';
 import './Video.css';
@@ -19,7 +21,8 @@ const Video = ({ videoSrc }: Props) => (
     >
       <track kind="captions" />
     </video>
-    <p className="nickname text-truncate">{videoSrc.nickname}</p>
+    <p className={`text-truncate nickname ${videoSrc.isScreenOn ? '' : 'screen-off' }`}>{videoSrc.nickname}</p>
+    {videoSrc.isVoiceOn ? null : <FontAwesomeIcon icon={faMicrophoneSlash} className="mute rounded-circle bg-danger text-white" />}
   </div>
 );
 

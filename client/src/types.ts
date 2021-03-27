@@ -1,13 +1,15 @@
 export type RoomState = {
   isStarted: boolean
-  isMuted: boolean
-  isRecording: boolean
+  isVoiceOn: boolean
+  isScreenOn: boolean
   nickname: string
 };
 
 export type VideoSrc = {
   socketId: string
   nickname: string
+  isScreenOn: boolean
+  isVoiceOn: boolean
 };
 
 export type Message = {

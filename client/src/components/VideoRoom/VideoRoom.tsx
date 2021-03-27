@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import React, { useEffect, useState, useRef, Dispatch, SetStateAction } from 'react';
 import useSocket from '../../lib/useSocket';
 import { RoomState, VideoSrc } from '../../types';
 import Chat from '../Chat/Chat';
@@ -12,18 +11,16 @@ import MyCam from '../MyCam/MyCam';
 type Props = {
   roomId: string
   roomState: RoomState
+  setRoomState: Dispatch<SetStateAction<RoomState>>
 };
 
-const VideoRoom = ({ roomId, roomState }: Props) => {
+const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
   const videoRef = useRef<HTMLVideoElement>(document.createElement('video'));
   const [videoSrces, setVideoSrces] = useState<VideoSrc[]>([]);
   const [lock, setLock] = useState<boolean>(false);
   const [isScreenShare, setIsScreenShare] = useState<boolean>(false);
   const [showFlashMessage, setShowFlashMessage] = useState<boolean>(false);
-  const [isMuted, setIsMuted] = useState<boolean>(roomState.isMuted);
   const [showMessage, setShowMessage] = useState<boolean>(false);
-  const [isRecording, setIsRecording] =
-    useState<boolean>(roomState.isRecording);
   const {
     messages,
     sendMessage,
@@ -46,6 +43,7 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
       </div>
     );
 
+  console.log(videoSrces);
   return (
     <div className="video-room fix h-100 w-100">
       {showFlashMessage ? <FlashMessage message="URL has been copied. Share with others." during={3000} unmount={setShowFlashMessage} /> : null}
@@ -62,9 +60,7 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
           </div>
       }
       <VideoRoomButtons
-        setIsMuted={setIsMuted}
         handleMute={handleMute}
-        setIsRecording={setIsRecording}
         handleScreen={handleScreen}
         setLock={setLock}
         handleLock={handleLock}
@@ -74,8 +70,8 @@ const VideoRoom = ({ roomId, roomState }: Props) => {
         handleScreenShare={handleScreenShare}
         setShowFlashMessage={setShowFlashMessage}
         setShowMessage={setShowMessage}
-        isMuted={isMuted}
-        isRecording={isRecording}
+        setRoomState={setRoomState}
+        roomState={roomState}
         lock={lock}
       />
       <Chat

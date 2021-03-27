@@ -33,3 +33,14 @@ video::-webkit-media-controls-time-remaining-display {
   margin: 0;
   max-width: 15rem;
 }
+
+.screen-off {
+  font-size: 3rem;
+}
+
+.mute {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  font-size: 1.4rem;
+}

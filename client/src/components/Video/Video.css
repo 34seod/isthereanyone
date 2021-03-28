@@ -44,3 +44,7 @@ video::-webkit-media-controls-time-remaining-display {
   right: 1rem;
   font-size: 1.4rem;
 }
+
+.video-zindex {
+  z-index: 1050;
+}

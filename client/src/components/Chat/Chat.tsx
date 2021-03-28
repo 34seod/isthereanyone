@@ -27,9 +27,9 @@ const Chat = ({
   const chatheaderRef = useRef(document.createElement('div'));
   const chatBodyRef = useRef(document.createElement('div'));
   const closeRef = useRef(document.createElement('button'));
-  const { dragElement } = useDraggable(chatRef, chatheaderRef);
+  const { dragElement, setDefault } = useDraggable(chatRef, chatheaderRef);
 
-  const closeMessage = (e: TouchEvent) => {
+  const closeMessage = () => {
     setShowMessage(false);
   };
 
@@ -42,6 +42,8 @@ const Chat = ({
     closeRef.current.ontouchstart = closeMessage;
   }, []);
 
+  // 채팅창 종료시 위치 초기화
+  useEffect(() => setDefault());
 
   const handleNewMessageChange = (event: ChangeEvent<HTMLInputElement>) => {
     setNewMessage(event.target.value);
@@ -63,7 +65,7 @@ const Chat = ({
       <div className="modal-content">
         <div ref={chatheaderRef} className="modal-header move-cursor p-2">
           <h5 className="modal-title">Messages</h5>
-          <button ref={closeRef} type="button" className="close" onClick={() => setShowMessage(false)}>
+          <button ref={closeRef} type="button" className="close" onClick={closeMessage}>
             <span aria-hidden="true">&times;</span>
           </button>
         </div>

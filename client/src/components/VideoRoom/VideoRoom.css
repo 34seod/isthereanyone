@@ -14,3 +14,11 @@ video {
   margin-top: 5rem;
   right: 0;
 }
+
+.fixed-top-button {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: -1;
+}

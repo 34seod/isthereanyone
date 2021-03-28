@@ -33,6 +33,10 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
   } = useSocket(roomId, roomState, setVideoSrces, setLock, setIsScreenShare);
 
   useEffect(() => {
+    document.body.classList.add('video-room');
+  }, []);
+
+  useEffect(() => {
     start(videoRef);
   }, [roomId]);
 
@@ -44,7 +48,7 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
     );
 
   return (
-    <div className="video-room fix h-100 w-100">
+    <div className="fix h-100 w-100">
       {showFlashMessage ? <FlashMessage message="URL has been copied. Share with others." during={3000} unmount={setShowFlashMessage} /> : null}
       <MyCam
         videoRef={videoRef}

@@ -50,6 +50,8 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
         videoRef={videoRef}
         nickname={roomState.nickname}
         isScreenShare={isScreenShare}
+        roomId={roomId}
+        setShowFlashMessage={setShowFlashMessage}
       />
       {
         videoSrces.length > 0 ?

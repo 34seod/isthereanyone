@@ -9,7 +9,7 @@ type Props = {
 };
 
 const Video = ({ videoSrc }: Props) => (
-  <div className="position-relative video-zindex">
+  <div className="position-relative">
     <video
       id={`remoteVideo-${videoSrc.socketId}`}
       autoPlay={true}

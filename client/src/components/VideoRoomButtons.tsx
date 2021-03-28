@@ -69,16 +69,6 @@ const VideoRoomButtons = ({
     }
   };
 
-  const handleLinkCopyButton = () => {
-    const el = document.createElement('textarea');
-    el.value = window.location.href;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-    setShowFlashMessage(true);
-  };
-
   const screenShareButton = () => {
     if (navigator.mediaDevices && 'getDisplayMedia' in navigator.mediaDevices) {
       return (
@@ -98,22 +88,6 @@ const VideoRoomButtons = ({
 
   return (
     <>
-      <div className="fixed-top">
-        <div className="d-flex justify-content-end p-2 top-button">
-          <div className="d-flex flex-column">
-            <IconButton
-              icon={lock ? faLock : faLockOpen}
-              handleOnclick={handleLockButton}
-              className={lock ? 'bg-danger text-white' : 'bg-warning'}
-            />
-            <IconButton
-              icon={faLink}
-              handleOnclick={handleLinkCopyButton}
-              className="mt-3 bg-info text-white"
-            />
-          </div>
-        </div>
-      </div>
       <div className="fixed-bottom mb-2 d-flex">
         <div className="ml-auto mr-auto">
           <IconButton
@@ -131,6 +105,11 @@ const VideoRoomButtons = ({
             icon={faComments}
             handleOnclick={handleOpenMessage}
             className="bg-warning text-white"
+          />
+          <IconButton
+            icon={lock ? faLock : faLockOpen}
+            handleOnclick={handleLockButton}
+            className={lock ? 'bg-danger text-white' : 'bg-warning'}
           />
           <IconButton
             icon={faSignOutAlt}

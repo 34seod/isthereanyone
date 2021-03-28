@@ -34,6 +34,7 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
 
   useEffect(() => {
     document.body.classList.add('video-room');
+    return () => document.body.classList.remove('video-room');
   }, []);
 
   useEffect(() => {

@@ -5,10 +5,10 @@ const useDraggable = (
   mainRef: MutableRefObject<HTMLDivElement>,
   movePartRef: MutableRefObject<HTMLDivElement>
 ) => {
-  const pos1 = useRef(0);
-  const pos2 = useRef(0);
-  const pos3 = useRef(0);
-  const pos4 = useRef(0);
+  const newX = useRef(0);
+  const newY = useRef(0);
+  const initialX = useRef(0);
+  const initialY = useRef(0);
 
   const dragElement = () => {
     movePartRef.current.onmousedown = dragMouseDown;
@@ -19,8 +19,8 @@ const useDraggable = (
     const event = e || window.event;
     event.preventDefault();
     // get the mouse cursor position at startup:
-    pos3.current = event.clientX;
-    pos4.current = event.clientY;
+    initialX.current = event.clientX;
+    initialY.current = event.clientY;
     document.onmouseup = closeDragElement;
     // call a const whenever the cursor moves:
     document.onmousemove = elementDragMouse;
@@ -30,8 +30,8 @@ const useDraggable = (
     e.preventDefault();
     const event = e.targetTouches[0];
     // get the mouse cursor position at startup:
-    pos3.current = event.clientX;
-    pos4.current = event.clientY;
+    initialX.current = event.clientX;
+    initialY.current = event.clientY;
     document.ontouchmove = elementDragTouch;
     document.ontouchend = closeDragElement;
   };
@@ -50,13 +50,13 @@ const useDraggable = (
 
   const calculateCoordinate = (x: number, y: number) => {
     // calculate the new cursor position:
-    pos1.current = pos3.current - x;
-    pos2.current = pos4.current - y;
-    pos3.current = x;
-    pos4.current = y;
+    newX.current = initialX.current - x;
+    newY.current = initialY.current - y;
+    initialX.current = x;
+    initialY.current = y;
     // set the element's new position:
-    mainRef.current.style.top = `${mainRef.current.offsetTop - pos2.current}px`;
-    mainRef.current.style.left = `${mainRef.current.offsetLeft - pos1.current}px`;
+    mainRef.current.style.top = `${mainRef.current.offsetTop - newY.current}px`;
+    mainRef.current.style.left = `${mainRef.current.offsetLeft - newX.current}px`;
 
   };
 

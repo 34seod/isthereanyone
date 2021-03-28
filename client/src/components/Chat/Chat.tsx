@@ -26,7 +26,13 @@ const Chat = ({
   const chatRef = useRef(document.createElement('div'));
   const chatheaderRef = useRef(document.createElement('div'));
   const chatBodyRef = useRef(document.createElement('div'));
+  const closeRef = useRef(document.createElement('button'));
   const { dragElement } = useDraggable(chatRef, chatheaderRef);
+
+  const closeMessage = (e: TouchEvent) => {
+    e.preventDefault();
+    setShowMessage(false);
+  };
 
   useEffect(() => {
     chatBodyRef.current.scrollTop = chatRef.current.scrollHeight;
@@ -34,6 +40,7 @@ const Chat = ({
 
   useEffect(() => {
     dragElement();
+    closeRef.current.ontouchstart = closeMessage;
   }, []);
 
 
@@ -57,7 +64,7 @@ const Chat = ({
       <div className="modal-content">
         <div ref={chatheaderRef} className="modal-header move-cursor p-2">
           <h5 className="modal-title">Messages</h5>
-          <button type="button" className="close" onClick={() => setShowMessage(false)}>
+          <button ref={closeRef} type="button" className="close" onClick={() => setShowMessage(false)}>
             <span aria-hidden="true">&times;</span>
           </button>
         </div>

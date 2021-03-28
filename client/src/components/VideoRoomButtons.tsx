@@ -91,6 +91,11 @@ const VideoRoomButtons = ({
       <div className="fixed-bottom mb-2 d-flex">
         <div className="ml-auto mr-auto">
           <IconButton
+            icon={lock ? faLock : faLockOpen}
+            handleOnclick={handleLockButton}
+            className={lock ? 'bg-danger text-white' : 'bg-warning'}
+          />
+          <IconButton
             icon={roomState.isVoiceOn ? faMicrophone : faMicrophoneSlash}
             handleOnclick={handleMuteButton}
             className={roomState.isVoiceOn ? 'bg-success text-white' : 'bg-danger text-white'}
@@ -105,11 +110,6 @@ const VideoRoomButtons = ({
             icon={faComments}
             handleOnclick={handleOpenMessage}
             className="bg-warning text-white"
-          />
-          <IconButton
-            icon={lock ? faLock : faLockOpen}
-            handleOnclick={handleLockButton}
-            className={lock ? 'bg-danger text-white' : 'bg-warning'}
           />
           <IconButton
             icon={faSignOutAlt}

@@ -21,8 +21,10 @@ const Video = ({ videoSrc }: Props) => (
     >
       <track kind="captions" />
     </video>
-    <p className={`text-truncate nickname ${videoSrc.isScreenOn ? '' : 'screen-off' }`} title={videoSrc.nickname}>{videoSrc.nickname}</p>
-    {videoSrc.isVoiceOn ? null : <FontAwesomeIcon icon={faMicrophoneSlash} className="mute rounded-circle bg-danger text-white" />}
+    <div className="bg-dark d-flex justify-content-between align-items-center">
+      <p className="text-truncate nickname" title={videoSrc.nickname}>{videoSrc.nickname}</p>
+      {videoSrc.isVoiceOn ? null : <FontAwesomeIcon icon={faMicrophoneSlash} className="mr-1 mute rounded-circle bg-danger text-white" />}
+    </div>
   </div>
 );
 

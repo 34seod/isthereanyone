@@ -43,7 +43,7 @@ const Chat = ({
   }, []);
 
   // 채팅창 종료시 위치 초기화
-  useEffect(() => setDefault());
+  useEffect(() => setDefault(), [showMessage]);
 
   const handleNewMessageChange = (event: ChangeEvent<HTMLInputElement>) => {
     setNewMessage(event.target.value);

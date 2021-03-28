@@ -73,7 +73,6 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
         setIsScreenShare={setIsScreenShare}
         stopCapture={stopCapture}
         handleScreenShare={handleScreenShare}
-        setShowFlashMessage={setShowFlashMessage}
         setShowMessage={setShowMessage}
         setRoomState={setRoomState}
         roomState={roomState}

@@ -23,7 +23,6 @@ type Props = {
   setIsScreenShare: Dispatch<SetStateAction<boolean>>
   stopCapture: () => void
   handleScreenShare: () => void
-  setShowFlashMessage: Dispatch<SetStateAction<boolean>>
   setShowMessage: Dispatch<SetStateAction<boolean>>
   setRoomState: Dispatch<SetStateAction<RoomState>>
   roomState: RoomState
@@ -33,7 +32,7 @@ type Props = {
 const VideoRoomButtons = ({
   handleMute, handleScreen, setLock, handleLock, roomState,
   isScreenShare, setIsScreenShare, stopCapture, handleScreenShare,
-  setShowFlashMessage, setShowMessage, setRoomState, lock
+  setShowMessage, setRoomState, lock
 }: Props) => {
 
   const handleMuteButton = () => {

@@ -30,7 +30,6 @@ const Chat = ({
   const { dragElement } = useDraggable(chatRef, chatheaderRef);
 
   const closeMessage = (e: TouchEvent) => {
-    e.preventDefault();
     setShowMessage(false);
   };
 

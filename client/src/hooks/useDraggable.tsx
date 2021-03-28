@@ -27,7 +27,7 @@ const useDraggable = (
   };
 
   const dragTouchDown = (e: TouchEvent) => {
-    e.preventDefault();
+    // e.preventDefault();
     const event = e.targetTouches[0];
     // get the mouse cursor position at startup:
     initialX.current = event.clientX;
@@ -43,7 +43,7 @@ const useDraggable = (
   };
 
   const elementDragTouch = (e: TouchEvent) => {
-    e.preventDefault();
+    // e.preventDefault();
     const touch = e.targetTouches[0];
     calculateCoordinate(touch.clientX, touch.clientY);
   };

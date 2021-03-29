@@ -16,7 +16,7 @@ const New = () => {
 
   useEffect(() => {
     inputRef?.current?.focus();
-    // document.body.classList.remove('video-room');
+    document.body.classList.remove('video-room');
     if (/locked/.test(location.search)) {
       setShowFlashMessage(true);
       history.push('/');

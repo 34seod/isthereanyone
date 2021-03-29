@@ -18,7 +18,7 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
 
   useEffect(() => {
     inputRef?.current?.focus();
-    document.body.classList.remove('video-room');
+    // document.body.classList.remove('video-room');
   }, []);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

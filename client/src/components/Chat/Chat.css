@@ -3,7 +3,7 @@
 }
 
 .chat-room-container {
-  position: absolute;
+  position: fixed;
   left: 1rem;
   top: 25%;
   background-color: white;

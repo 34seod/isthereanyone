@@ -1,5 +1,5 @@
 .my-cam {
-  position: absolute;
+  position: fixed;
   width: 12rem;
   height: 9rem;
   z-index: 2000;
@@ -49,9 +49,9 @@
 
 @media screen and (max-width: 600px) {
   .my-cam {
-    position: absolute;
+    position: fixed;
     width: 8rem;
-    height: 6rem;
+    height: 4rem;
     z-index: 1000;
     bottom: 8rem;
     left: 1rem;

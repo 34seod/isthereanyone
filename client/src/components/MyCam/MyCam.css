@@ -51,9 +51,9 @@
   .my-cam {
     position: fixed;
     width: 8rem;
-    height: 4rem;
+    height: 6rem;
     z-index: 1000;
-    bottom: 8rem;
+    bottom: 4rem;
     left: 1rem;
   }
 

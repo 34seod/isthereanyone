@@ -5,7 +5,6 @@ import {
   faVideo,
   faVideoSlash,
   faDesktop,
-  faLink,
   faSignOutAlt,
   faLock,
   faLockOpen,
@@ -20,7 +19,6 @@ type Props = {
   setLock: Dispatch<SetStateAction<boolean>>
   handleLock: () => void
   isScreenShare: boolean
-  setIsScreenShare: Dispatch<SetStateAction<boolean>>
   stopCapture: () => void
   handleScreenShare: () => void
   setShowMessage: Dispatch<SetStateAction<boolean>>
@@ -31,7 +29,7 @@ type Props = {
 
 const VideoRoomButtons = ({
   handleMute, handleScreen, setLock, handleLock, roomState,
-  isScreenShare, setIsScreenShare, stopCapture, handleScreenShare,
+  isScreenShare, stopCapture, handleScreenShare,
   setShowMessage, setRoomState, lock
 }: Props) => {
 
@@ -59,13 +57,7 @@ const VideoRoomButtons = ({
   };
 
   const handleScreenShareButton = () => {
-    if (isScreenShare) {
-      setIsScreenShare(false);
-      stopCapture();
-    } else {
-      setIsScreenShare(true);
-      handleScreenShare();
-    }
+    isScreenShare ? stopCapture() : handleScreenShare();
   };
 
   const screenShareButton = () => {

@@ -26,7 +26,13 @@ const useSocket = (
     handleLock,
     handleScreenShare,
     stopCapture
-  } = usePeer(roomId, roomState, setVideoSrces, setLock, setIsScreenShare);
+  } = usePeer(
+    roomId,
+    roomState,
+    setVideoSrces,
+    setLock,
+    setIsScreenShare
+  );
 
   useEffect(() => {
     socketRef.current = io(SOCKET_SERVER_URL, {

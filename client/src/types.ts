@@ -20,6 +20,11 @@ export type Message = {
   sendedAt: string
 };
 
+
+export type Sender = {
+  [key: string]: RTCRtpSender
+};
+
 export const urlEscape = (roomId: string) => (
   roomId.replace(/(`|~|!|@|#|\$|%|\^|&|\*|\(|\)|-|_|=|\+|{|}|\[|\]|\\|\||'|"|;|:|,|<|>|\.|\/|\?|\s)/g, '')
 );

@@ -1,12 +1,14 @@
 /* eslint-disable no-param-reassign */
 import React, { Dispatch, SetStateAction, MutableRefObject } from 'react';
+import { Sender } from '../../types';
 
 const screenShare = (
   setIsScreenShare: Dispatch<SetStateAction<boolean>>,
   localVideoRef: MutableRefObject<HTMLVideoElement | null | undefined>,
-  senderRef: MutableRefObject<RTCRtpSender[]>,
+  senderRef: MutableRefObject<Sender>,
   screenShareStreamRef: MutableRefObject<MediaStream>,
-  localStreamRef: MutableRefObject<MediaStream | null>
+  localStreamRef: MutableRefObject<MediaStream | null>,
+  screenShareRef: MutableRefObject<boolean>
 ) => {
   const handleScreenShare = () => {
     const mediaDevices = navigator.mediaDevices as any // eslint-disable-line
@@ -16,13 +18,14 @@ const screenShare = (
 
   const handleScreenShareError = (e: Error) => {
     setIsScreenShare(false);
+    screenShareRef.current = false;
     console.log('getDisplayMedia error: ', e.toString());
   };
 
   const handleScreenShareSuccess = (stream: MediaStream) => {
     if (localVideoRef.current) localVideoRef.current.srcObject = stream;
     screenShareStreamRef.current = stream;
-    senderRef.current.forEach((sender) => {
+    Object.values(senderRef.current).forEach((sender) => {
       if (sender?.track?.kind === 'video') {
         sender.replaceTrack(stream.getVideoTracks()[0]);
       }
@@ -31,10 +34,12 @@ const screenShare = (
     stream.getVideoTracks()[0].addEventListener('ended', () => {
       stopCapture();
     });
+    setIsScreenShare(true);
+    screenShareRef.current = true;
   };
 
   const stopCapture = () => {
-    senderRef.current.forEach((sender) => {
+    Object.values(senderRef.current).forEach((sender) => {
       if (sender?.track?.kind === 'video' && localStreamRef.current !== null) {
         sender.replaceTrack(localStreamRef.current.getVideoTracks()[0]);
       }
@@ -47,9 +52,10 @@ const screenShare = (
       localVideoRef.current.srcObject = localStreamRef.current;
     }
     setIsScreenShare(false);
+    screenShareRef.current = false;
   };
 
-  return { handleScreenShare, stopCapture };
+  return { handleScreenShare, handleScreenShareSuccess, stopCapture };
 };
 
 export default screenShare;

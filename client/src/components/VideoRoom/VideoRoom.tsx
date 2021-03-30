@@ -30,7 +30,13 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
     handleLock,
     handleScreenShare,
     stopCapture
-  } = useSocket(roomId, roomState, setVideoSrces, setLock, setIsScreenShare);
+  } = useSocket(
+    roomId,
+    roomState,
+    setVideoSrces,
+    setLock,
+    setIsScreenShare
+  );
 
   useEffect(() => {
     document.body.classList.add('video-room');
@@ -75,7 +81,6 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
         setLock={setLock}
         handleLock={handleLock}
         isScreenShare={isScreenShare}
-        setIsScreenShare={setIsScreenShare}
         stopCapture={stopCapture}
         handleScreenShare={handleScreenShare}
         setShowMessage={setShowMessage}

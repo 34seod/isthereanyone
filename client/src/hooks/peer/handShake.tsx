@@ -45,13 +45,33 @@ const handShake = (
   setVideoSrces: Dispatch<SetStateAction<VideoSrc[]>>,
   peersRef: MutableRefObject<PeerConnection>,
   myRoomState: MutableRefObject<RoomState>,
-  socketRef: MutableRefObject<Socket<DefaultEventsMap, DefaultEventsMap> | undefined>
+  socketRef: MutableRefObject<Socket<DefaultEventsMap, DefaultEventsMap> | undefined>,
+  screenShareRef: MutableRefObject<boolean>,
+  startScreen: () => void
 ) => {
   const createPeerConnection = (socketId: string) => {
     try {
       const pc = new RTCPeerConnection(pcConfig);
       pc.onicecandidate = (event) => handleIceCandidate(event, socketId);
       pc.ontrack = (event) => handleRemoteStreamAdded(event as RTCTrackEvent, socketId);
+      // pc.onconnectionstatechange = (event) => {
+      //   switch (pc.connectionState) {
+      //     case 'connected':
+      //       // The connection has become fully connected
+
+      //       // if (screenShareRef.current) {
+      //       //   startScreen();
+      //       // }
+      //       break;
+      //     case 'disconnected':
+      //     case 'failed':
+      //       // One or more transports has terminated unexpectedly or in an error
+      //       break;
+      //     case 'closed':
+      //       // The connection has been closed
+      //       break;
+      //   }
+      // };
       peersRef.current[socketId].pc = pc;
       return pc;
     } catch (e) {
@@ -75,7 +95,13 @@ const handShake = (
     });
 
     const remoteVideo: HTMLVideoElement | null = document.querySelector(`#remoteVideo-${socketId}`);
-    if (remoteVideo) remoteVideo.srcObject = event.streams[0];
+    if (remoteVideo) {
+      remoteVideo.srcObject = event.streams[0];
+      // if (screenShareRef.current) {
+      //   startScreen();
+      // }
+    }
+    // console.log('added');
   };
 
   const handleIceCandidate = (event: RTCPeerConnectionIceEvent, socketId: string) => {

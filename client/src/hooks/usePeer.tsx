@@ -3,7 +3,7 @@
 import { useRef, Dispatch, SetStateAction, RefObject } from 'react';
 import { Socket } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
-import { RoomState, VideoSrc } from '../types';
+import { RoomState, Sender, VideoSrc } from '../types';
 import handShake from './peer/handShake';
 import screenShare from './peer/screenShare';
 
@@ -39,17 +39,20 @@ const usePeer = (
   setIsScreenShare: Dispatch<SetStateAction<boolean>>
 ) => {
   const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>();
-  const senderRef = useRef<RTCRtpSender[]>([]);
+  const senderRef = useRef<Sender>({});
+  const screenShareRef = useRef<boolean>(false);
   const localStreamRef = useRef<MediaStream | null>(null);
   const screenShareStreamRef = useRef<MediaStream>(new MediaStream);
   const myRoomState = useRef<RoomState>({ ...roomState });
   const peersRef = useRef<PeerConnection>({});
   const localVideoRef = useRef<HTMLVideoElement | null | undefined>(null);
-  const { handleScreenShare, stopCapture } = screenShare(
-    setIsScreenShare, localVideoRef, senderRef, screenShareStreamRef, localStreamRef
+  const { handleScreenShare, handleScreenShareSuccess, stopCapture } = screenShare(
+    setIsScreenShare, localVideoRef, senderRef, screenShareStreamRef, localStreamRef, screenShareRef
   );
+
+  const startScreen = () => handleScreenShareSuccess(screenShareStreamRef.current);
   const { createPeerConnection, doCall, doAnswer } = handShake(
-    setVideoSrces, peersRef, myRoomState, socketRef
+    setVideoSrces, peersRef, myRoomState, socketRef, screenShareRef, startScreen
   );
 
   const setSocket = (socket: SocketIO) => {
@@ -92,7 +95,7 @@ const usePeer = (
         if (localStreamRef.current) {
           const sender = pc?.addTrack(track, localStreamRef.current);
           if (sender !== undefined) {
-            senderRef.current = [...senderRef.current, sender];
+            senderRef.current[socketId] = sender;
           }
         }
       });
@@ -189,6 +192,8 @@ const usePeer = (
   const handleRemoteHangup = (socketId: string) => {
     peersRef.current[socketId]?.pc?.close();
     delete peersRef.current[socketId];
+    delete senderRef.current[socketId];
+
     setVideoSrces((prev) => prev.filter((e) => e.socketId !== socketId));
   };
 

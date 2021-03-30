@@ -9,6 +9,7 @@ body {
   display: -ms-flexbox;
   -ms-flex-align: center;
   align-items: center;
+  position: fixed;
 }
 
 #root {

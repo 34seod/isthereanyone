@@ -55,7 +55,7 @@ const screenShare = (
     screenShareRef.current = false;
   };
 
-  return { handleScreenShare, handleScreenShareSuccess, stopCapture };
+  return { handleScreenShare, stopCapture };
 };
 
 export default screenShare;

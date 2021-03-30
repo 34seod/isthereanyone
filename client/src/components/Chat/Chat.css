@@ -12,8 +12,8 @@
 }
 
 .body-size {
-  /* min-width: 17rem; */
   height: 18rem;
+  max-width: 16rem;
   overflow: auto;
 }
 

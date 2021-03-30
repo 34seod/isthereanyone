@@ -46,11 +46,10 @@ const usePeer = (
   const myRoomState = useRef<RoomState>({ ...roomState });
   const peersRef = useRef<PeerConnection>({});
   const localVideoRef = useRef<HTMLVideoElement | null | undefined>(null);
-  const { handleScreenShare, handleScreenShareSuccess, stopCapture } = screenShare(
+  const { handleScreenShare, stopCapture } = screenShare(
     setIsScreenShare, localVideoRef, senderRef, screenShareStreamRef, localStreamRef, screenShareRef
   );
 
-  const startScreen = () => handleScreenShareSuccess(screenShareStreamRef.current);
   const { createPeerConnection, doCall, doAnswer } = handShake(
     setVideoSrces, peersRef, myRoomState, socketRef
   );

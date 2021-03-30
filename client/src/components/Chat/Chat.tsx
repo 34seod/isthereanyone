@@ -78,7 +78,7 @@ const Chat = ({
                   <span>{`(${message.sendedAt})`}</span>
                 </small>
                 <div className={`message-item p-1 rounded text-white ${message.ownedByCurrentUser ? 'bg-primary ml-auto' : 'bg-success'}`}>
-                  <span>{message.body}</span>
+                  <span className="text-break">{message.body}</span>
                 </div>
               </div>
             ))

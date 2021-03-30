@@ -78,7 +78,7 @@ const useDraggable = (
     coordinate: number, screenSize: number, divSize: number
   ) => {
     const minLimit = screenSize * 0.05;
-    const maxLimit = screenSize * 0.92;
+    const maxLimit = screenSize * 0.95;
     let limit = coordinate < minLimit ? minLimit : coordinate;
     if ((coordinate + divSize) > maxLimit) {
       limit = maxLimit - divSize;

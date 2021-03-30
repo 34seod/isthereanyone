@@ -53,14 +53,15 @@ const useDraggable = (
   };
 
   const calculateCoordinate = (x: number, y: number) => {
+    const { innerWidth, innerHeight } = window;
     // calculate the new cursor position:
     newX.current = baseX.current - x;
     newY.current = baseY.current - y;
     baseX.current = x;
     baseY.current = y;
     // set the element's new position:
-    mainRef.current.style.top = `${mainRef.current.offsetTop - newY.current}px`;
-    mainRef.current.style.left = `${mainRef.current.offsetLeft - newX.current}px`;
+    mainRef.current.style.top = `${keepInScreen(mainRef.current.offsetTop - newY.current, innerHeight, mainRef.current.clientHeight)}px`;
+    mainRef.current.style.left = `${keepInScreen(mainRef.current.offsetLeft - newX.current, innerWidth, mainRef.current.clientWidth)}px`;
   };
 
   const closeDragElement = () => {
@@ -68,6 +69,18 @@ const useDraggable = (
     document.onmousemove = null;
     document.ontouchmove = null;
     document.ontouchend = null;
+  };
+
+  const keepInScreen = (
+    coordinate: number, screenSize: number, divSize: number
+  ) => {
+    const minLimit = screenSize * 0.05;
+    const maxLimit = screenSize * 0.92;
+    let limit = coordinate < minLimit ? minLimit : coordinate;
+    if ((coordinate + divSize) > maxLimit) {
+      limit = maxLimit - divSize;
+    }
+    return limit;
   };
 
   const setDefault = () => {

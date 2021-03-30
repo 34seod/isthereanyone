@@ -52,7 +52,7 @@ const usePeer = (
 
   const startScreen = () => handleScreenShareSuccess(screenShareStreamRef.current);
   const { createPeerConnection, doCall, doAnswer } = handShake(
-    setVideoSrces, peersRef, myRoomState, socketRef, screenShareRef, startScreen
+    setVideoSrces, peersRef, myRoomState, socketRef
   );
 
   const setSocket = (socket: SocketIO) => {
@@ -91,19 +91,21 @@ const usePeer = (
   const maybeStart = (socketId: string) => {
     if (!peersRef.current[socketId].isStarted && localStreamRef.current !== null && peersRef.current[socketId].isChannelReady) {
       const pc = createPeerConnection(socketId);
-      localStreamRef.current.getTracks().forEach((track) => {
-        if (localStreamRef.current) {
-          const sender = pc?.addTrack(track, localStreamRef.current);
-          if (sender !== undefined) {
-            senderRef.current[socketId] = sender;
-          }
-        }
-      });
+      screenShareRef.current ? addTrack(pc, screenShareStreamRef.current, socketId) : addTrack(pc, localStreamRef.current, socketId);
       peersRef.current[socketId].isStarted = true;
       if (peersRef.current[socketId].isInitiator) {
         doCall(socketId);
       }
     }
+  };
+
+  const addTrack = (pc: RTCPeerConnection | undefined, stream: MediaStream, socketId: string) => {
+    stream.getTracks().forEach((track) => {
+      if (stream) {
+        const sender = pc?.addTrack(track, stream);
+        if (sender !== undefined) senderRef.current[socketId] = sender;
+      }
+    });
   };
 
   const peerConnectOn = () => {

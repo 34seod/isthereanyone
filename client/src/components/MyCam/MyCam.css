@@ -5,8 +5,6 @@
   z-index: 2000;
   bottom: 4rem;
   left: 1rem;
-  -webkit-transform: translate3d(0, 0, 0);
-  transform: translate3d(0, 0, 0);
 }
 
 .my-cam video {
@@ -54,11 +52,9 @@
     position: fixed;
     width: 8rem;
     height: 6rem;
-    z-index: 1000;
+    z-index: 2000;
     bottom: 4rem;
     left: 1rem;
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
   }
 
   .room-title-btn {

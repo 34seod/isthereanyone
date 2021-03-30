@@ -53,15 +53,18 @@ const useDraggable = (
   };
 
   const calculateCoordinate = (x: number, y: number) => {
-    const { innerWidth, innerHeight } = window;
+    const width = Math.max(
+      document.documentElement.clientWidth, window.innerWidth || 0);
+    const height = Math.max(
+      document.documentElement.clientHeight, window.innerHeight || 0);
     // calculate the new cursor position:
     newX.current = baseX.current - x;
     newY.current = baseY.current - y;
     baseX.current = x;
     baseY.current = y;
     // set the element's new position:
-    mainRef.current.style.top = `${keepInScreen(mainRef.current.offsetTop - newY.current, innerHeight, mainRef.current.clientHeight)}px`;
-    mainRef.current.style.left = `${keepInScreen(mainRef.current.offsetLeft - newX.current, innerWidth, mainRef.current.clientWidth)}px`;
+    mainRef.current.style.top = `${keepInScreen(mainRef.current.offsetTop - newY.current, height, mainRef.current.clientHeight)}px`;
+    mainRef.current.style.left = `${keepInScreen(mainRef.current.offsetLeft - newX.current, width, mainRef.current.clientWidth)}px`;
   };
 
   const closeDragElement = () => {

@@ -4,7 +4,7 @@ import { useRef, Dispatch, SetStateAction, RefObject } from 'react';
 import { Socket } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
 import { RoomState, Sender, VideoSrc } from '../types';
-import handShake from './peer/useHandShake';
+import handShake from './peer/handShake';
 import screenShare from './peer/screenShare';
 
 type PeerConnection = {
@@ -46,12 +46,13 @@ const usePeer = (
   const myRoomState = useRef<RoomState>({ ...roomState });
   const peersRef = useRef<PeerConnection>({});
   const localVideoRef = useRef<HTMLVideoElement | null | undefined>(null);
+  const joinSoundRef = useRef(new Audio('./join.wav'));
   const { handleScreenShare, stopCapture } = screenShare(
     setIsScreenShare, localVideoRef, senderRef, screenShareStreamRef, localStreamRef, screenShareRef
   );
 
   const { createPeerConnection, doCall, doAnswer } = handShake(
-    setVideoSrces, peersRef, myRoomState, socketRef
+    setVideoSrces, peersRef, myRoomState, socketRef, joinSoundRef
   );
 
   const setSocket = (socket: SocketIO) => {

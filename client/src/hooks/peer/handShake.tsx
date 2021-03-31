@@ -41,14 +41,13 @@ const pcConfig = {
   ]
 };
 
-const useHandShake = (
+const handShake = (
   setVideoSrces: Dispatch<SetStateAction<VideoSrc[]>>,
   peersRef: MutableRefObject<PeerConnection>,
   myRoomState: MutableRefObject<RoomState>,
-  socketRef: MutableRefObject<Socket<DefaultEventsMap, DefaultEventsMap> | undefined>
+  socketRef: MutableRefObject<Socket<DefaultEventsMap, DefaultEventsMap> | undefined>,
+  joinSoundRef: MutableRefObject<HTMLAudioElement>
 ) => {
-  // const joinSoundRef = useRef(new Audio('./join.wav'));
-
   const createPeerConnection = (socketId: string) => {
     try {
       const pc = new RTCPeerConnection(pcConfig);
@@ -66,7 +65,7 @@ const useHandShake = (
     setVideoSrces((prev) => {
       const prevData = prev.find((p) => p.socketId === socketId);
       if (!prevData) {
-        // joinSoundRef.current.play();
+        joinSoundRef.current.play();
         return [ ...prev, {
           socketId,
           nickname: peersRef.current[socketId].nickname,
@@ -124,4 +123,4 @@ const useHandShake = (
   return { createPeerConnection, doCall, doAnswer };
 };
 
-export default useHandShake;
+export default handShake;

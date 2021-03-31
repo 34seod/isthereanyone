@@ -47,7 +47,7 @@ const useHandShake = (
   myRoomState: MutableRefObject<RoomState>,
   socketRef: MutableRefObject<Socket<DefaultEventsMap, DefaultEventsMap> | undefined>
 ) => {
-  const joinSoundRef = useRef(new Audio('./join.wav'));
+  // const joinSoundRef = useRef(new Audio('./join.wav'));
 
   const createPeerConnection = (socketId: string) => {
     try {
@@ -66,7 +66,7 @@ const useHandShake = (
     setVideoSrces((prev) => {
       const prevData = prev.find((p) => p.socketId === socketId);
       if (!prevData) {
-        joinSoundRef.current.play();
+        // joinSoundRef.current.play();
         return [ ...prev, {
           socketId,
           nickname: peersRef.current[socketId].nickname,

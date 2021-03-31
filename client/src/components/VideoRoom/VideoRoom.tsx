@@ -22,7 +22,6 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
   const [showFlashMessage, setShowFlashMessage] = useState<boolean>(false);
   const [showMessage, setShowMessage] = useState<boolean>(false);
   const [isNewMessage, setIsNewMessage] = useState<boolean>(false);
-  const joinSoundRef = useRef(new Audio('./join.wav'));
   const {
     messages,
     sendMessage,
@@ -44,10 +43,6 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
     document.body.classList.add('video-room');
     return () => document.body.classList.remove('video-room');
   }, []);
-
-  useEffect(() => {
-    if (videoSrces.length > 0) joinSoundRef.current.play();
-  }, [videoSrces]);
 
   useEffect(() => {
     start(videoRef);

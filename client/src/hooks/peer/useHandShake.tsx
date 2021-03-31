@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
-import React, { Dispatch, SetStateAction, MutableRefObject } from 'react';
+import React, { useRef, Dispatch, SetStateAction, MutableRefObject } from 'react';
 import { Socket } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
 import { RoomState, VideoSrc } from '../../types';
@@ -41,12 +41,14 @@ const pcConfig = {
   ]
 };
 
-const handShake = (
+const useHandShake = (
   setVideoSrces: Dispatch<SetStateAction<VideoSrc[]>>,
   peersRef: MutableRefObject<PeerConnection>,
   myRoomState: MutableRefObject<RoomState>,
   socketRef: MutableRefObject<Socket<DefaultEventsMap, DefaultEventsMap> | undefined>
 ) => {
+  const joinSoundRef = useRef(new Audio('./join.wav'));
+
   const createPeerConnection = (socketId: string) => {
     try {
       const pc = new RTCPeerConnection(pcConfig);
@@ -64,6 +66,7 @@ const handShake = (
     setVideoSrces((prev) => {
       const prevData = prev.find((p) => p.socketId === socketId);
       if (!prevData) {
+        joinSoundRef.current.play();
         return [ ...prev, {
           socketId,
           nickname: peersRef.current[socketId].nickname,
@@ -121,4 +124,4 @@ const handShake = (
   return { createPeerConnection, doCall, doAnswer };
 };
 
-export default handShake;
+export default useHandShake;

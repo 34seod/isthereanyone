@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Socket from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
 import { formatDate, Message } from '../types';
@@ -9,6 +9,7 @@ type SocketIO = Socket.Socket<DefaultEventsMap> | undefined;
 
 const useChat = () => {
   const [messages, setMessages] = useState<Message[] | []>([]);
+  const newMsgSoundRef = useRef(new Audio('./new_msg.wav'));
 
   const newChatMessageOn = (socket: SocketIO) => {
     socket?.on(NEW_CHAT_MESSAGE_EVENT, (message) => {
@@ -16,7 +17,12 @@ const useChat = () => {
         ...message,
         ownedByCurrentUser: message?.senderId === socket.id
       };
-      setMessages((prevMessages) => [...prevMessages, incomingMessage]);
+      setMessages((prevMessages) => {
+        if (!incomingMessage.ownedByCurrentUser) {
+          newMsgSoundRef.current.play();
+        }
+        return [...prevMessages, incomingMessage];
+      });
     });
   };
 

@@ -36,17 +36,15 @@ const VideoRoomButtons = ({
 }: Props) => {
 
   const handleMuteButton = () => {
-    setRoomState((prev: RoomState) => {
-      handleMute(!prev.isVoiceOn);
-      return { ...prev, isVoiceOn: !prev.isVoiceOn };
-    });
+    setRoomState((prev: RoomState) =>
+      ({ ...prev, isVoiceOn: !prev.isVoiceOn }));
+    handleMute(!roomState.isVoiceOn);
   };
 
   const handleVideoButton = () => {
-    setRoomState((prev: RoomState) => {
-      handleScreen(!prev.isScreenOn);
-      return { ...prev, isScreenOn: !prev.isScreenOn };
-    });
+    setRoomState((prev: RoomState) =>
+      ({ ...prev, isScreenOn: !prev.isScreenOn }));
+    handleScreen(!roomState.isScreenOn);
   };
 
   const handleHangUpButton = () => {

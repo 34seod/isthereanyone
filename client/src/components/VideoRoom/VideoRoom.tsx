@@ -21,6 +21,7 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
   const [isScreenShare, setIsScreenShare] = useState<boolean>(false);
   const [showFlashMessage, setShowFlashMessage] = useState<boolean>(false);
   const [showMessage, setShowMessage] = useState<boolean>(false);
+  const [isNewMessage, setIsNewMessage] = useState<boolean>(false);
   const joinSoundRef = useRef(new Audio('./join.wav'));
   const {
     messages,
@@ -41,12 +42,11 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
 
   useEffect(() => {
     document.body.classList.add('video-room');
-    joinSoundRef.current.play();
     return () => document.body.classList.remove('video-room');
   }, []);
 
   useEffect(() => {
-    joinSoundRef.current.play();
+    if (videoSrces.length > 0) joinSoundRef.current.play();
   }, [videoSrces]);
 
   useEffect(() => {
@@ -93,6 +93,8 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
         setRoomState={setRoomState}
         roomState={roomState}
         lock={lock}
+        isNewMessage={isNewMessage}
+        setIsNewMessage={setIsNewMessage}
       />
       <Chat
         showMessage={showMessage}
@@ -100,6 +102,7 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
         nickname={roomState.nickname}
         messages={messages}
         sendMessage={sendMessage}
+        setIsNewMessage={setIsNewMessage}
       />
     </div>
   );

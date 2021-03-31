@@ -12,7 +12,8 @@ type Props = {
   nickname: string,
   messages: Message[],
   sendMessage: (newMessage: string, nickname: string) => void,
-  setShowMessage: Dispatch<SetStateAction<boolean>>
+  setShowMessage: Dispatch<SetStateAction<boolean>>,
+  setIsNewMessage: Dispatch<SetStateAction<boolean>>
 };
 
 const Chat = ({
@@ -20,7 +21,8 @@ const Chat = ({
   nickname,
   messages,
   sendMessage,
-  setShowMessage
+  setShowMessage,
+  setIsNewMessage
 }: Props) => {
   const [newMessage, setNewMessage] = useState('');
   const chatRef = useRef(document.createElement('div'));
@@ -36,7 +38,12 @@ const Chat = ({
 
   useEffect(() => {
     chatBodyRef.current.scrollTop = chatRef.current.scrollHeight;
-    if (messages.length > 0) joinSoundRef.current.play();
+    if (messages.length > 0) {
+      joinSoundRef.current.play();
+      if (!showMessage && !messages[messages.length - 1].ownedByCurrentUser) {
+        setIsNewMessage(true);
+      }
+    }
   }, [messages]);
 
   useEffect(() => {

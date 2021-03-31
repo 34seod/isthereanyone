@@ -8,6 +8,7 @@ type Props = {
   className?: string
   borderClass?: string
   mr?: number
+  notification?: boolean
   handleOnclick: () => void
 };
 
@@ -16,9 +17,11 @@ const IconButton = ({
   className,
   borderClass,
   mr,
+  notification,
   handleOnclick
 }: Props) => (
-  <button type="button" className={`btn shadow-none rounded-circle ${borderClass} mr-${mr} icon-button ${className}`} onClick={handleOnclick}>
+  <button type="button" className={`btn shadow-none rounded-circle position-relative ${borderClass} mr-${mr} icon-button ${className}`} onClick={handleOnclick}>
+    {notification ? <div className="new-notification bg-danger rounded-circle" /> : null}
     <FontAwesomeIcon icon={icon} />
   </button>
 );
@@ -26,7 +29,8 @@ const IconButton = ({
 IconButton.defaultProps = {
   className: '',
   mr: 3,
-  borderClass: ''
+  borderClass: '',
+  notification: false,
 };
 
 export default IconButton;

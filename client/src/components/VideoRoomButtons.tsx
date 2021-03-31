@@ -25,12 +25,14 @@ type Props = {
   setRoomState: Dispatch<SetStateAction<RoomState>>
   roomState: RoomState
   lock: boolean
+  isNewMessage: boolean,
+  setIsNewMessage: Dispatch<SetStateAction<boolean>>
 };
 
 const VideoRoomButtons = ({
   handleMute, handleScreen, setLock, handleLock, roomState,
   isScreenShare, stopCapture, handleScreenShare,
-  setShowMessage, setRoomState, lock
+  setShowMessage, setRoomState, lock, isNewMessage, setIsNewMessage
 }: Props) => {
 
   const handleMuteButton = () => {
@@ -75,6 +77,7 @@ const VideoRoomButtons = ({
 
   const handleOpenMessage = () => {
     setShowMessage((prev) => !prev);
+    setIsNewMessage(false);
   };
 
   return (
@@ -101,6 +104,7 @@ const VideoRoomButtons = ({
             icon={faComments}
             handleOnclick={handleOpenMessage}
             className="bg-warning text-white"
+            notification={isNewMessage}
           />
           <IconButton
             icon={faSignOutAlt}

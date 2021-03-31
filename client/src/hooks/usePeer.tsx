@@ -70,7 +70,10 @@ const usePeer = (
         echoCancellation: true,
         noiseSuppression: true,
       },
-      video: true,
+      video: {
+        width: { max: 1600 },
+        height: { max: 1200 }
+      },
     }).then(gotStream);
   };
 

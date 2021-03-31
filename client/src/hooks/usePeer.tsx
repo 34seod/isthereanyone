@@ -70,12 +70,7 @@ const usePeer = (
         echoCancellation: true,
         noiseSuppression: true,
       },
-      video: {
-        facingMode: 'user',
-        width:{ min:0, max: 1600 },
-        height: { min:0, max: 1200 },
-        aspectRatio: 1600 / 1200
-      }
+      video: true
     }).then(gotStream);
   };
 

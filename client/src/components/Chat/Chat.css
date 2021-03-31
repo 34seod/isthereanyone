@@ -35,3 +35,12 @@
 .name-with {
   max-width: 5rem;
 }
+
+.message-item ::-moz-selection {
+  background: rgba(255, 255, 255, 0.5);
+  color: #fff;
+}
+.message-item ::selection {
+  background: rgba(255, 255, 255, 0.5);
+  color: #fff;
+}

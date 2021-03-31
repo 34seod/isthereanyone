@@ -28,6 +28,7 @@ const Chat = ({
   const chatBodyRef = useRef(document.createElement('div'));
   const closeRef = useRef(document.createElement('button'));
   const { dragElement, setDefault } = useDraggable(chatRef, chatheaderRef);
+  const joinSoundRef = useRef(new Audio('./new_msg.wav'));
 
   const closeMessage = () => {
     setShowMessage(false);
@@ -35,6 +36,7 @@ const Chat = ({
 
   useEffect(() => {
     chatBodyRef.current.scrollTop = chatRef.current.scrollHeight;
+    if (messages.length > 0) joinSoundRef.current.play();
   }, [messages]);
 
   useEffect(() => {

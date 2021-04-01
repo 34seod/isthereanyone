@@ -36,7 +36,8 @@ const Chat = ({
   };
 
   useEffect(() => {
-    chatBodyRef.current.scrollTop = chatRef.current.scrollHeight;
+    const element = document.getElementById('chat-body');
+    if (element) element.scrollTop = element.scrollHeight;
     if (messages.length > 0 && !showMessage) setIsNewMessage(true);
   }, [messages]);
 
@@ -72,7 +73,7 @@ const Chat = ({
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div ref={chatBodyRef} className="modal-body body-size">
+        <div id="chat-body" ref={chatBodyRef} className="modal-body body-size">
           {
             messages.map((message, i) => (
               <div key={i} className="mt-1">

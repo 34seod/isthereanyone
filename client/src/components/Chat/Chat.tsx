@@ -27,7 +27,6 @@ const Chat = ({
   const [newMessage, setNewMessage] = useState('');
   const chatRef = useRef(document.createElement('div'));
   const chatheaderRef = useRef(document.createElement('div'));
-  const chatBodyRef = useRef(document.createElement('div'));
   const closeRef = useRef(document.createElement('button'));
   const { dragElement, setDefault } = useDraggable(chatRef, chatheaderRef);
 
@@ -73,7 +72,7 @@ const Chat = ({
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div id="chat-body" ref={chatBodyRef} className="modal-body body-size">
+        <div id="chat-body" className="modal-body body-size">
           {
             messages.map((message, i) => (
               <div key={i} className="mt-1">

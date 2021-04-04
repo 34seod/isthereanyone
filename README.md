@@ -1,4 +1,4 @@
-# <a href="https://isthereany.one" target="_blank">isthereany.one</a>
+# isthereany.one
 
 
 WebRTC, WebSocket, React

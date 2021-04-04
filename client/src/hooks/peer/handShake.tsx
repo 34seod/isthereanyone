@@ -33,10 +33,10 @@ const pcConfig = {
     { 'urls':'stun:stun.l.google.com:19302' },
     {
       'urls': [
-        'turn:numb.viagenie.ca'
+        process.env.REACT_APP_TURN_SERVER || 'turn:numb.viagenie.ca'
       ],
-      'username': 'webrtc@live.com',
-      'credential': 'muazkh'
+      'username': process.env.REACT_APP_TURN_USERNAME || 'webrtc@live.com',
+      'credential': process.env.REACT_APP_TURN_CREDENTIAL || 'muazkh'
     }
   ]
 };

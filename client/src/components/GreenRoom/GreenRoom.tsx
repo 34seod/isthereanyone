@@ -40,7 +40,7 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
     <div className="green-room fix h-100 w-100">
       <FontAwesomeIcon icon={faDoorOpen} className="background-icon" />
       <div className="d-flex h-100 w-100">
-        <div className="m-auto">
+        <div className="m-auto wrapper rounded">
           <p className="title text-center mb-0">Who's there?</p>
           <div className="d-flex mt-3">
             <input

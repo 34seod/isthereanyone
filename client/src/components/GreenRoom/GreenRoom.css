@@ -2,9 +2,15 @@
   color: darkslateblue;
   position: absolute;
   bottom: 0;
-  left: -4rem;
-  font-size: 20rem;
+  left: 50%;
+  font-size: 60rem;
   z-index: -2;
+  transform: translate(-50%);
+}
+
+.wrapper {
+  background: rgba(0,0,0,0.5);
+  padding: 1rem;
 }
 
 @media only screen and (max-width: 600px) {
@@ -12,8 +18,14 @@
     color: darkslateblue;
     position: absolute;
     bottom: 0;
-    left: -4rem;
+    left: 50%;
     font-size: 15rem;
     z-index: -2;
+    transform: translate(-50%);
+  }
+
+  .wrapper {
+    background: none;
+    padding: 0;
   }
 }

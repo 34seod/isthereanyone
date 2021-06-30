@@ -1,21 +1,17 @@
-html,
 body {
   height: 100%;
   width: 100%;
   overflow: hidden;
-}
-
-body {
   display: -ms-flexbox;
   -ms-flex-align: center;
   align-items: center;
   position: fixed;
+  background-color: aliceblue !important;
 }
 
 #root {
   height: 100%;
   width: 100vw;
-  /* position: fixed; */
   overflow: hidden;
 
   position: absolute;

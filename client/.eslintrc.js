@@ -1,9 +1,14 @@
-{
+module.exports = {
+  "env": {
+    "node": true,
+  },
   "plugins": ["prettier", "@typescript-eslint"],
   "extends": ["airbnb-typescript", "react-app", "prettier"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": "./tsconfig.json"
+    "project": "./tsconfig.json",
+    "tsconfigRootDir": __dirname,
+    "sourceType": "module"
   },
   "settings": {
     "import/resolver": {

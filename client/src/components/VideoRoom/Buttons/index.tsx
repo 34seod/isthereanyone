@@ -10,8 +10,8 @@ import {
   faLockOpen,
   faComments
 } from '@fortawesome/free-solid-svg-icons';
-import IconButton from './IconButton/IconButton';
-import { RoomState } from '../types';
+import IconButton from '../../IconButton';
+import { RoomState } from '../../../types';
 
 type Props = {
   handleMute: (isVoiceOn: boolean) => void
@@ -29,7 +29,7 @@ type Props = {
   setIsNewMessage: Dispatch<SetStateAction<boolean>>
 };
 
-const VideoRoomButtons = ({
+const Buttons = ({
   handleMute, handleScreen, setLock, handleLock, roomState,
   isScreenShare, stopCapture, handleScreenShare,
   setShowMessage, setRoomState, lock, isNewMessage, setIsNewMessage
@@ -116,4 +116,4 @@ const VideoRoomButtons = ({
   );
 };
 
-export default VideoRoomButtons;
+export default Buttons;

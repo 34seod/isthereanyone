@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import './IconButton.css';
+import './index.css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 type Props = {

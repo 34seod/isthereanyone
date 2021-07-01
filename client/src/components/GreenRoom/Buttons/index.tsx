@@ -8,8 +8,8 @@ import {
   faSignOutAlt,
   faSignInAlt
 } from '@fortawesome/free-solid-svg-icons';
-import { RoomState } from '../types';
-import IconButton from './IconButton/IconButton';
+import { RoomState } from '../../../types';
+import IconButton from '../../IconButton';
 
 type Props = {
   roomState: RoomState
@@ -17,7 +17,7 @@ type Props = {
   handleStartButton: () => void
 };
 
-const GreenRoomButtons = ({
+const Buttons = ({
   setRoomState, roomState, handleStartButton
 }: Props) => {
   const history = useHistory();
@@ -62,4 +62,4 @@ const GreenRoomButtons = ({
   );
 };
 
-export default GreenRoomButtons;
+export default Buttons;

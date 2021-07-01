@@ -3,7 +3,7 @@ video {
 }
 
 .video-room {
-  background-color: dimgray;
+  background-color: dimgray !important;
 }
 
 .video-padding {

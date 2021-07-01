@@ -3,7 +3,7 @@ import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { RefObject, useEffect, useRef } from 'react';
 import useDraggable from '../../hooks/useDraggable';
-import './MyCam.css';
+import './index.css';
 
 type Props = {
   videoRef: RefObject<HTMLVideoElement>

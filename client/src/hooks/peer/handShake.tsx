@@ -56,7 +56,7 @@ const handShake = (
       peersRef.current[socketId].pc = pc;
       return pc;
     } catch (e) {
-      console.log('Failed to create PeerConnection, exception: ', e.message);
+      if (process.env.NODE_ENV === 'development') console.log('Failed to create PeerConnection, exception: ', e.message);
       return undefined;
     }
   };
@@ -96,13 +96,17 @@ const handShake = (
   const doCall = (socketId: string) => {
     peersRef.current[socketId]?.pc?.createOffer().then((offer) => {
       setLocalAndSendMessage(offer, socketId);
-    }).catch((error: Error) => console.log('createOffer() error: ', error.toString()));
+    }).catch((error: Error) => {
+      if (process.env.NODE_ENV === 'development') console.log('createOffer() error: ', error.toString());
+    });
   };
 
   const doAnswer = (socketId: string) => {
     peersRef.current[socketId]?.pc?.createAnswer().then((answer) => {
       setLocalAndSendMessage(answer, socketId);
-    }).catch((error: Error) => console.log('Failed to create session description: ', error.toString()));
+    }).catch((error: Error) => {
+      if (process.env.NODE_ENV === 'development') console.log('Failed to create session description: ', error.toString());
+    });
   };
 
   const setLocalAndSendMessage = (

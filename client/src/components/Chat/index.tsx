@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { KeyboardEvent, useState, ChangeEvent, Dispatch, SetStateAction, useRef, useEffect } from 'react';
 import useDraggable from '../../hooks/useDraggable';
 import { Message } from '../../types';
-import './Chat.css';
+import './index.css';
 
 type Props = {
   showMessage: boolean

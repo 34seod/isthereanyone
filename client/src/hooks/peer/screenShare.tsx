@@ -19,7 +19,7 @@ const screenShare = (
   const handleScreenShareError = (e: Error) => {
     setIsScreenShare(false);
     screenShareRef.current = false;
-    console.log('getDisplayMedia error: ', e.toString());
+    if (process.env.NODE_ENV === 'development') console.log('getDisplayMedia error: ', e.toString());
   };
 
   const handleScreenShareSuccess = (stream: MediaStream) => {

@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef, Dispatch, SetStateAction } from 'react';
 import useSocket from '../../hooks/useSocket';
 import { RoomState, VideoSrc } from '../../types';
-import Chat from '../Chat/Chat';
-import Video from '../Video/Video';
-import './VideoRoom.css';
-import FlashMessage from '../FlashMessage/FlashMessage';
-import VideoRoomButtons from '../VideoRoomButtons';
-import MyCam from '../MyCam/MyCam';
+import Chat from '../Chat';
+import Video from '../Video';
+import './index.css';
+import FlashMessage from '../FlashMessage';
+import Buttons from './Buttons';
+import MyCam from '../MyCam';
 
 type Props = {
   roomId: string
@@ -76,7 +76,7 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
             <h1 className="m-auto text-white">Nobody in here</h1>
           </div>
       }
-      <VideoRoomButtons
+      <Buttons
         handleMute={handleMute}
         handleScreen={handleScreen}
         setLock={setLock}

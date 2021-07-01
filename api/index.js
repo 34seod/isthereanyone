@@ -10,7 +10,7 @@ const io = require("socket.io")(server, {
 const PORT = process.env.API_PORT || 4000;
 
 io.sockets.on("connection", (socket) => {
-  console.log(`Client ${socket.id} connected`);
+  if (process.env.NODE_ENV === 'development') console.log(`Client ${socket.id} connected`);
 
   const { roomId } = socket.handshake.query;
 
@@ -61,12 +61,12 @@ io.sockets.on("connection", (socket) => {
 
   // Leave the room if the user closes the socket
   socket.on("disconnect", () => {
-    console.log(`Client ${socket.id} diconnected`);
+    if (process.env.NODE_ENV === 'development') console.log(`Client ${socket.id} diconnected`);
     io.in(roomId).emit('message', socket.id, { type: 'bye' } );
     socket.leave(roomId);
   });
 });
 
 server.listen(PORT, () => {
-  // console.log(`Listening on port ${PORT}`);
+  if (process.env.NODE_ENV === 'development') console.log(`Listening on port ${PORT}`);
 });

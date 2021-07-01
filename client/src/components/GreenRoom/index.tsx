@@ -4,8 +4,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { RoomState } from '../../types';
-import './GreenRoom.css';
-import GreenRoomButtons from '../GreenRoomButtons';
+import './index.css';
+import Buttons from './Buttons';
 
 type Props = {
   roomId: string
@@ -53,7 +53,7 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
               className="text-input-field ml-auto mr-auto border border-dark rounded"
             />
           </div>
-          <GreenRoomButtons
+          <Buttons
             roomState={roomState}
             setRoomState={setRoomState}
             handleStartButton={handleStartButton}

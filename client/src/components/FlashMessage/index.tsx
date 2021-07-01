@@ -1,5 +1,5 @@
 import React, { useEffect, Dispatch, SetStateAction } from 'react';
-import './FlashMessage.css';
+import './index.css';
 
 type Props = {
   message: string

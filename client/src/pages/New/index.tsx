@@ -2,9 +2,9 @@ import React, { useEffect, createRef, useState, ChangeEvent, KeyboardEvent } fro
 import { Link, useHistory, useLocation  } from 'react-router-dom';
 import { faDoorClosed } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import FlashMessage from '../../components/FlashMessage/FlashMessage';
+import FlashMessage from '../../components/FlashMessage';
 import { urlEscape } from '../../types';
-import './New.css';
+import './index.css';
 
 const New = () => {
   const [roomName, setRoomName] = useState('');

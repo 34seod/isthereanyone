@@ -50,9 +50,9 @@ const Video = ({ videoSrc }: Props) => {
       </video>
       <p className="text-truncate nickname" title={videoSrc.nickname}>{videoSrc.nickname}</p>
       <div className="video-button p-2 w-100 d-flex justify-content-between">
-        {videoSrc.isVoiceOn ? <div /> : <FontAwesomeIcon icon={faMicrophoneSlash} className="icon-size line-height-mute mr-1 text-white" />}
+        {videoSrc.isVoiceOn ? <div /> : <div className="btn"><FontAwesomeIcon icon={faMicrophoneSlash} className="line-height-mute mr-1 text-white" /></div>}
         <button type="button" className="btn " onClick={fullscreen}>
-          <FontAwesomeIcon icon={faExpand} className="icon-size text-white" />
+          <FontAwesomeIcon icon={faExpand} className="text-white" />
         </button>
       </div>
     </div>

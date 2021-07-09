@@ -80,7 +80,7 @@ const Buttons = ({
 
   return (
     <>
-      <div className="fixed-bottom mb-2 d-flex">
+      <div className="fixed-bottom mb-3 d-flex">
         <div className="ml-auto mr-auto">
           <IconButton
             icon={lock ? faLock : faLockOpen}

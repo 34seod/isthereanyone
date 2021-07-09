@@ -3,8 +3,8 @@
   width: 12rem;
   height: 9rem;
   z-index: 2000;
-  bottom: 4rem;
-  left: 1rem;
+  bottom: 4.5rem;
+  left: 3.6rem;
 }
 
 .my-cam video {
@@ -53,8 +53,8 @@
     width: 8rem;
     height: 6rem;
     z-index: 2000;
-    bottom: 4rem;
-    left: 1rem;
+    bottom: 4.5rem;
+    left: 1.5rem;
   }
 
   .room-title-btn {

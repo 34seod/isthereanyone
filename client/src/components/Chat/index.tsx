@@ -63,6 +63,15 @@ const Chat = ({
     if (e.key === 'Enter') handleSendMessage();
   };
 
+  const parseBody = (body: string) => {
+    try {
+      const url = new URL(body);
+      return (<a href={url.href} rel="noreferrer" target="_blank">{body}</a>);
+    } catch {
+      return body;
+    }
+  };
+
   return (
     <div ref={chatRef} className={`chat-room-container rounded ${showMessage ? '' : 'd-none'}`}>
       <div className="modal-content">
@@ -80,8 +89,8 @@ const Chat = ({
                   <span className="d-inline-block text-truncate name-with font-weight-bold" title={message.nickname}>{message.nickname}</span>
                   <span>{`(${message.sendedAt})`}</span>
                 </small>
-                <div className={`message-item p-1 rounded text-white ${message.ownedByCurrentUser ? 'bg-primary ml-auto' : 'bg-success'}`}>
-                  <span className="text-break">{message.body}</span>
+                <div className={`message-item p-1 rounded ${message.ownedByCurrentUser ? 'bg-my-msg ml-auto' : 'bg-other-msg'}`}>
+                  <span className="text-break">{parseBody(message.body)}</span>
                 </div>
               </div>
             ))

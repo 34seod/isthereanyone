@@ -20,7 +20,6 @@ export type Message = {
   sendedAt: string
 };
 
-
 export type Sender = {
   [key: string]: RTCRtpSender
 };

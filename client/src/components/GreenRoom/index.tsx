@@ -25,7 +25,7 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
     if (e.key === 'Enter') handleStartButton();
   };
 
-  const handlenicknameChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleNicknameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setRoomState((prev) => ({ ...prev, nickname: event.target.value.trim() }));
   };
 
@@ -48,7 +48,7 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
               type="text"
               placeholder="name"
               value={roomState.nickname}
-              onChange={handlenicknameChange}
+              onChange={handleNicknameChange}
               onKeyPress={handleKeyPress}
               className="text-input-field ml-auto mr-auto border border-dark rounded"
             />

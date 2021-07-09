@@ -4,7 +4,7 @@
 
 .chat-room-container {
   position: fixed;
-  left: 1rem;
+  left: 3.6rem;
   top: 25%;
   background-color: white;
   width: max-content;
@@ -43,4 +43,12 @@
 .message-item ::selection {
   background: rgba(255, 255, 255, 0.5);
   color: #fff;
+}
+
+.bg-my-msg {
+  background-color: aliceblue;
+}
+
+.bg-other-msg {
+  background-color: honeydew;
 }

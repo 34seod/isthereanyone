@@ -29,12 +29,23 @@ video::-webkit-media-controls-time-remaining-display {
   padding: 0.3rem;
   margin: 0;
   max-width: 15rem;
+  position: absolute;
+  top: 0;
 }
 
 .screen-off {
   font-size: 3rem;
 }
 
-.mute {
-  font-size: 1.4rem;
+.icon-size {
+  font-size: 1.5rem;
+}
+
+.line-height-mute {
+  line-height: 3.5rem;
+}
+
+.video-button {
+  position: absolute;
+  bottom: 0;
 }

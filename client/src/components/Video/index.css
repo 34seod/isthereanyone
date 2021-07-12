@@ -49,3 +49,7 @@ video::-webkit-media-controls-time-remaining-display {
   position: absolute;
   bottom: 0;
 }
+
+video {
+  background-color: black;
+}

@@ -8,12 +8,11 @@ import './index.css';
 import Buttons from './Buttons';
 
 type Props = {
-  roomId: string
   roomState: RoomState
   setRoomState: Dispatch<SetStateAction<RoomState>>
 };
 
-const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
+const GreenRoom = ({ roomState, setRoomState }: Props) => {
   const inputRef = createRef<HTMLInputElement>();
 
   useEffect(() => {
@@ -37,7 +36,7 @@ const GreenRoom = ({ roomId, roomState, setRoomState }: Props) => {
   };
 
   return (
-    <div className="green-room fix h-100 w-100">
+    <div className="green-room fix">
       <FontAwesomeIcon icon={faDoorOpen} className="background-icon" />
       <div className="d-flex h-100 w-100">
         <div className="m-auto wrapper rounded">

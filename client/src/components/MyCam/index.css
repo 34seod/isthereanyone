@@ -9,6 +9,7 @@
 
 .my-cam video {
   cursor: move;
+  background-color: gray;
 }
 
 .room-title-btn {

@@ -65,8 +65,10 @@ const Chat = ({
 
   const parseBody = (body: string) => {
     try {
-      const url = new URL(body);
-      return (<a href={url.href} rel="noreferrer" target="_blank">{body}</a>);
+      const notUrlInBody = body.slice(0, body.search('http'));
+      const urlInBody = body.slice(body.search('http'));
+      const url = new URL(urlInBody);
+      return (<>{notUrlInBody}<a href={url.href} rel="noreferrer" target="_blank">{urlInBody}</a></>);
     } catch {
       return body;
     }

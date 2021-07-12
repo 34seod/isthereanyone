@@ -13,6 +13,16 @@
   padding: 1rem;
 }
 
+.title {
+  font-size: 4rem;
+  color: white;
+}
+
+.text-input-field {
+  font-size: 1.5rem;
+  max-width: 20rem;
+}
+
 @media only screen and (max-width: 600px) {
   .green-room .background-icon {
     color: darkslateblue;
@@ -27,5 +37,15 @@
   .wrapper {
     background: none;
     padding: 0;
+  }
+
+  .title {
+    font-size: 10vw;
+    color: black;
+  }
+
+  .text-input-field {
+    font-size: 1.4rem;
+    max-width: 10rem;
   }
 }

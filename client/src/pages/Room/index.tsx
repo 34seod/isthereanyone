@@ -27,7 +27,7 @@ const Room = ({ roomId }: MatchParams) => {
   }, []);
 
   return (
-    <div className="fix h-100 w-100">
+    <div className="fix">
       {
         roomState.isStarted ?
           <VideoRoom
@@ -36,7 +36,6 @@ const Room = ({ roomId }: MatchParams) => {
             setRoomState={setRoomState}
           /> :
           <GreenRoom
-            roomId={roomId}
             roomState={roomState}
             setRoomState={setRoomState}
           />

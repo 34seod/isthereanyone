@@ -11,7 +11,7 @@ export default {
 
 const Template: Story<React.ComponentProps<typeof MyCam>> = (args) => {
   const videoRef = useRef(document.createElement('video'));
-  const [showFlashMessage, setShowFlashMessage] = useState<boolean>(false);
+  const [, setShowFlashMessage] = useState<boolean>(false);
   const myCamArgs = { ...args, videoRef, setShowFlashMessage };
 
   return <MyCam {...myCamArgs} />;

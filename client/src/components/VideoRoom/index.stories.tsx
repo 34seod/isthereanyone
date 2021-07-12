@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
 import { Meta, Story } from '@storybook/react';
 import { RoomState } from '../../types';
-import GreenRoom from '.';
+import VideoRoom from '.';
 
 export default {
-  title: 'GreenRoom',
-  component: GreenRoom,
+  title: 'VideoRoom',
+  component: VideoRoom,
 } as Meta;
 
-const Template: Story<React.ComponentProps<typeof GreenRoom>> = (args) => {
+const Template: Story<React.ComponentProps<typeof VideoRoom>> = (args) => {
   const [, setRoomState] = useState<RoomState>(args.roomState);
-  const greenRoomArgs = { ...args, setRoomState };
+  const videoRoomArgs = { ...args, setRoomState };
 
-  return <GreenRoom {...greenRoomArgs} />;
+  return <VideoRoom {...videoRoomArgs} />;
 };
 
 export const Default = Template.bind({});
 Default.args = {
+  roomId: 'test room',
   roomState: {
-    isStarted: false,
+    isStarted: true,
     isVoiceOn: true,
     isScreenOn: true,
     nickname: 'Guest'

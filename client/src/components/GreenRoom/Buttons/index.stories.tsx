@@ -9,7 +9,7 @@ export default {
 } as Meta;
 
 const Template: Story<React.ComponentProps<typeof Buttons>> = (args) => {
-  const [roomState, setRoomState] = useState<RoomState>(args.roomState);
+  const [, setRoomState] = useState<RoomState>(args.roomState);
   const handleStartButton = () => null;
   const greenRoomButtonsArgs = { ...args, setRoomState, handleStartButton };
 

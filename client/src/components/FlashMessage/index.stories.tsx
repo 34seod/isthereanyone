@@ -8,7 +8,7 @@ export default {
 } as Meta;
 
 const Template: Story<React.ComponentProps<typeof FlashMessage>> = (args) => {
-  const [not, unmount] = useState<boolean>(false);
+  const [, unmount] = useState<boolean>(false);
   const flashMessageArgs = { ...args, unmount };
 
   return <FlashMessage {...flashMessageArgs} />;

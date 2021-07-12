@@ -2,11 +2,11 @@ import React, { useEffect, useState, useRef, Dispatch, SetStateAction } from 're
 import useSocket from '../../hooks/useSocket';
 import { RoomState, VideoSrc } from '../../types';
 import Chat from '../Chat';
-import Video from '../Video';
-import './index.css';
 import FlashMessage from '../FlashMessage';
 import Buttons from './Buttons';
 import MyCam from '../MyCam';
+import VideoRow from '../VideoRow';
+import './index.css';
 
 type Props = {
   roomId: string
@@ -48,13 +48,6 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
     start(videoRef);
   }, [roomId]);
 
-  const remoteVideoes = () =>
-    videoSrces.map((videoSrc) =>
-      <div className="col video-padding" key={`${videoSrc.socketId}`}>
-        <Video videoSrc={videoSrc} />
-      </div>
-    );
-
   return (
     <div className="fix">
       {showFlashMessage ? <FlashMessage message="URL has been copied. Share with others." during={3000} unmount={setShowFlashMessage} /> : null}
@@ -65,17 +58,7 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
         roomId={roomId}
         setShowFlashMessage={setShowFlashMessage}
       />
-      {
-        videoSrces.length > 0 ?
-          <div className="container h-100 d-flex">
-            <div className={`m-auto row row-cols-${videoSrces.length > 2 ? Math.ceil(videoSrces.length / 2) : videoSrces.length}`}>
-              {remoteVideoes()}
-            </div>
-          </div> :
-          <div className="d-flex w-100 h-100">
-            <h1 className="m-auto text-white">Nobody in here</h1>
-          </div>
-      }
+      <VideoRow videoSrces={videoSrces} />
       <Buttons
         handleMute={handleMute}
         handleScreen={handleScreen}

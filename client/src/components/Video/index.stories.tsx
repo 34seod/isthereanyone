@@ -9,7 +9,7 @@ export default {
 } as Meta;
 
 const Template: Story<React.ComponentProps<typeof Video>> = (args) => {
-  const [videoSrc, setVideoSrc] = useState<VideoSrc>(args.videoSrc);
+  const [, setVideoSrc] = useState<VideoSrc>(args.videoSrc);
   const videoArgs = { ...args, setVideoSrc };
 
   return <Video {...videoArgs} />;

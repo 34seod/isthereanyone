@@ -8,8 +8,8 @@ export default {
 } as Meta;
 
 const Template: Story<React.ComponentProps<typeof Chat>> = (args) => {
-  const [isNewMessage, setIsNewMessage] = useState<boolean>(false);
-  const [showMessage, setShowMessage] = useState<boolean>(false);
+  const [, setIsNewMessage] = useState<boolean>(false);
+  const [, setShowMessage] = useState<boolean>(false);
   const sendMessage = (newMessage: string, nickname: string) => null;
   const chatArgs = { ...args, setShowMessage, setIsNewMessage, sendMessage };
 
@@ -59,6 +59,6 @@ LinkMessage.args = {
   messages: [
     { ownedByCurrentUser: true, body: 'test message1aaaaaaaaaaaaaaaaaaa', senderId: 'abcdefg', nickname: 'nickname1', sendedAt: '21/07/12 13:44:10' },
     { ownedByCurrentUser: false, body: 'https://isthereany.one/asdf', senderId: 'abcdefg', nickname: 'nickname2', sendedAt: '21/07/12 13:44:10' },
-    { ownedByCurrentUser: true, body: 'https://isthereany.one/asdf', senderId: 'abcdefg', nickname: 'nickname1', sendedAt: '21/07/12 13:44:10' },
+    { ownedByCurrentUser: true, body: 'asdfasdfhttps://isthereany.one/asdf', senderId: 'abcdefg', nickname: 'nickname1', sendedAt: '21/07/12 13:44:10' },
   ],
 };

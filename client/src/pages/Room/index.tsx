@@ -36,7 +36,6 @@ const Room = ({ roomId }: MatchParams) => {
             setRoomState={setRoomState}
           /> :
           <GreenRoom
-            roomId={roomId}
             roomState={roomState}
             setRoomState={setRoomState}
           />

@@ -14,18 +14,18 @@ import IconButton from '../../IconButton';
 import { RoomState } from '../../../types';
 
 type Props = {
+  lock: boolean
+  roomState: RoomState
+  isNewMessage: boolean,
+  isScreenShare: boolean
+  handleLock: () => void
+  stopCapture: () => void
+  handleScreenShare: () => void
   handleMute: (isVoiceOn: boolean) => void
   handleScreen: (isScreenOn: boolean) => void
   setLock: Dispatch<SetStateAction<boolean>>
-  handleLock: () => void
-  isScreenShare: boolean
-  stopCapture: () => void
-  handleScreenShare: () => void
   setShowMessage: Dispatch<SetStateAction<boolean>>
   setRoomState: Dispatch<SetStateAction<RoomState>>
-  roomState: RoomState
-  lock: boolean
-  isNewMessage: boolean,
   setIsNewMessage: Dispatch<SetStateAction<boolean>>
 };
 

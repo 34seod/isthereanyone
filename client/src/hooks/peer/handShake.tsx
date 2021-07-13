@@ -56,7 +56,7 @@ const handShake = (
       peersRef.current[socketId].pc = pc;
       return pc;
     } catch (e) {
-      if (process.env.NODE_ENV === 'development') console.log('Failed to create PeerConnection, exception: ', e.message);
+      // if (process.env.NODE_ENV === 'development') console.log('Failed to create PeerConnection, exception: ', e.message);
       return undefined;
     }
   };
@@ -97,7 +97,7 @@ const handShake = (
     peersRef.current[socketId]?.pc?.createOffer().then((offer) => {
       setLocalAndSendMessage(offer, socketId);
     }).catch((error: Error) => {
-      if (process.env.NODE_ENV === 'development') console.log('createOffer() error: ', error.toString());
+      // if (process.env.NODE_ENV === 'development') console.log('createOffer() error: ', error.toString());
     });
   };
 
@@ -105,7 +105,7 @@ const handShake = (
     peersRef.current[socketId]?.pc?.createAnswer().then((answer) => {
       setLocalAndSendMessage(answer, socketId);
     }).catch((error: Error) => {
-      if (process.env.NODE_ENV === 'development') console.log('Failed to create session description: ', error.toString());
+      // if (process.env.NODE_ENV === 'development') console.log('Failed to create session description: ', error.toString());
     });
   };
 

@@ -26,6 +26,7 @@ const Chat = ({
 }: Props) => {
   const [newMessage, setNewMessage] = useState('');
   const chatRef = useRef(document.createElement('div'));
+  const msgCountRef = useRef(0);
   const chatheaderRef = useRef(document.createElement('div'));
   const { dragElement, setDefault } = useDraggable(chatRef, chatheaderRef);
 
@@ -37,8 +38,11 @@ const Chat = ({
   useEffect(() => {
     const element = document.getElementById('chat-body');
     if (element) element.scrollTop = element.scrollHeight;
-    if (messages.length > 0 && !showMessage) setIsNewMessage(true);
-  }, [messages, setIsNewMessage]);
+    if (messages.length > msgCountRef.current && !showMessage) {
+      setIsNewMessage(true);
+    }
+    msgCountRef.current = messages.length;
+  }, [messages, setIsNewMessage, showMessage]);
 
   useEffect(() => {
     dragElement();

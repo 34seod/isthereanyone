@@ -18,7 +18,7 @@ const New = () => {
       setShowFlashMessage(true);
       history.push('/');
     }
-  }, []);
+  }, [history, inputRef, location.search]);
 
   const handleRoomNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setRoomName(urlEscape(event.target.value.trim()));

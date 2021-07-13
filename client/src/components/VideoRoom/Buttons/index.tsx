@@ -79,40 +79,38 @@ const Buttons = ({
   };
 
   return (
-    <>
-      <div className="fixed-bottom mb-3 d-flex">
-        <div className="ml-auto mr-auto">
-          <IconButton
-            icon={lock ? faLock : faLockOpen}
-            handleOnclick={handleLockButton}
-            className={lock ? 'bg-danger text-white' : 'bg-warning'}
-          />
-          <IconButton
-            icon={roomState.isVoiceOn ? faMicrophone : faMicrophoneSlash}
-            handleOnclick={handleMuteButton}
-            className={roomState.isVoiceOn ? 'bg-success text-white' : 'bg-danger text-white'}
-          />
-          <IconButton
-            icon={roomState.isScreenOn ? faVideo : faVideoSlash}
-            handleOnclick={handleVideoButton}
-            className={roomState.isScreenOn ? 'bg-success text-white' : 'bg-danger text-white'}
-          />
-          {screenShareButton()}
-          <IconButton
-            icon={faComments}
-            handleOnclick={handleOpenMessage}
-            className="bg-warning text-white"
-            notification={isNewMessage}
-          />
-          <IconButton
-            icon={faSignOutAlt}
-            handleOnclick={handleHangUpButton}
-            className="bg-danger text-white"
-            mr={0}
-          />
-        </div>
+    <div className="fixed-bottom mb-3 d-flex">
+      <div className="ml-auto mr-auto">
+        <IconButton
+          icon={lock ? faLock : faLockOpen}
+          handleOnclick={handleLockButton}
+          className={lock ? 'bg-danger text-white' : 'bg-warning'}
+        />
+        <IconButton
+          icon={roomState.isVoiceOn ? faMicrophone : faMicrophoneSlash}
+          handleOnclick={handleMuteButton}
+          className={roomState.isVoiceOn ? 'bg-success text-white' : 'bg-danger text-white'}
+        />
+        <IconButton
+          icon={roomState.isScreenOn ? faVideo : faVideoSlash}
+          handleOnclick={handleVideoButton}
+          className={roomState.isScreenOn ? 'bg-success text-white' : 'bg-danger text-white'}
+        />
+        {screenShareButton()}
+        <IconButton
+          icon={faComments}
+          handleOnclick={handleOpenMessage}
+          className="bg-warning text-white"
+          notification={isNewMessage}
+        />
+        <IconButton
+          icon={faSignOutAlt}
+          handleOnclick={handleHangUpButton}
+          className="bg-danger text-white"
+          mr={0}
+        />
       </div>
-    </>
+    </div>
   );
 };
 

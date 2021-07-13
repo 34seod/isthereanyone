@@ -13,7 +13,7 @@
 
 .body-size {
   height: 18rem;
-  max-width: 16rem;
+  max-width: 100%;
   overflow: auto;
 }
 

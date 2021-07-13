@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, Dispatch, SetStateAction } from 'react';
-import Socket, { io } from 'socket.io-client';
+import { Socket, io } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
 import { RoomState, VideoSrc } from '../types';
 import useChat from './useChat';
@@ -15,7 +15,7 @@ const useSocket = (
   setLock: Dispatch<SetStateAction<boolean>>,
   setIsScreenShare: Dispatch<SetStateAction<boolean>>
 ) => {
-  const socketRef = useRef<Socket.Socket<DefaultEventsMap, DefaultEventsMap>>();
+  const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>(io());
   const { messages, sendMessageSocket, newChatMessageOn } = useChat();
   const {
     start,

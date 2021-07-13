@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import React, { Dispatch, SetStateAction, MutableRefObject } from 'react';
+import { Dispatch, SetStateAction, MutableRefObject } from 'react';
 import { Sender } from '../../types';
 
 const screenShare = (

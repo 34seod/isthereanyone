@@ -24,7 +24,7 @@ const Room = ({ roomId }: MatchParams) => {
     if (location.pathname !== `/${url}`) {
       history.push(url);
     }
-  }, []);
+  }, [history, location.pathname]);
 
   return (
     <div className="fix">

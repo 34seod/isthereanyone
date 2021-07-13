@@ -135,7 +135,7 @@ const usePeer = (
       };
     });
 
-    socketRef.current?.on('message', (socketId: string, message: RTCSessionDescriptionInit | ICECandidate | RoomStateShare, nickname: string) => {
+    socketRef.current?.on('message', (socketId: string, message: RTCSessionDescriptionInit | ICECandidate | RoomStateShare | 'got user media', nickname: string) => {
       if (!peersRef.current[socketId]) {
         peersRef.current[socketId] = {
           pc: undefined,

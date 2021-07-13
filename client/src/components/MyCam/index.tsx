@@ -25,7 +25,7 @@ const MyCam = ({
 
   useEffect(() => {
     dragElement();
-  }, []);
+  }, [dragElement]);
 
   const handleLinkCopyButton = () => {
     const el = document.createElement('textarea');

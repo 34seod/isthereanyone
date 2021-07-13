@@ -1,8 +1,8 @@
 /* eslint-disable react/no-array-index-key */
 
+import React, { KeyboardEvent, useState, ChangeEvent, Dispatch, SetStateAction, useRef, useEffect } from 'react';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { KeyboardEvent, useState, ChangeEvent, Dispatch, SetStateAction, useRef, useEffect } from 'react';
 import useDraggable from '../../hooks/useDraggable';
 import { Message } from '../../types';
 import './index.css';
@@ -27,10 +27,10 @@ const Chat = ({
   const [newMessage, setNewMessage] = useState('');
   const chatRef = useRef(document.createElement('div'));
   const chatheaderRef = useRef(document.createElement('div'));
-  const closeRef = useRef(document.createElement('button'));
   const { dragElement, setDefault } = useDraggable(chatRef, chatheaderRef);
 
   const closeMessage = () => {
+    setIsNewMessage(false);
     setShowMessage(false);
   };
 
@@ -38,15 +38,14 @@ const Chat = ({
     const element = document.getElementById('chat-body');
     if (element) element.scrollTop = element.scrollHeight;
     if (messages.length > 0 && !showMessage) setIsNewMessage(true);
-  }, [messages]);
+  }, [messages, setIsNewMessage]);
 
   useEffect(() => {
     dragElement();
-    closeRef.current.ontouchstart = closeMessage;
-  }, []);
+  }, [dragElement]);
 
   // 채팅창 종료시 위치 초기화
-  useEffect(() => setDefault(), [showMessage]);
+  useEffect(() => setDefault(), [showMessage, setDefault]);
 
   const handleNewMessageChange = (event: ChangeEvent<HTMLInputElement>) => {
     setNewMessage(event.target.value);
@@ -55,6 +54,7 @@ const Chat = ({
   const handleSendMessage = () => {
     if (newMessage.trim().length > 0) {
       sendMessage(newMessage, nickname);
+      setIsNewMessage(false);
       setNewMessage('');
     }
   };
@@ -79,7 +79,7 @@ const Chat = ({
       <div className="modal-content">
         <div ref={chatheaderRef} className="modal-header move-cursor p-2">
           <h5 className="modal-title">Messages</h5>
-          <button ref={closeRef} type="button" className="close" onClick={closeMessage}>
+          <button type="button" className="close" onClick={closeMessage}>
             <span aria-hidden="true">&times;</span>
           </button>
         </div>

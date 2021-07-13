@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
-import React, { useRef, Dispatch, SetStateAction, MutableRefObject } from 'react';
+import { Dispatch, SetStateAction, MutableRefObject } from 'react';
 import { Socket } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
 import { RoomState, VideoSrc } from '../../types';

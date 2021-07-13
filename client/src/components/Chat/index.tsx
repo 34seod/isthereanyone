@@ -98,7 +98,7 @@ const Chat = ({
             ))
           }
         </div>
-        <div className="modal-footer p-2">
+        <div className="modal-footer justify-content-center p-2">
           <input
             type="text"
             value={newMessage}

@@ -60,7 +60,6 @@ describe('Room', () => {
   it('change isStarted when click start button', () => {
     window.MediaStream = jest.fn().mockImplementation(() => ({
       addTrack: jest.fn()
-      // Add any method you want to mock
     }));
     Object.defineProperty(HTMLMediaElement.prototype, 'muted', {
       set: jest.fn(),

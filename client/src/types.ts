@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from 'react';
+
 export type RoomState = {
   isStarted: boolean
   isVoiceOn: boolean
@@ -23,6 +25,8 @@ export type Message = {
 export type Sender = {
   [key: string]: RTCRtpSender
 };
+
+export type SetState<T> = Dispatch<SetStateAction<T>>;
 
 export const urlEscape = (roomId: string) => (
   roomId.replace(/(`|~|!|@|#|\$|%|\^|&|\*|\(|\)|-|_|=|\+|{|}|\[|\]|\\|\||'|"|;|:|,|<|>|\.|\/|\?|\s)/g, '')

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Meta, Story } from '@storybook/react';
+import { SetState } from '../../types';
 import Chat from '.';
 
 export default {
@@ -8,8 +9,8 @@ export default {
 } as Meta;
 
 const Template: Story<React.ComponentProps<typeof Chat>> = (args) => {
-  const [, setIsNewMessage] = useState<boolean>(false);
-  const [, setShowMessage] = useState<boolean>(false);
+  const setIsNewMessage = ((value: boolean) => null) as SetState<boolean>;
+  const setShowMessage = ((value: boolean) => null) as SetState<boolean>;
   const sendMessage = (newMessage: string, nickname: string) => null;
   const chatArgs = { ...args, setShowMessage, setIsNewMessage, sendMessage };
 

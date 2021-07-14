@@ -10,6 +10,7 @@ type Props = {
   roomName: string
   setShowFlashMessage: Dispatch<React.SetStateAction<boolean>>
   handleKeyPress: (event: KeyboardEvent<HTMLInputElement>) => void
+  handleOnClick: () => void
   handleRoomNameChange: (event: ChangeEvent<HTMLInputElement>) => void
 };
 
@@ -19,6 +20,7 @@ const Door = ({
   roomName,
   setShowFlashMessage,
   handleKeyPress,
+  handleOnClick,
   handleRoomNameChange
 }: Props) => (
   <>
@@ -43,9 +45,9 @@ const Door = ({
           <span className="title">?</span>
         </div>
         <div className="text-center">
-          <a href={`/${roomName}`} className="mt-3 btn enter-btn-size btn-primary">
+          <button type="button" onClick={handleOnClick} className="mt-3 btn enter-btn-size btn-primary">
             Knock! Knock!
-          </a>
+          </button>
         </div>
       </div>
     </div>

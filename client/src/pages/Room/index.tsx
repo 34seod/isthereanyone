@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import GreenRoom from '../../components/GreenRoom';
 import VideoRoom from '../../components/VideoRoom';
 import { RoomState, urlEscape } from '../../types';
 import './index.css';
 
-type MatchParams = {
-  roomId: string
-};
-
-const Room = ({ roomId }: MatchParams) => {
+const Room = () => {
+  const { roomId } = useParams< { roomId: string } >();
   const history = useHistory();
   const location = useLocation();
   const [roomState, setRoomState] = useState<RoomState>({

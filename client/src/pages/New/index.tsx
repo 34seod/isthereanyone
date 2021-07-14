@@ -28,6 +28,8 @@ const New = () => {
     if (event.key === 'Enter') history.push(`/${roomName}`);
   };
 
+  const handleOnClick = () => history.push(`/${roomName}`);
+
   return (
     <div className="new fix">
       <Door
@@ -36,6 +38,7 @@ const New = () => {
         roomName={roomName}
         setShowFlashMessage={setShowFlashMessage}
         handleKeyPress={handleKeyPress}
+        handleOnClick={handleOnClick}
         handleRoomNameChange={handleRoomNameChange}
       />
     </div>

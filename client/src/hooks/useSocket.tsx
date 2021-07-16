@@ -2,7 +2,6 @@
 import { useEffect, useRef, Dispatch, SetStateAction } from 'react';
 import { Socket, io } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
-import { RoomState, VideoSrc } from '../types';
 import useChat from './useChat';
 import usePeer from './usePeer';
 

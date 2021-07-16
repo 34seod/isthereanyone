@@ -3,7 +3,6 @@
 import { useRef, Dispatch, SetStateAction, RefObject } from 'react';
 import { Socket } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
-import { RoomState, Sender, VideoSrc } from '../types';
 import handShake from './peer/handShake';
 import screenShare from './peer/screenShare';
 

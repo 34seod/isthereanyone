@@ -1,7 +1,6 @@
 import { faMicrophoneSlash, faExpand } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useRef, useEffect } from 'react';
-import { VideoSrc } from '../../types';
 import './index.css';
 
 type Props = {

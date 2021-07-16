@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { ComponentProps, useState } from 'react';
 import { Meta, Story } from '@storybook/react';
-import { RoomState } from '../../types';
 import VideoRoom from '.';
 
 export default {
@@ -8,7 +7,7 @@ export default {
   component: VideoRoom,
 } as Meta;
 
-const Template: Story<React.ComponentProps<typeof VideoRoom>> = (args) => {
+const Template: Story<ComponentProps<typeof VideoRoom>> = (args) => {
   const [, setRoomState] = useState<RoomState>(args.roomState);
   const videoRoomArgs = { ...args, setRoomState };
 

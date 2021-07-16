@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { ComponentProps, useState } from 'react';
 import { Meta, Story } from '@storybook/react';
-import { RoomState } from '../../../types';
 import Buttons from '.';
 
 export default {
@@ -8,7 +7,7 @@ export default {
   component: Buttons,
 } as Meta;
 
-const Template: Story<React.ComponentProps<typeof Buttons>> = (args) => {
+const Template: Story<ComponentProps<typeof Buttons>> = (args) => {
   const [, setRoomState] = useState<RoomState>(args.roomState);
   const handleStartButton = () => null;
   const greenRoomButtonsArgs = { ...args, setRoomState, handleStartButton };

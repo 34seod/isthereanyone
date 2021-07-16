@@ -4,7 +4,6 @@ import React, { KeyboardEvent, useState, ChangeEvent, Dispatch, SetStateAction, 
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useDraggable from '../../hooks/useDraggable';
-import { Message } from '../../types';
 import './index.css';
 
 type Props = {

@@ -3,7 +3,6 @@ import {
   faDoorOpen,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { RoomState } from '../../types';
 import './index.css';
 import Buttons from './Buttons';
 

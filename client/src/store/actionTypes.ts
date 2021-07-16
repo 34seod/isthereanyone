@@ -1,0 +1,1 @@
+export const SHOW_FLASH_MESSAGE = 'SHOW_FLASH_MESSAGE';

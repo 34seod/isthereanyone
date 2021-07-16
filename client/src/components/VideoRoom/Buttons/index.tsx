@@ -11,7 +11,6 @@ import {
   faComments
 } from '@fortawesome/free-solid-svg-icons';
 import IconButton from '../../IconButton';
-import { RoomState } from '../../../types';
 
 type Props = {
   lock: boolean

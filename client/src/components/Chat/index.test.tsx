@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { render, screen, cleanup, fireEvent } from '@testing-library/react';
-import { SetState } from '../../types';
 import Chat from '.';
+
+type SetState<T> = Dispatch<SetStateAction<T>>;
 
 describe('Chat', () => {
   afterEach(cleanup);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ComponentProps } from 'react';
 import { Meta, Story } from '@storybook/react';
 import { faComments } from '@fortawesome/free-solid-svg-icons';
 import IconButton from '.';
@@ -8,7 +8,7 @@ export default {
   component: IconButton,
 } as Meta;
 
-type IconButtonStory = Story<React.ComponentProps<typeof IconButton>>;
+type IconButtonStory = Story<ComponentProps<typeof IconButton>>;
 const Template: IconButtonStory = (args) => <IconButton {...args} />;
 
 export const Default = Template.bind({});

@@ -1,5 +1,4 @@
 import React from 'react';
-import { VideoSrc } from '../../types';
 import Video from '../Video';
 
 type Props = {

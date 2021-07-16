@@ -4,7 +4,6 @@
 import { Dispatch, SetStateAction, MutableRefObject } from 'react';
 import { Socket } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
-import { RoomState, VideoSrc } from '../../types';
 
 type PeerConnection = {
   [key: string]: {

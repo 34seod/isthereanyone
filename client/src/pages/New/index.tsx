@@ -1,48 +1,11 @@
-import React, { useEffect, createRef, useState, ChangeEvent, KeyboardEvent } from 'react';
-import { useHistory, useLocation  } from 'react-router-dom';
+import React from 'react';
 import Door from '../../components/Door';
-import { urlEscape } from '../../types';
 import './index.css';
 
-const New = () => {
-  const [roomName, setRoomName] = useState('');
-  const [showFlashMessage, setShowFlashMessage] = useState<boolean>(false);
-  const inputRef = createRef<HTMLInputElement>();
-  const history = useHistory();
-  const location = useLocation();
-
-  useEffect(() => {
-    inputRef?.current?.focus();
-    document.body.classList.remove('video-room');
-    if (/locked/.test(location.search)) {
-      setShowFlashMessage(true);
-      history.push('/');
-    }
-  }, [history, inputRef, location.search]);
-
-  const handleRoomNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setRoomName(urlEscape(event.target.value.trim()));
-  };
-
-  const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') history.push(`/${roomName}`);
-  };
-
-  const handleOnClick = () => history.push(`/${roomName}`);
-
-  return (
-    <div className="new fix">
-      <Door
-        showFlashMessage={showFlashMessage}
-        inputRef={inputRef}
-        roomName={roomName}
-        setShowFlashMessage={setShowFlashMessage}
-        handleKeyPress={handleKeyPress}
-        handleOnClick={handleOnClick}
-        handleRoomNameChange={handleRoomNameChange}
-      />
-    </div>
-  );
-};
+const New: React.FC = () => (
+  <div className="new">
+    <Door />
+  </div>
+);
 
 export default New;

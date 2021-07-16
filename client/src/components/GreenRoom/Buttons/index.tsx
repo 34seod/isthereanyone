@@ -8,7 +8,6 @@ import {
   faSignOutAlt,
   faSignInAlt
 } from '@fortawesome/free-solid-svg-icons';
-import { RoomState } from '../../../types';
 import IconButton from '../../IconButton';
 
 type Props = {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import GreenRoom from '../../components/GreenRoom';
 import VideoRoom from '../../components/VideoRoom';
-import { RoomState, urlEscape } from '../../types';
+import { urlEscape } from '../../sharedFunctions';
 import './index.css';
 
 const Room = () => {

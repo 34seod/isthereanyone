@@ -1,20 +1,39 @@
-import React, { useEffect, Dispatch, SetStateAction } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
+import { showFlashMessage } from '../../store/actionCreators';
 import './index.css';
 
 type Props = {
   message: string
-  during: number
-  unmount: Dispatch<SetStateAction<boolean>>
+  during?: number
 };
 
-const FlashMessage = ({ message, during, unmount }: Props) => {
+const FlashMessage: React.FC<Props> = ({ message, during }: Props) => {
+  const dispatch = useDispatch();
+  const timeIds = useRef<number[]>([]);
+  const show: boolean = useSelector(
+    (state: State) => state.flashMessage,
+    shallowEqual
+  );
+
   useEffect(() => {
-    setTimeout(() => unmount(false), during);
-  });
+    const id = setTimeout(() => {
+      timeIds.current.forEach((tid) => clearTimeout(tid));
+      timeIds.current = [];
+      dispatch(showFlashMessage(false));
+    }, during);
+    timeIds.current.push(id);
+  }, [show, dispatch, during]);
 
   return (
-    <div className="flash-message fixed-top">{message}</div>
+    <>
+      {show && <div className="flash-message fixed-top">{message}</div>}
+    </>
   );
+};
+
+FlashMessage.defaultProps = {
+  during: 3000
 };
 
 export default FlashMessage;

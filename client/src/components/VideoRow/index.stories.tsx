@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ComponentProps } from 'react';
 import { Meta, Story } from '@storybook/react';
 import VideoRow from '.';
 
@@ -7,7 +7,7 @@ export default {
   component: VideoRow,
 } as Meta;
 
-type VideoRowStory = Story<React.ComponentProps<typeof VideoRow>>;
+type VideoRowStory = Story<ComponentProps<typeof VideoRow>>;
 const Template: VideoRowStory = (args) => <VideoRow {...args} />;
 
 export const Default = Template.bind({});

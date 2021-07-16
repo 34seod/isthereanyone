@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ComponentProps } from 'react';
 import { Meta, Story } from '@storybook/react';
 import FlashMessage from '.';
 
@@ -7,12 +7,8 @@ export default {
   component: FlashMessage,
 } as Meta;
 
-const Template: Story<React.ComponentProps<typeof FlashMessage>> = (args) => {
-  const [, unmount] = useState<boolean>(false);
-  const flashMessageArgs = { ...args, unmount };
-
-  return <FlashMessage {...flashMessageArgs} />;
-};
+type FlashMessageStory = Story<ComponentProps<typeof FlashMessage>>;
+const Template: FlashMessageStory = (args) => <FlashMessage {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

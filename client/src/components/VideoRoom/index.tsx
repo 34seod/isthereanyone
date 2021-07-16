@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef, Dispatch, SetStateAction } from 'react';
 import useSocket from '../../hooks/useSocket';
-import { RoomState, VideoSrc } from '../../types';
 import Chat from '../Chat';
 import FlashMessage from '../FlashMessage';
 import Buttons from './Buttons';
@@ -19,7 +18,6 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
   const [videoSrces, setVideoSrces] = useState<VideoSrc[]>([]);
   const [lock, setLock] = useState<boolean>(false);
   const [isScreenShare, setIsScreenShare] = useState<boolean>(false);
-  const [showFlashMessage, setShowFlashMessage] = useState<boolean>(false);
   const [showMessage, setShowMessage] = useState<boolean>(false);
   const [isNewMessage, setIsNewMessage] = useState<boolean>(false);
   const {
@@ -50,13 +48,12 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
 
   return (
     <div className="fix">
-      {showFlashMessage ? <FlashMessage message="URL has been copied. Share with others." during={3000} unmount={setShowFlashMessage} /> : null}
+      <FlashMessage message="URL has been copied. Share with others." />
       <MyCam
         videoRef={videoRef}
         nickname={roomState.nickname}
         isScreenShare={isScreenShare}
         roomId={roomId}
-        setShowFlashMessage={setShowFlashMessage}
       />
       <VideoRow videoSrces={videoSrces} />
       <Buttons

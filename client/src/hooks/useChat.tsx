@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { Socket } from 'socket.io-client';
-import { formatDate, Message } from '../types';
+import { formatDate } from '../sharedFunctions';
 
 const NEW_CHAT_MESSAGE_EVENT = 'newChatMessage';
 

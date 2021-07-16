@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { ComponentProps, Dispatch, SetStateAction } from 'react';
 import { Meta, Story } from '@storybook/react';
-import { SetState } from '../../types';
 import Chat from '.';
 
 export default {
@@ -8,7 +7,9 @@ export default {
   component: Chat,
 } as Meta;
 
-const Template: Story<React.ComponentProps<typeof Chat>> = (args) => {
+type SetState<T> = Dispatch<SetStateAction<T>>;
+
+const Template: Story<ComponentProps<typeof Chat>> = (args) => {
   const setIsNewMessage = ((value: boolean) => null) as SetState<boolean>;
   const setShowMessage = ((value: boolean) => null) as SetState<boolean>;
   const sendMessage = (newMessage: string, nickname: string) => null;

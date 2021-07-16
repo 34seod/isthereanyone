@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { ComponentProps, useRef, useState } from 'react';
 import { Meta, Story } from '@storybook/react';
 import MyCam from '.';
 
@@ -9,7 +9,7 @@ export default {
 
 
 
-const Template: Story<React.ComponentProps<typeof MyCam>> = (args) => {
+const Template: Story<ComponentProps<typeof MyCam>> = (args) => {
   const videoRef = useRef(document.createElement('video'));
   const [, setShowFlashMessage] = useState<boolean>(false);
   const myCamArgs = { ...args, videoRef, setShowFlashMessage };

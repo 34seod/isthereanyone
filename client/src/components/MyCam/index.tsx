@@ -1,8 +1,10 @@
 /* eslint-disable no-param-reassign */
+import React, { RefObject, useEffect, useRef } from 'react';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { RefObject, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import useDraggable from '../../hooks/useDraggable';
+import { showFlashMessage } from '../../store/actionCreators';
 import './index.css';
 
 type Props = {
@@ -10,7 +12,6 @@ type Props = {
   nickname: string
   isScreenShare: boolean
   roomId: string
-  setShowFlashMessage: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 const MyCam = ({
@@ -18,10 +19,10 @@ const MyCam = ({
   nickname,
   isScreenShare,
   roomId,
-  setShowFlashMessage
 }: Props) => {
   const myCamRef = useRef(document.createElement('div'));
   const { dragElement } = useDraggable(myCamRef, myCamRef);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dragElement();
@@ -34,7 +35,7 @@ const MyCam = ({
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
-    setShowFlashMessage(true);
+    dispatch(showFlashMessage(true));
   };
 
   return (

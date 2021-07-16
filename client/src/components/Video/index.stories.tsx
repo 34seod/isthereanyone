@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { ComponentProps, useState } from 'react';
 import { Meta, Story } from '@storybook/react';
-import { VideoSrc } from '../../types';
 import Video from '.';
 
 export default {
@@ -8,7 +7,7 @@ export default {
   component: Video,
 } as Meta;
 
-const Template: Story<React.ComponentProps<typeof Video>> = (args) => {
+const Template: Story<ComponentProps<typeof Video>> = (args) => {
   const [, setVideoSrc] = useState<VideoSrc>(args.videoSrc);
   const videoArgs = { ...args, setVideoSrc };
 

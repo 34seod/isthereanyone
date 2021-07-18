@@ -2,27 +2,23 @@
 import React, { RefObject, useEffect, useRef } from 'react';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useDispatch } from 'react-redux';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import useDraggable from '../../hooks/useDraggable';
 import { showFlashMessage } from '../../store/actionCreators';
 import './index.css';
 
 type Props = {
   videoRef: RefObject<HTMLVideoElement>
-  nickname: string
-  isScreenShare: boolean
   roomId: string
 };
 
-const MyCam = ({
-  videoRef,
-  nickname,
-  isScreenShare,
-  roomId,
-}: Props) => {
+const MyCam: React.FC<Props> = ({ videoRef, roomId }: Props) => {
   const myCamRef = useRef(document.createElement('div'));
   const { dragElement } = useDraggable(myCamRef, myCamRef);
   const dispatch = useDispatch();
+  const {
+    isScreenShare, nickname
+  } = useSelector((state: State) => state, shallowEqual);
 
   useEffect(() => {
     dragElement();

@@ -1,4 +1,4 @@
-import React, { ComponentProps, useRef, useState } from 'react';
+import React, { ComponentProps, useRef } from 'react';
 import { Meta, Story } from '@storybook/react';
 import MyCam from '.';
 
@@ -7,33 +7,24 @@ export default {
   component: MyCam,
 } as Meta;
 
-
-
 const Template: Story<ComponentProps<typeof MyCam>> = (args) => {
   const videoRef = useRef(document.createElement('video'));
-  const [, setShowFlashMessage] = useState<boolean>(false);
-  const myCamArgs = { ...args, videoRef, setShowFlashMessage };
+  const myCamArgs = { ...args, videoRef };
 
   return <MyCam {...myCamArgs} />;
 };
 
 export const Default = Template.bind({});
 Default.args = {
-  nickname: 'nickname',
-  isScreenShare: true,
   roomId: 'test',
 };
 
 export const LinkTruncate = Template.bind({});
 LinkTruncate.args = {
-  nickname: 'nickname',
-  isScreenShare: true,
   roomId: 'testtesttesttesttesttesttesttesttesttest',
 };
 
 export const NicknameTruncate = Template.bind({});
 NicknameTruncate.args = {
-  nickname: 'nicknamenicknamenicknamenicknamenickname',
-  isScreenShare: true,
   roomId: 'test',
 };

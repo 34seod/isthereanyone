@@ -1,47 +1,42 @@
 /* eslint-disable react/no-array-index-key */
 
-import React, { KeyboardEvent, useState, ChangeEvent, Dispatch, SetStateAction, useRef, useEffect } from 'react';
+import React, { KeyboardEvent, useState, ChangeEvent, useRef, useEffect } from 'react';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import useDraggable from '../../hooks/useDraggable';
+import { changeIsNewMessage, changeShowMessage } from '../../store/actionCreators';
 import './index.css';
 
 type Props = {
-  showMessage: boolean
-  nickname: string,
   messages: Message[],
   sendMessage: (newMessage: string, nickname: string) => void,
-  setShowMessage: Dispatch<SetStateAction<boolean>>,
-  setIsNewMessage: Dispatch<SetStateAction<boolean>>
 };
 
-const Chat = ({
-  showMessage,
-  nickname,
-  messages,
-  sendMessage,
-  setShowMessage,
-  setIsNewMessage
-}: Props) => {
+const Chat: React.FC<Props> = ({ messages, sendMessage }: Props) => {
   const [newMessage, setNewMessage] = useState('');
   const chatRef = useRef(document.createElement('div'));
   const msgCountRef = useRef(0);
   const chatheaderRef = useRef(document.createElement('div'));
   const { dragElement, setDefault } = useDraggable(chatRef, chatheaderRef);
+  const dispatch = useDispatch();
+  const {
+    showMessage, nickname
+  } = useSelector((state: State) => state, shallowEqual);
 
   const closeMessage = () => {
-    setIsNewMessage(false);
-    setShowMessage(false);
+    dispatch(changeShowMessage(false));
+    dispatch(changeIsNewMessage(false));
   };
 
   useEffect(() => {
     const element = document.getElementById('chat-body');
     if (element) element.scrollTop = element.scrollHeight;
     if (messages.length > msgCountRef.current && !showMessage) {
-      setIsNewMessage(true);
+      dispatch(changeIsNewMessage(true));
     }
     msgCountRef.current = messages.length;
-  }, [messages, setIsNewMessage, showMessage]);
+  }, [dispatch, messages, showMessage]);
 
   useEffect(() => {
     dragElement();
@@ -57,7 +52,7 @@ const Chat = ({
   const handleSendMessage = () => {
     if (newMessage.trim().length > 0) {
       sendMessage(newMessage, nickname);
-      setIsNewMessage(false);
+      dispatch(changeIsNewMessage(false));
       setNewMessage('');
     }
   };

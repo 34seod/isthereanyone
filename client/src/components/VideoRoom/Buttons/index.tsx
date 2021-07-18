@@ -1,4 +1,5 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import {
   faMicrophone,
   faMicrophoneSlash,
@@ -11,39 +12,33 @@ import {
   faComments
 } from '@fortawesome/free-solid-svg-icons';
 import IconButton from '../../IconButton';
+import { changeIsCameraOn, changeIsMikeOn, changeIsNewMessage, changeLock, changeShowMessage } from '../../../store/actionCreators';
+import showMessage from '../../../store/reducers/showMessage';
 
 type Props = {
-  lock: boolean
-  roomState: RoomState
-  isNewMessage: boolean,
-  isScreenShare: boolean
   handleLock: () => void
-  stopCapture: () => void
   handleScreenShare: () => void
-  handleMute: (isVoiceOn: boolean) => void
-  handleScreen: (isScreenOn: boolean) => void
-  setLock: Dispatch<SetStateAction<boolean>>
-  setShowMessage: Dispatch<SetStateAction<boolean>>
-  setRoomState: Dispatch<SetStateAction<RoomState>>
-  setIsNewMessage: Dispatch<SetStateAction<boolean>>
+  handleMute: (isMikeOn: boolean) => void
+  handleScreen: (isCameraOn: boolean) => void
+  stopCapture: () => void
 };
 
-const Buttons = ({
-  handleMute, handleScreen, setLock, handleLock, roomState,
-  isScreenShare, stopCapture, handleScreenShare,
-  setShowMessage, setRoomState, lock, isNewMessage, setIsNewMessage
+const Buttons: React.FC<Props> = ({
+  handleLock, handleScreenShare, handleMute, handleScreen, stopCapture
 }: Props) => {
+  const dispatch = useDispatch();
+  const {
+    isCameraOn, isMikeOn, isScreenShare, lock, isNewMessage
+  } = useSelector((state: State) => state, shallowEqual);
 
   const handleMuteButton = () => {
-    setRoomState((prev: RoomState) =>
-      ({ ...prev, isVoiceOn: !prev.isVoiceOn }));
-    handleMute(!roomState.isVoiceOn);
+    dispatch(changeIsMikeOn(!isMikeOn));
+    handleMute(!isMikeOn);
   };
 
   const handleVideoButton = () => {
-    setRoomState((prev: RoomState) =>
-      ({ ...prev, isScreenOn: !prev.isScreenOn }));
-    handleScreen(!roomState.isScreenOn);
+    dispatch(changeIsCameraOn(!isCameraOn));
+    handleScreen(!isCameraOn);
   };
 
   const handleHangUpButton = () => {
@@ -51,7 +46,7 @@ const Buttons = ({
   };
 
   const handleLockButton = () => {
-    setLock((prev: boolean) => !prev);
+    dispatch(changeLock(!lock));
     handleLock();
   };
 
@@ -73,8 +68,8 @@ const Buttons = ({
   };
 
   const handleOpenMessage = () => {
-    setShowMessage((prev) => !prev);
-    setIsNewMessage(false);
+    dispatch(changeIsNewMessage(false));
+    dispatch(changeShowMessage(!showMessage));
   };
 
   return (
@@ -86,14 +81,14 @@ const Buttons = ({
           className={lock ? 'bg-danger text-white' : 'bg-warning'}
         />
         <IconButton
-          icon={roomState.isVoiceOn ? faMicrophone : faMicrophoneSlash}
+          icon={isMikeOn ? faMicrophone : faMicrophoneSlash}
           handleOnclick={handleMuteButton}
-          className={roomState.isVoiceOn ? 'bg-success text-white' : 'bg-danger text-white'}
+          className={isMikeOn ? 'bg-success text-white' : 'bg-danger text-white'}
         />
         <IconButton
-          icon={roomState.isScreenOn ? faVideo : faVideoSlash}
+          icon={isCameraOn ? faVideo : faVideoSlash}
           handleOnclick={handleVideoButton}
-          className={roomState.isScreenOn ? 'bg-success text-white' : 'bg-danger text-white'}
+          className={isCameraOn ? 'bg-success text-white' : 'bg-danger text-white'}
         />
         {screenShareButton()}
         <IconButton

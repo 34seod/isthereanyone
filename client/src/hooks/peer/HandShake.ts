@@ -1,31 +1,11 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
-import { Dispatch, SetStateAction, MutableRefObject } from 'react';
+import { MutableRefObject } from 'react';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { Socket } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
-
-type PeerConnection = {
-  [key: string]: {
-    pc: RTCPeerConnection | undefined
-    isInitiator: boolean
-    isStarted: boolean
-    isChannelReady: boolean
-    nickname: string
-  }
-};
-
-type ICECandidate = {
-  id: string | null
-  type: string
-  label: number | null | undefined
-  candidate: string
-};
-
-type RoomStateShare = {
-  type: string
-  roomState: RoomState
-};
+import { changeVideoSrces } from '../../store/actionCreators';
 
 const pcConfig = {
   'iceServers': [
@@ -40,13 +20,16 @@ const pcConfig = {
   ]
 };
 
-const handShake = (
-  setVideoSrces: Dispatch<SetStateAction<VideoSrc[]>>,
+const HandShake = (
   peersRef: MutableRefObject<PeerConnection>,
-  myRoomState: MutableRefObject<RoomState>,
   socketRef: MutableRefObject<Socket<DefaultEventsMap, DefaultEventsMap> | undefined>,
   joinSoundRef: MutableRefObject<HTMLAudioElement>
 ) => {
+  const dispatch = useDispatch();
+  const {
+    isCameraOn, isMikeOn, nickname, isStarted, videoSrces
+  } = useSelector((state: State) => state, shallowEqual);
+
   const createPeerConnection = (socketId: string) => {
     try {
       const pc = new RTCPeerConnection(pcConfig);
@@ -61,19 +44,17 @@ const handShake = (
   };
 
   const handleRemoteStreamAdded = (event: RTCTrackEvent, socketId: string) => {
-    setVideoSrces((prev) => {
-      const prevData = prev.find((p) => p.socketId === socketId);
-      if (!prevData) {
-        joinSoundRef.current.play();
-        return [ ...prev, {
-          socketId,
-          nickname: peersRef.current[socketId].nickname,
-          isScreenOn: true,
-          isVoiceOn: true,
-        }];
-      }
-      return prev;
-    });
+    const prevData = videoSrces.find((p) => p.socketId === socketId);
+    if (!prevData) {
+      joinSoundRef.current.play();
+      const newVideoSrces = [ ...videoSrces, {
+        socketId,
+        nickname: peersRef.current[socketId].nickname,
+        isCameraOn: true,
+        isMikeOn: true,
+      }];
+      dispatch(changeVideoSrces(newVideoSrces));
+    }
 
     const remoteVideo: HTMLVideoElement | null = document.querySelector(`#remoteVideo-${socketId}`);
     if (remoteVideo) remoteVideo.srcObject = event.streams[0];
@@ -114,16 +95,18 @@ const handShake = (
   ) => {
     peersRef.current[socketId]?.pc?.setLocalDescription(sessionDescription);
     sendMessageRTCTo(socketId, sessionDescription);
-    sendMessageRTCTo(socketId, { type: 'roomStateShare', roomState: myRoomState.current });
+
+    const roomState: RoomState = { isCameraOn, isMikeOn, nickname, isStarted };
+    sendMessageRTCTo(socketId, { type: 'roomStateShare', roomState });
   };
 
   const sendMessageRTCTo = (
     socketId: string,
     message: RTCSessionDescriptionInit | RTCSdpType | ICECandidate | RoomStateShare
   ) => {
-    socketRef.current?.emit('messageTo', socketId, message, myRoomState.current.nickname);
+    socketRef.current?.emit('messageTo', socketId, message, nickname);
   };
   return { createPeerConnection, doCall, doAnswer };
 };
 
-export default handShake;
+export default HandShake;

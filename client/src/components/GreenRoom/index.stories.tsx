@@ -1,4 +1,4 @@
-import React, { ComponentProps, useState } from 'react';
+import React, { ComponentProps } from 'react';
 import { Meta, Story } from '@storybook/react';
 import GreenRoom from '.';
 
@@ -7,19 +7,7 @@ export default {
   component: GreenRoom,
 } as Meta;
 
-const Template: Story<ComponentProps<typeof GreenRoom>> = (args) => {
-  const [, setRoomState] = useState<RoomState>(args.roomState);
-  const greenRoomArgs = { ...args, setRoomState };
-
-  return <GreenRoom {...greenRoomArgs} />;
-};
+type GreenRoomStory = Story<ComponentProps<typeof GreenRoom>>;
+const Template: GreenRoomStory = (args) => <GreenRoom {...args} />;
 
 export const Default = Template.bind({});
-Default.args = {
-  roomState: {
-    isStarted: false,
-    isVoiceOn: true,
-    isScreenOn: true,
-    nickname: 'Guest'
-  }
-};

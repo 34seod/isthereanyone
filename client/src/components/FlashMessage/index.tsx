@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { useSelector, shallowEqual, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { showFlashMessage } from '../../store/actionCreators';
 import './index.css';
 
@@ -11,10 +11,7 @@ type Props = {
 const FlashMessage: React.FC<Props> = ({ message, during }: Props) => {
   const dispatch = useDispatch();
   const timeIds = useRef<number[]>([]);
-  const show: boolean = useSelector(
-    (state: State) => state.flashMessage,
-    shallowEqual
-  );
+  const show = useSelector((state: State) => state.flashMessage);
 
   useEffect(() => {
     const id = setTimeout(() => {

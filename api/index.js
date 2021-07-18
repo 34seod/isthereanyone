@@ -23,8 +23,8 @@ io.sockets.on("connection", (socket) => {
     socket.to(roomId).emit('message', socket.id, message, nickname);
   });
 
-  socket.on('roomStateShare', function(nickname, isScreenOn, isVoiceOn) {
-    socket.to(roomId).emit('roomStateShare', socket.id, nickname, isScreenOn, isVoiceOn);
+  socket.on('roomStateShare', function(nickname, isCameraOn, isMikeOn) {
+    socket.to(roomId).emit('roomStateShare', socket.id, nickname, isCameraOn, isMikeOn);
   });
 
   socket.on('messageTo', function(socketId, message, nickname) {

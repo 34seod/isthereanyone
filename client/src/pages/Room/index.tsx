@@ -1,20 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import GreenRoom from '../../components/GreenRoom';
 import VideoRoom from '../../components/VideoRoom';
 import { urlEscape } from '../../sharedFunctions';
 import './index.css';
 
-const Room = () => {
-  const { roomId } = useParams< { roomId: string } >();
+const Room: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
-  const [roomState, setRoomState] = useState<RoomState>({
-    isStarted: false,
-    isVoiceOn: true,
-    isScreenOn: true,
-    nickname: 'Guest'
-  });
+  const isStarted = useSelector((state: State) => state.isStarted);
 
   useEffect(() => {
     const url = urlEscape(location.pathname);
@@ -25,18 +20,7 @@ const Room = () => {
 
   return (
     <div className="fix">
-      {
-        roomState.isStarted ?
-          <VideoRoom
-            roomId={roomId}
-            roomState={roomState}
-            setRoomState={setRoomState}
-          /> :
-          <GreenRoom
-            roomState={roomState}
-            setRoomState={setRoomState}
-          />
-      }
+      {isStarted ? <VideoRoom /> : <GreenRoom />}
     </div>
   );
 };

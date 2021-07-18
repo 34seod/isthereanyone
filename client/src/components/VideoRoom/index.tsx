@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useRef, Dispatch, SetStateAction } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
+import { useSelector, shallowEqual } from 'react-redux';
 import useSocket from '../../hooks/useSocket';
 import Chat from '../Chat';
 import FlashMessage from '../FlashMessage';
@@ -7,19 +9,11 @@ import MyCam from '../MyCam';
 import VideoRow from '../VideoRow';
 import './index.css';
 
-type Props = {
-  roomId: string
-  roomState: RoomState
-  setRoomState: Dispatch<SetStateAction<RoomState>>
-};
-
-const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
+const VideoRoom: React.FC = () => {
+  const { roomId } = useParams< { roomId: string } >();
   const videoRef = useRef<HTMLVideoElement>(document.createElement('video'));
-  const [videoSrces, setVideoSrces] = useState<VideoSrc[]>([]);
-  const [lock, setLock] = useState<boolean>(false);
-  const [isScreenShare, setIsScreenShare] = useState<boolean>(false);
-  const [showMessage, setShowMessage] = useState<boolean>(false);
-  const [isNewMessage, setIsNewMessage] = useState<boolean>(false);
+  const videoSrces = useSelector((state: State) => state.videoSrces);
+
   const {
     messages,
     sendMessage,
@@ -29,13 +23,7 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
     handleLock,
     handleScreenShare,
     stopCapture
-  } = useSocket(
-    roomId,
-    roomState,
-    setVideoSrces,
-    setLock,
-    setIsScreenShare
-  );
+  } = useSocket(roomId);
 
   useEffect(() => {
     document.body.classList.add('video-room');
@@ -51,33 +39,19 @@ const VideoRoom = ({ roomId, roomState, setRoomState }: Props) => {
       <FlashMessage message="URL has been copied. Share with others." />
       <MyCam
         videoRef={videoRef}
-        nickname={roomState.nickname}
-        isScreenShare={isScreenShare}
         roomId={roomId}
       />
       <VideoRow videoSrces={videoSrces} />
       <Buttons
         handleMute={handleMute}
         handleScreen={handleScreen}
-        setLock={setLock}
         handleLock={handleLock}
-        isScreenShare={isScreenShare}
         stopCapture={stopCapture}
         handleScreenShare={handleScreenShare}
-        setShowMessage={setShowMessage}
-        setRoomState={setRoomState}
-        roomState={roomState}
-        lock={lock}
-        isNewMessage={isNewMessage}
-        setIsNewMessage={setIsNewMessage}
       />
       <Chat
-        showMessage={showMessage}
-        setShowMessage={setShowMessage}
-        nickname={roomState.nickname}
         messages={messages}
         sendMessage={sendMessage}
-        setIsNewMessage={setIsNewMessage}
       />
     </div>
   );

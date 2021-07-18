@@ -1,18 +1,15 @@
-import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, createRef } from 'react';
-import {
-  faDoorOpen,
-} from '@fortawesome/free-solid-svg-icons';
+import React, { ChangeEvent, useEffect, createRef } from 'react';
+import { faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import './index.css';
+import { useSelector, useDispatch } from 'react-redux';
+import { changeNickname, changeIsStarted } from '../../store/actionCreators';
 import Buttons from './Buttons';
+import './index.css';
 
-type Props = {
-  roomState: RoomState
-  setRoomState: Dispatch<SetStateAction<RoomState>>
-};
-
-const GreenRoom = ({ roomState, setRoomState }: Props) => {
+const GreenRoom: React.FC = () => {
   const inputRef = createRef<HTMLInputElement>();
+  const dispatch = useDispatch();
+  const nickname = useSelector((state: State) => state.nickname);
 
   useEffect(() => {
     inputRef?.current?.focus();
@@ -23,15 +20,13 @@ const GreenRoom = ({ roomState, setRoomState }: Props) => {
     if (e.key === 'Enter') handleStartButton();
   };
 
-  const handleNicknameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setRoomState((prev) => ({ ...prev, nickname: event.target.value.trim() }));
+  const handleStartButton = () => {
+    dispatch(changeNickname(`${nickname}#${Math.floor(Math.random() * (99999 - 10000) + 10000)}`));
+    dispatch(changeIsStarted(true));
   };
 
-  const handleStartButton = () => {
-    setRoomState((prev) => {
-      const newNickname = `${prev.nickname}#${Math.floor(Math.random() * (99999 - 10000) + 10000)}`;
-      return { ...prev, isStarted: true, nickname: newNickname };
-    });
+  const handleNicknameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    dispatch(changeNickname(event.target.value.trim()));
   };
 
   return (
@@ -45,17 +40,13 @@ const GreenRoom = ({ roomState, setRoomState }: Props) => {
               ref={inputRef}
               type="text"
               placeholder="name"
-              value={roomState.nickname}
+              value={nickname}
               onChange={handleNicknameChange}
               onKeyPress={handleKeyPress}
               className="text-input-field ml-auto mr-auto border border-dark rounded"
             />
           </div>
-          <Buttons
-            roomState={roomState}
-            setRoomState={setRoomState}
-            handleStartButton={handleStartButton}
-          />
+          <Buttons handleStartButton={handleStartButton} />
         </div>
       </div>
     </div>

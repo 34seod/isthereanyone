@@ -11,7 +11,7 @@ type Props = {
   handleOnclick: () => void
 };
 
-const IconButton = ({
+const IconButton: React.FC<Props> = ({
   icon,
   className,
   mr,

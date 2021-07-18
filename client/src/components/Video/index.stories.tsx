@@ -19,8 +19,8 @@ Default.args = {
   videoSrc: {
     socketId: 'abcdefg',
     nickname: 'Guest',
-    isScreenOn: true,
-    isVoiceOn: true
+    isCameraOn: true,
+    isMikeOn: true
   }
 };
 
@@ -29,8 +29,8 @@ NicknameTruncate.args = {
   videoSrc: {
     socketId: 'abcdefg',
     nickname: 'GuestGuestGuestGuestGuestGuestGuestGuestGuestGuestGuestGuest',
-    isScreenOn: true,
-    isVoiceOn: true
+    isCameraOn: true,
+    isMikeOn: true
   }
 };
 
@@ -39,7 +39,7 @@ VoiceOff.args = {
   videoSrc: {
     socketId: 'abcdefg',
     nickname: 'Guest',
-    isScreenOn: true,
-    isVoiceOn: false
+    isCameraOn: true,
+    isMikeOn: false
   }
 };

@@ -4,11 +4,13 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
-import reducer from './store/reducer';
+import reducers from './store/reducers';
 import New from './pages/New';
 import Room from './pages/Room';
 
-const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)));
+const store = createStore(
+  reducers, composeWithDevTools(applyMiddleware(thunk))
+);
 
 const App = () => (
   <Provider store={store}>

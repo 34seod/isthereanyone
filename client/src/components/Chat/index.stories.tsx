@@ -1,4 +1,4 @@
-import React, { ComponentProps, Dispatch, SetStateAction } from 'react';
+import React, { ComponentProps } from 'react';
 import { Meta, Story } from '@storybook/react';
 import Chat from '.';
 
@@ -7,21 +7,15 @@ export default {
   component: Chat,
 } as Meta;
 
-type SetState<T> = Dispatch<SetStateAction<T>>;
-
 const Template: Story<ComponentProps<typeof Chat>> = (args) => {
-  const setIsNewMessage = ((value: boolean) => null) as SetState<boolean>;
-  const setShowMessage = ((value: boolean) => null) as SetState<boolean>;
   const sendMessage = (newMessage: string, nickname: string) => null;
-  const chatArgs = { ...args, setShowMessage, setIsNewMessage, sendMessage };
+  const chatArgs = { ...args, sendMessage };
 
   return <Chat {...chatArgs} />;
 };
 
 export const Default = Template.bind({});
 Default.args = {
-  showMessage: true,
-  nickname: 'nickname',
   messages: [
     { ownedByCurrentUser: true, body: 'test message1', senderId: 'abcdefg', nickname: 'nickname1', sendedAt: '21/07/12 13:44:10' },
     { ownedByCurrentUser: false, body: 'test message2', senderId: 'abcdefg', nickname: 'nickname2', sendedAt: '21/07/12 13:44:10' },
@@ -32,8 +26,6 @@ Default.args = {
 
 export const DisplayNone = Template.bind({});
 DisplayNone.args = {
-  showMessage: false,
-  nickname: 'nickname',
   messages: [
     { ownedByCurrentUser: true, body: 'test message1', senderId: 'abcdefg', nickname: 'nickname1', sendedAt: '21/07/12 13:44:10' },
     { ownedByCurrentUser: false, body: 'test message2', senderId: 'abcdefg', nickname: 'nickname2', sendedAt: '21/07/12 13:44:10' },
@@ -44,8 +36,6 @@ DisplayNone.args = {
 
 export const Truncate = Template.bind({});
 Truncate.args = {
-  showMessage: true,
-  nickname: 'nickname',
   messages: [
     { ownedByCurrentUser: true, body: 'test message1aaaaaaaaaaaaaaaaaaa', senderId: 'abcdefg', nickname: 'nickname1aaaaaaaaaaaaaaaa', sendedAt: '21/07/12 13:44:10' },
     { ownedByCurrentUser: false, body: 'test message2', senderId: 'abcdefg', nickname: 'nickname2aaaaaaaaaaaaaaaa', sendedAt: '21/07/12 13:44:10' },
@@ -56,8 +46,6 @@ Truncate.args = {
 
 export const LinkMessage = Template.bind({});
 LinkMessage.args = {
-  showMessage: true,
-  nickname: 'nickname',
   messages: [
     { ownedByCurrentUser: true, body: 'test message1aaaaaaaaaaaaaaaaaaa', senderId: 'abcdefg', nickname: 'nickname1', sendedAt: '21/07/12 13:44:10' },
     { ownedByCurrentUser: false, body: 'https://isthereany.one/asdf', senderId: 'abcdefg', nickname: 'nickname2', sendedAt: '21/07/12 13:44:10' },

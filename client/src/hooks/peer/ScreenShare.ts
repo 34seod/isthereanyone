@@ -1,14 +1,17 @@
 /* eslint-disable no-param-reassign */
-import { Dispatch, SetStateAction, MutableRefObject } from 'react';
+import { MutableRefObject } from 'react';
+import { useDispatch } from 'react-redux';
+import { changeIsScreenShare } from '../../store/actionCreators';
 
-const screenShare = (
-  setIsScreenShare: Dispatch<SetStateAction<boolean>>,
+const ScreenShare = (
   localVideoRef: MutableRefObject<HTMLVideoElement | null | undefined>,
   senderRef: MutableRefObject<Sender>,
   screenShareStreamRef: MutableRefObject<MediaStream>,
   localStreamRef: MutableRefObject<MediaStream | null>,
   screenShareRef: MutableRefObject<boolean>
 ) => {
+  const dispatch = useDispatch();
+
   const handleScreenShare = () => {
     const mediaDevices = navigator.mediaDevices as any // eslint-disable-line
     mediaDevices.getDisplayMedia({ video: { cursor: 'always' }, audio: false })
@@ -16,7 +19,7 @@ const screenShare = (
   };
 
   const handleScreenShareError = (e: Error) => {
-    setIsScreenShare(false);
+    dispatch(changeIsScreenShare(false));
     screenShareRef.current = false;
     // if (process.env.NODE_ENV === 'development') console.log('getDisplayMedia error: ', e.toString());
   };
@@ -33,7 +36,7 @@ const screenShare = (
     stream.getVideoTracks()[0].addEventListener('ended', () => {
       stopCapture();
     });
-    setIsScreenShare(true);
+    dispatch(changeIsScreenShare(true));
     screenShareRef.current = true;
   };
 
@@ -50,11 +53,11 @@ const screenShare = (
     if (localVideoRef.current) {
       localVideoRef.current.srcObject = localStreamRef.current;
     }
-    setIsScreenShare(false);
+    dispatch(changeIsScreenShare(false));
     screenShareRef.current = false;
   };
 
   return { handleScreenShare, stopCapture };
 };
 
-export default screenShare;
+export default ScreenShare;

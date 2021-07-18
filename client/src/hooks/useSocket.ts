@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef, Dispatch, SetStateAction } from 'react';
+import { useEffect, useRef } from 'react';
 import { Socket, io } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
 import useChat from './useChat';
@@ -7,13 +6,7 @@ import usePeer from './usePeer';
 
 const SOCKET_SERVER_URL = process.env.REACT_APP_SERVER || 'http://localhost:4000';
 
-const useSocket = (
-  roomId: string,
-  roomState: RoomState,
-  setVideoSrces: Dispatch<SetStateAction<VideoSrc[]>>,
-  setLock: Dispatch<SetStateAction<boolean>>,
-  setIsScreenShare: Dispatch<SetStateAction<boolean>>
-) => {
+const useSocket = (roomId: string) => {
   const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>(io());
   const { messages, sendMessageSocket, newChatMessageOn } = useChat();
   const {
@@ -25,13 +18,7 @@ const useSocket = (
     handleLock,
     handleScreenShare,
     stopCapture
-  } = usePeer(
-    roomId,
-    roomState,
-    setVideoSrces,
-    setLock,
-    setIsScreenShare
-  );
+  } = usePeer(roomId);
 
   useEffect(() => {
     socketRef.current = io(SOCKET_SERVER_URL, {

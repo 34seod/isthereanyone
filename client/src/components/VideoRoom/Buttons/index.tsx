@@ -13,7 +13,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import IconButton from '../../IconButton';
 import { changeIsCameraOn, changeIsMikeOn, changeIsNewMessage, changeLock, changeShowMessage } from '../../../store/actionCreators';
-import showMessage from '../../../store/reducers/showMessage';
 
 type Props = {
   handleLock: () => void
@@ -28,7 +27,7 @@ const Buttons: React.FC<Props> = ({
 }: Props) => {
   const dispatch = useDispatch();
   const {
-    isCameraOn, isMikeOn, isScreenShare, lock, isNewMessage
+    isCameraOn, isMikeOn, isScreenShare, lock, isNewMessage, showMessage
   } = useSelector((state: State) => state, shallowEqual);
 
   const handleMuteButton = () => {

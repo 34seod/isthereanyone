@@ -6,7 +6,7 @@ import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
 import HandShake from './peer/HandShake';
 import ScreenShare from './peer/ScreenShare';
-import { changeIsCameraOn, changeIsMikeOn, changeLock, changeVideoSrces } from '../store/actionCreators';
+import { changeIsCameraOn, changeIsMikeOn, changeLock, updateVideoSrces, removeVideoSrces } from '../store/actionCreators';
 
 type PeerConnection = {
   [key: string]: {
@@ -42,7 +42,7 @@ const usePeer = (roomId: string) => {
   const localVideoRef = useRef<HTMLVideoElement | null | undefined>(null);
   const joinSoundRef = useRef(new Audio('./join.wav'));
   const dispatch = useDispatch();
-  const { isCameraOn, isMikeOn, nickname, videoSrces } = useSelector((state: State) => state, shallowEqual);
+  const { isCameraOn, isMikeOn, nickname } = useSelector((state: State) => state, shallowEqual);
 
   const { handleScreenShare, stopCapture } = ScreenShare(
     localVideoRef, senderRef, screenShareStreamRef, localStreamRef, screenShareRef
@@ -109,7 +109,13 @@ const usePeer = (roomId: string) => {
     });
 
     socketRef.current?.on('roomStateShare', (socketId: string, nicknameParam: string, isCameraOnParam: boolean, isMikeOnParam: boolean) => {
-      updateVideoSrces(socketId, nicknameParam, isCameraOnParam, isMikeOnParam);
+      const updateSrc = {
+        socketId,
+        nickname: nicknameParam,
+        isCameraOn: isCameraOnParam,
+        isMikeOn: isMikeOnParam
+      };
+      dispatch(updateVideoSrces(updateSrc));
     });
 
     socketRef.current?.on('full', () => {
@@ -166,29 +172,23 @@ const usePeer = (roomId: string) => {
         handleRemoteHangup(socketId || '');
       } else if (message.type === 'roomStateShare') {
         const msg = message as RoomStateShare;
-        updateVideoSrces(socketId, msg.roomState.nickname, msg.roomState.isCameraOn, msg.roomState.isMikeOn);
+        const updateSrc: VideoSrc = {
+          socketId,
+          nickname: msg.roomState.nickname,
+          isCameraOn: msg.roomState.isCameraOn,
+          isMikeOn: msg.roomState.isMikeOn
+        };
+        dispatch(updateVideoSrces(updateSrc));
       }
     });
-  };
-
-  const updateVideoSrces = (socketId: string, nicknameParam: string, isCameraOnParam: boolean, isMikeOnParam: boolean) => {
-    const tmp = videoSrces.slice();
-    const index = tmp.findIndex((p) => p.socketId === socketId);
-
-    if (index > -1) {
-      tmp.splice(index, 1, { ...tmp[index], isCameraOn: isCameraOnParam, isMIkeOn: isMikeOnParam });
-    } else {
-      const newData = { socketId, nickname: nicknameParam, isCameraOn: isCameraOnParam, isMIkeOn: isMikeOnParam };
-      tmp.push(newData);
-    }
-    dispatch(changeVideoSrces(tmp));
   };
 
   const handleRemoteHangup = (socketId: string) => {
     peersRef.current[socketId]?.pc?.close();
     delete peersRef.current[socketId];
     delete senderRef.current[socketId];
-    dispatch(changeVideoSrces(videoSrces.filter((e) => e.socketId !== socketId)));
+    const removeSrc = { socketId, nickname: '', isCameraOn: false, isMikeOn: false };
+    dispatch(removeVideoSrces(removeSrc));
   };
 
   const handleMute = (isMikeOnParam: boolean, doUpdate = true) => {

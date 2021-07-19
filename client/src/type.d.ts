@@ -51,7 +51,7 @@ type Action<T> = {
   payload: T
 };
 
-type Payload = boolean | string | VideoSrc[];
+type Payload = boolean | string | VideoSrc;
 
 type State = {
   flashMessage: boolean

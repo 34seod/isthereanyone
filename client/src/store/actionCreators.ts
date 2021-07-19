@@ -10,6 +10,8 @@ export const changeIsStarted = (isStarted: boolean) => basicAction(actionTypes.C
 export const changeLock = (lock: boolean) => basicAction(actionTypes.CHANGE_LOCK, lock);
 export const changeNickname = (nickname: string) => basicAction(actionTypes.CHANGE_NICKNAME, nickname);
 export const changeShowMessage = (showMessage: boolean) => basicAction(actionTypes.CHANGE_SHOW_MESSAGE, showMessage);
-export const changeVideoSrces = (videoSrces: VideoSrc[]) => basicAction(actionTypes.CHANGE_VIDEO_SRCES, videoSrces);
+export const addVideoSrces = (videoSrce: VideoSrc) => basicAction(actionTypes.ADD_VIDEO_SRCES, videoSrce);
+export const updateVideoSrces = (videoSrce: VideoSrc) => basicAction(actionTypes.UPDATE_VIDEO_SRCES, videoSrce);
+export const removeVideoSrces = (videoSrce: VideoSrc) => basicAction(actionTypes.REMOVE_VIDEO_SRCES, videoSrce);
 
 const basicAction = (type: string, payload: Payload) => ({ type, payload });

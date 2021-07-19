@@ -2,6 +2,10 @@
   max-width: 85%;
 }
 
+.modal-max-width {
+  max-width: 20rem;
+}
+
 .chat-room-container {
   position: fixed;
   left: 3.6rem;

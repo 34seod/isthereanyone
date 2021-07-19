@@ -74,7 +74,7 @@ const Chat: React.FC<Props> = ({ messages, sendMessage }: Props) => {
 
   return (
     <div ref={chatRef} className={`chat-room-container rounded ${showMessage ? '' : 'd-none'}`}>
-      <div className="modal-content">
+      <div className="modal-content modal-max-width">
         <div ref={chatheaderRef} className="modal-header move-cursor p-2">
           <h5 className="modal-title">Messages</h5>
           <button type="button" className="close" onClick={closeMessage}>

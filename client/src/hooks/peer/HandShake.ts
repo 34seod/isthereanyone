@@ -5,7 +5,7 @@ import { MutableRefObject } from 'react';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { Socket } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
-import { changeVideoSrces } from '../../store/actionCreators';
+import { addVideoSrces } from '../../store/actionCreators';
 
 const pcConfig = {
   'iceServers': [
@@ -45,15 +45,16 @@ const HandShake = (
 
   const handleRemoteStreamAdded = (event: RTCTrackEvent, socketId: string) => {
     const prevData = videoSrces.find((p) => p.socketId === socketId);
+
     if (!prevData) {
       joinSoundRef.current.play();
-      const newVideoSrces = [ ...videoSrces, {
+      const newConnection = {
         socketId,
         nickname: peersRef.current[socketId].nickname,
         isCameraOn: true,
         isMikeOn: true,
-      }];
-      dispatch(changeVideoSrces(newVideoSrces));
+      };
+      dispatch(addVideoSrces(newConnection));
     }
 
     const remoteVideo: HTMLVideoElement | null = document.querySelector(`#remoteVideo-${socketId}`);

@@ -8,7 +8,7 @@ const SOCKET_SERVER_URL = process.env.REACT_APP_SERVER || 'http://localhost:4000
 
 const useSocket = (roomId: string) => {
   const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>(io());
-  const { messages, sendMessageSocket, newChatMessageOn } = useChat();
+  const { sendMessageSocket, newChatMessageOn } = useChat();
   const {
     start,
     setSocket,
@@ -39,7 +39,6 @@ const useSocket = (roomId: string) => {
   };
 
   return {
-    messages,
     sendMessage,
     start,
     handleMute,

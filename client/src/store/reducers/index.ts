@@ -6,6 +6,7 @@ import isNewMessage from './isNewMessage';
 import isScreenShare from './isScreenShare';
 import isStarted from './isStarted';
 import lock from './lock';
+import messages from './messages';
 import nickname from './nickname';
 import showMessage from './showMessage';
 import videoSrces from './videoSrces';
@@ -18,6 +19,7 @@ const reducers = combineReducers({
   isScreenShare,
   isStarted,
   lock,
+  messages,
   nickname,
   showMessage,
   videoSrces,

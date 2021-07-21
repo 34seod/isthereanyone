@@ -51,7 +51,7 @@ type Action<T> = {
   payload: T
 };
 
-type Payload = boolean | string | VideoSrc;
+type Payload = boolean | string | VideoSrc | Message;
 
 type State = {
   flashMessage: boolean
@@ -64,6 +64,7 @@ type State = {
   nickname: string
   showMessage: boolean
   videoSrces: VideoSrce[]
+  messages: Messages[]
 };
 
 type DispatchType<T> = (args: Action<T>) => Action<T>;

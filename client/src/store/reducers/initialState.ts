@@ -9,4 +9,5 @@ export const initialState: State = {
   nickname: 'Guest',
   showMessage: false,
   videoSrces: [],
+  messages: [],
 };

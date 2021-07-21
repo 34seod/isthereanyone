@@ -9,11 +9,10 @@ import { changeIsNewMessage, changeShowMessage } from '../../store/actionCreator
 import './index.css';
 
 type Props = {
-  messages: Message[],
   sendMessage: (newMessage: string, nickname: string) => void,
 };
 
-const Chat: React.FC<Props> = ({ messages, sendMessage }: Props) => {
+const Chat: React.FC<Props> = ({ sendMessage }: Props) => {
   const [newMessage, setNewMessage] = useState('');
   const chatRef = useRef(document.createElement('div'));
   const msgCountRef = useRef(0);
@@ -21,7 +20,7 @@ const Chat: React.FC<Props> = ({ messages, sendMessage }: Props) => {
   const { dragElement, setDefault } = useDraggable(chatRef, chatheaderRef);
   const dispatch = useDispatch();
   const {
-    showMessage, nickname
+    showMessage, nickname, messages
   } = useSelector((state: State) => state, shallowEqual);
 
   const closeMessage = () => {

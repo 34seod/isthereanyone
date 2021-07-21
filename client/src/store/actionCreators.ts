@@ -13,5 +13,6 @@ export const changeShowMessage = (showMessage: boolean) => basicAction(actionTyp
 export const addVideoSrces = (videoSrce: VideoSrc) => basicAction(actionTypes.ADD_VIDEO_SRCES, videoSrce);
 export const updateVideoSrces = (videoSrce: VideoSrc) => basicAction(actionTypes.UPDATE_VIDEO_SRCES, videoSrce);
 export const removeVideoSrces = (videoSrce: VideoSrc) => basicAction(actionTypes.REMOVE_VIDEO_SRCES, videoSrce);
+export const addMessage = (message: Message) => basicAction(actionTypes.ADD_MESSAGE, message);
 
 const basicAction = (type: string, payload: Payload) => ({ type, payload });

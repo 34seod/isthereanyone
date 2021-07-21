@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { useSelector, shallowEqual } from 'react-redux';
+import { useSelector } from 'react-redux';
 import useSocket from '../../hooks/useSocket';
 import Chat from '../Chat';
 import FlashMessage from '../FlashMessage';
@@ -15,7 +15,6 @@ const VideoRoom: React.FC = () => {
   const videoSrces = useSelector((state: State) => state.videoSrces);
 
   const {
-    messages,
     sendMessage,
     start,
     handleMute,
@@ -49,10 +48,7 @@ const VideoRoom: React.FC = () => {
         stopCapture={stopCapture}
         handleScreenShare={handleScreenShare}
       />
-      <Chat
-        messages={messages}
-        sendMessage={sendMessage}
-      />
+      <Chat sendMessage={sendMessage} />
     </div>
   );
 };

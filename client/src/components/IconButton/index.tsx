@@ -4,6 +4,7 @@ import './index.css';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 type Props = {
+  id: string
   icon: IconProp
   className?: string
   mr?: number
@@ -12,9 +13,9 @@ type Props = {
 };
 
 const IconButton: React.FC<Props> = ({
-  icon, className, mr, notification, handleOnclick
+  id, icon, className, mr, notification, handleOnclick
 }: Props) => (
-  <button type="button" className={`btn shadow-none rounded-circle position-relative mr-${mr} icon-button ${className}`} onClick={handleOnclick}>
+  <button type="button" id={id} className={`btn shadow-none rounded-circle position-relative mr-${mr} icon-button ${className}`} onClick={handleOnclick}>
     {notification ? <div className="new-notification bg-danger rounded-circle" /> : null}
     <FontAwesomeIcon icon={icon} />
   </button>

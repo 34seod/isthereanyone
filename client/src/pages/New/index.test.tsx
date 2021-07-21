@@ -1,11 +1,9 @@
 import React from 'react';
-import {
-  BrowserRouter,
-  Router,
-  Route,
-} from 'react-router-dom';
+import { BrowserRouter, Router, Route } from 'react-router-dom';
 import { render, screen, cleanup, fireEvent } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
+import { Provider } from 'react-redux';
+import store from '../../store';
 import New from '.';
 
 describe('New', () => {
@@ -13,9 +11,11 @@ describe('New', () => {
 
   it('renders new page', () => {
     render(
-      <BrowserRouter>
-        <Route path="/" component={New} />
-      </BrowserRouter>
+      <Provider store={store}>
+        <BrowserRouter>
+          <Route path="/" component={New} />
+        </BrowserRouter>
+      </Provider>
     );
 
     const title = screen.getByText(/Is there anyone/);
@@ -25,9 +25,11 @@ describe('New', () => {
   it('press enter room number', () => {
     const history = createMemoryHistory();
     const { container } = render(
-      <Router history={history}>
-        <Route path="/" component={New} />
-      </Router>
+      <Provider store={store}>
+        <Router history={history}>
+          <Route path="/" component={New} />
+        </Router>
+      </Provider>
     );
     const input = container.querySelector('input') || document.createElement('input');
     fireEvent.change(input, { target: { value: 'test' } });
@@ -39,12 +41,14 @@ describe('New', () => {
   it('click knock button', () => {
     const history = createMemoryHistory();
     const { container } = render(
-      <Router history={history}>
-        <Route path="/" component={New} />
-      </Router>
+      <Provider store={store}>
+        <Router history={history}>
+          <Route path="/" component={New} />
+        </Router>
+      </Provider>
     );
     const input = container.querySelector('input') || document.createElement('input');
-    const knock = container.querySelector('button') || document.createElement('button');
+    const knock = container.querySelector('#knock-btn') || document.createElement('button');
     fireEvent.change(input, { target: { value: 'test' } });
     fireEvent.click(knock, { button: 0 });
 

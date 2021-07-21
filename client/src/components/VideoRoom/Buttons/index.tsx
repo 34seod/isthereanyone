@@ -57,6 +57,7 @@ const Buttons: React.FC<Props> = ({
     if (navigator.mediaDevices && 'getDisplayMedia' in navigator.mediaDevices) {
       return (
         <IconButton
+          id="screen-share-icon-btn"
           icon={faDesktop}
           handleOnclick={handleScreenShareButton}
           className={isScreenShare ? 'bg-danger text-white' : 'bg-primary text-white'}
@@ -75,28 +76,33 @@ const Buttons: React.FC<Props> = ({
     <div className="fixed-bottom mb-3 d-flex">
       <div className="ml-auto mr-auto">
         <IconButton
+          id="lock-icon-btn"
           icon={lock ? faLock : faLockOpen}
           handleOnclick={handleLockButton}
           className={lock ? 'bg-danger text-white' : 'bg-warning'}
         />
         <IconButton
+          id="mike-icon-btn"
           icon={isMikeOn ? faMicrophone : faMicrophoneSlash}
           handleOnclick={handleMuteButton}
           className={isMikeOn ? 'bg-success text-white' : 'bg-danger text-white'}
         />
         <IconButton
+          id="camera-icon-btn"
           icon={isCameraOn ? faVideo : faVideoSlash}
           handleOnclick={handleVideoButton}
           className={isCameraOn ? 'bg-success text-white' : 'bg-danger text-white'}
         />
         {screenShareButton()}
         <IconButton
+          id="message-icon-btn"
           icon={faComments}
           handleOnclick={handleOpenMessage}
           className="bg-warning text-white"
           notification={isNewMessage}
         />
         <IconButton
+          id="hangup-icon-btn"
           icon={faSignOutAlt}
           handleOnclick={handleHangUpButton}
           className="bg-danger text-white"

@@ -58,7 +58,7 @@ const Door: React.FC = () => {
             <span className="title">?</span>
           </div>
           <div className="text-center">
-            <button type="button" onClick={() => history.push(`/${roomName}`)} className="mt-3 btn enter-btn-size btn-primary">
+            <button type="button" id="knock-btn" onClick={() => history.push(`/${roomName}`)} className="mt-3 btn enter-btn-size btn-primary">
               Knock! Knock!
             </button>
           </div>

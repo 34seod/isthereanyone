@@ -1,4 +1,5 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import {
   faMicrophone,
   faMicrophoneSlash,
@@ -11,40 +12,32 @@ import {
   faComments
 } from '@fortawesome/free-solid-svg-icons';
 import IconButton from '../../IconButton';
-import { RoomState } from '../../../types';
+import { changeIsCameraOn, changeIsMikeOn, changeIsNewMessage, changeLock, changeShowMessage } from '../../../store/actionCreators';
 
 type Props = {
-  lock: boolean
-  roomState: RoomState
-  isNewMessage: boolean,
-  isScreenShare: boolean
   handleLock: () => void
-  stopCapture: () => void
   handleScreenShare: () => void
-  handleMute: (isVoiceOn: boolean) => void
-  handleScreen: (isScreenOn: boolean) => void
-  setLock: Dispatch<SetStateAction<boolean>>
-  setShowMessage: Dispatch<SetStateAction<boolean>>
-  setRoomState: Dispatch<SetStateAction<RoomState>>
-  setIsNewMessage: Dispatch<SetStateAction<boolean>>
+  handleMute: (isMikeOn: boolean) => void
+  handleScreen: (isCameraOn: boolean) => void
+  stopCapture: () => void
 };
 
-const Buttons = ({
-  handleMute, handleScreen, setLock, handleLock, roomState,
-  isScreenShare, stopCapture, handleScreenShare,
-  setShowMessage, setRoomState, lock, isNewMessage, setIsNewMessage
+const Buttons: React.FC<Props> = ({
+  handleLock, handleScreenShare, handleMute, handleScreen, stopCapture
 }: Props) => {
+  const dispatch = useDispatch();
+  const {
+    isCameraOn, isMikeOn, isScreenShare, lock, isNewMessage, showMessage
+  } = useSelector((state: State) => state, shallowEqual);
 
   const handleMuteButton = () => {
-    setRoomState((prev: RoomState) =>
-      ({ ...prev, isVoiceOn: !prev.isVoiceOn }));
-    handleMute(!roomState.isVoiceOn);
+    dispatch(changeIsMikeOn(!isMikeOn));
+    handleMute(!isMikeOn);
   };
 
   const handleVideoButton = () => {
-    setRoomState((prev: RoomState) =>
-      ({ ...prev, isScreenOn: !prev.isScreenOn }));
-    handleScreen(!roomState.isScreenOn);
+    dispatch(changeIsCameraOn(!isCameraOn));
+    handleScreen(!isCameraOn);
   };
 
   const handleHangUpButton = () => {
@@ -52,7 +45,7 @@ const Buttons = ({
   };
 
   const handleLockButton = () => {
-    setLock((prev: boolean) => !prev);
+    dispatch(changeLock(!lock));
     handleLock();
   };
 
@@ -64,6 +57,7 @@ const Buttons = ({
     if (navigator.mediaDevices && 'getDisplayMedia' in navigator.mediaDevices) {
       return (
         <IconButton
+          id="screen-share-icon-btn"
           icon={faDesktop}
           handleOnclick={handleScreenShareButton}
           className={isScreenShare ? 'bg-danger text-white' : 'bg-primary text-white'}
@@ -74,45 +68,48 @@ const Buttons = ({
   };
 
   const handleOpenMessage = () => {
-    setShowMessage((prev) => !prev);
-    setIsNewMessage(false);
+    dispatch(changeIsNewMessage(false));
+    dispatch(changeShowMessage(!showMessage));
   };
 
   return (
-    <>
-      <div className="fixed-bottom mb-3 d-flex">
-        <div className="ml-auto mr-auto">
-          <IconButton
-            icon={lock ? faLock : faLockOpen}
-            handleOnclick={handleLockButton}
-            className={lock ? 'bg-danger text-white' : 'bg-warning'}
-          />
-          <IconButton
-            icon={roomState.isVoiceOn ? faMicrophone : faMicrophoneSlash}
-            handleOnclick={handleMuteButton}
-            className={roomState.isVoiceOn ? 'bg-success text-white' : 'bg-danger text-white'}
-          />
-          <IconButton
-            icon={roomState.isScreenOn ? faVideo : faVideoSlash}
-            handleOnclick={handleVideoButton}
-            className={roomState.isScreenOn ? 'bg-success text-white' : 'bg-danger text-white'}
-          />
-          {screenShareButton()}
-          <IconButton
-            icon={faComments}
-            handleOnclick={handleOpenMessage}
-            className="bg-warning text-white"
-            notification={isNewMessage}
-          />
-          <IconButton
-            icon={faSignOutAlt}
-            handleOnclick={handleHangUpButton}
-            className="bg-danger text-white"
-            mr={0}
-          />
-        </div>
+    <div className="fixed-bottom mb-3 d-flex">
+      <div className="ml-auto mr-auto">
+        <IconButton
+          id="lock-icon-btn"
+          icon={lock ? faLock : faLockOpen}
+          handleOnclick={handleLockButton}
+          className={lock ? 'bg-danger text-white' : 'bg-warning'}
+        />
+        <IconButton
+          id="mike-icon-btn"
+          icon={isMikeOn ? faMicrophone : faMicrophoneSlash}
+          handleOnclick={handleMuteButton}
+          className={isMikeOn ? 'bg-success text-white' : 'bg-danger text-white'}
+        />
+        <IconButton
+          id="camera-icon-btn"
+          icon={isCameraOn ? faVideo : faVideoSlash}
+          handleOnclick={handleVideoButton}
+          className={isCameraOn ? 'bg-success text-white' : 'bg-danger text-white'}
+        />
+        {screenShareButton()}
+        <IconButton
+          id="message-icon-btn"
+          icon={faComments}
+          handleOnclick={handleOpenMessage}
+          className="bg-warning text-white"
+          notification={isNewMessage}
+        />
+        <IconButton
+          id="hangup-icon-btn"
+          icon={faSignOutAlt}
+          handleOnclick={handleHangUpButton}
+          className="bg-danger text-white"
+          mr={0}
+        />
       </div>
-    </>
+    </div>
   );
 };
 

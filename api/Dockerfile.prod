@@ -11,7 +11,7 @@ WORKDIR /api
 COPY package.json /api
 
 # Install dependecies
-RUN npm install
+RUN yarn install
 
 # Get all the code needed to run the app
 COPY . /api
@@ -22,4 +22,4 @@ ENV PORT ${PORT}
 EXPOSE $PORT
 
 # Serve the app
-CMD ["npm", "start"]
+CMD ["yarn", "start"]

@@ -1,5 +1,6 @@
-import React, { Dispatch, SetStateAction } from 'react';
-import { useHistory  } from 'react-router-dom';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import {
   faMicrophone,
   faMicrophoneSlash,
@@ -8,53 +9,45 @@ import {
   faSignOutAlt,
   faSignInAlt
 } from '@fortawesome/free-solid-svg-icons';
-import { RoomState } from '../../../types';
 import IconButton from '../../IconButton';
+import { changeIsCameraOn, changeIsMikeOn } from '../../../store/actionCreators';
 
 type Props = {
-  roomState: RoomState
-  setRoomState: Dispatch<SetStateAction<RoomState>>
   handleStartButton: () => void
 };
 
-const Buttons = ({
-  setRoomState, roomState, handleStartButton
-}: Props) => {
+const Buttons: React.FC<Props> = ({ handleStartButton }: Props) => {
   const history = useHistory();
-
-  const handleLeaveButton = () => {
-    history.push('/');
-  };
-
-  const handleMuteButton = () => {
-    setRoomState((prev) => ({ ...prev, isVoiceOn: !prev.isVoiceOn }));
-  };
-
-  const handleVideoButton = () => {
-    setRoomState((prev) => ({ ...prev, isScreenOn: !prev.isScreenOn }));
-  };
+  const dispatch = useDispatch();
+  const {
+    isCameraOn, isMikeOn
+  } = useSelector((state: State) => state, shallowEqual);
 
   return (
     <div className="d-flex mt-3">
       <div className="ml-auto mr-auto">
         <IconButton
-          icon={roomState.isVoiceOn ? faMicrophone : faMicrophoneSlash}
-          handleOnclick={handleMuteButton}
-          className={roomState.isVoiceOn ? 'bg-success text-white' : 'bg-danger text-white'}
+          id="mike-icon-btn"
+          icon={isMikeOn ? faMicrophone : faMicrophoneSlash}
+          handleOnclick={() => dispatch(changeIsMikeOn(!isMikeOn))}
+          className={isMikeOn ? 'bg-success text-white' : 'bg-danger text-white'}
         />
         <IconButton
-          icon={roomState.isScreenOn ? faVideo : faVideoSlash}
-          handleOnclick={handleVideoButton}
-          className={roomState.isScreenOn ? 'bg-success text-white' : 'bg-danger text-white'}
+          id="camera-icon-btn"
+          icon={isCameraOn ? faVideo : faVideoSlash}
+          handleOnclick={() => dispatch(changeIsCameraOn(!isCameraOn))}
+          className={isCameraOn ? 'bg-success text-white' : 'bg-danger text-white'}
         />
         <IconButton
+          id="start-icon-btn"
           icon={faSignInAlt}
           handleOnclick={handleStartButton}
           className="bg-primary text-white"
         />
         <IconButton
+          id="hangup-icon-btn"
           icon={faSignOutAlt}
-          handleOnclick={handleLeaveButton}
+          handleOnclick={() => history.push('/')}
           className="bg-danger text-white"
         />
       </div>

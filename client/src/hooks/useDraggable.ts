@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import React, { useRef, MutableRefObject } from 'react';
+import { useRef, MutableRefObject } from 'react';
 
 const useDraggable = (
   mainRef: MutableRefObject<HTMLDivElement>,

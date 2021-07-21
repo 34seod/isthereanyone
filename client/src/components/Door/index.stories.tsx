@@ -1,30 +1,24 @@
-import React, { useRef, useState, KeyboardEvent, ChangeEvent } from 'react';
+import React, { ComponentProps } from 'react';
+import { Provider } from 'react-redux';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Meta, Story } from '@storybook/react';
+import store from '../../store';
 import Door from '.';
 
 export default {
   title: 'Door',
   component: Door,
+  decorators: [
+    (story: () => JSX.Element) => (
+      <Provider store={store}>
+        <Router>
+          <Route>{story()}</Route>
+        </Router>
+      </Provider>
+    )
+  ]
 } as Meta;
 
-const Template: Story<React.ComponentProps<typeof Door>> = (args) => {
-  const inputRef = useRef(document.createElement('input'));
-  const [, setShowFlashMessage] = useState<boolean>(false);
-  const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) => null;
-  const handleRoomNameChange = (event: ChangeEvent<HTMLInputElement>) => null;
-  const doorArgs = {
-    ...args,
-    inputRef,
-    setShowFlashMessage,
-    handleKeyPress,
-    handleRoomNameChange
-  };
-
-  return <div className="new fix"><Door {...doorArgs} /></div>;
-};
+const Template: Story<ComponentProps<typeof Door>> = () => <div className="new"><Door /></div>;
 
 export const Default = Template.bind({});
-Default.args = {
-  roomName: 'Room',
-  showFlashMessage: false
-};

@@ -1,12 +1,11 @@
 import React from 'react';
-import { VideoSrc } from '../../types';
 import Video from '../Video';
 
 type Props = {
   videoSrces: VideoSrc[]
 };
 
-const VideoRoom = ({ videoSrces }: Props) => {
+const VideoRoom: React.FC<Props> = ({ videoSrces }: Props) => {
   const remoteVideoes = () =>
     videoSrces.map((videoSrc) =>
       <div className="col video-padding" key={`${videoSrc.socketId}`}>

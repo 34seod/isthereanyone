@@ -1,31 +1,28 @@
 /* eslint-disable no-param-reassign */
+import React, { RefObject, useEffect, useRef } from 'react';
 import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { RefObject, useEffect, useRef } from 'react';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import useDraggable from '../../hooks/useDraggable';
+import { showFlashMessage } from '../../store/actionCreators';
 import './index.css';
 
 type Props = {
   videoRef: RefObject<HTMLVideoElement>
-  nickname: string
-  isScreenShare: boolean
   roomId: string
-  setShowFlashMessage: React.Dispatch<React.SetStateAction<boolean>>
 };
 
-const MyCam = ({
-  videoRef,
-  nickname,
-  isScreenShare,
-  roomId,
-  setShowFlashMessage
-}: Props) => {
+const MyCam: React.FC<Props> = ({ videoRef, roomId }: Props) => {
   const myCamRef = useRef(document.createElement('div'));
   const { dragElement } = useDraggable(myCamRef, myCamRef);
+  const dispatch = useDispatch();
+  const {
+    isScreenShare, nickname
+  } = useSelector((state: State) => state, shallowEqual);
 
   useEffect(() => {
     dragElement();
-  }, []);
+  }, [dragElement]);
 
   const handleLinkCopyButton = () => {
     const el = document.createElement('textarea');
@@ -34,7 +31,7 @@ const MyCam = ({
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
-    setShowFlashMessage(true);
+    dispatch(showFlashMessage(true));
   };
 
   return (

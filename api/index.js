@@ -16,15 +16,15 @@ io.sockets.on("connection", (socket) => {
 
   // Listen for new messages
   socket.on("newChatMessage", (data) => {
-    io.in(roomId).emit("newChatMessage", data);
+    socket.to(roomId).emit("newChatMessage", data);
   });
 
   socket.on('message', function(message, nickname) {
     socket.to(roomId).emit('message', socket.id, message, nickname);
   });
 
-  socket.on('roomStateShare', function(nickname, isScreenOn, isVoiceOn) {
-    socket.to(roomId).emit('roomStateShare', socket.id, nickname, isScreenOn, isVoiceOn);
+  socket.on('roomStateShare', function(nickname, isCameraOn, isMikeOn) {
+    socket.to(roomId).emit('roomStateShare', socket.id, nickname, isCameraOn, isMikeOn);
   });
 
   socket.on('messageTo', function(socketId, message, nickname) {

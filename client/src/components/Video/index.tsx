@@ -1,7 +1,6 @@
 import { faMicrophoneSlash, faExpand } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useRef, useEffect } from 'react';
-import { VideoSrc } from '../../types';
 import './index.css';
 
 type Props = {
@@ -14,7 +13,7 @@ interface IVideoElement extends HTMLVideoElement {
   webkitEnterFullscreen?: () => void
 }
 
-const Video = ({ videoSrc }: Props) => {
+const Video: React.FC<Props> = ({ videoSrc }: Props) => {
   const videoRef = useRef<IVideoElement>(document.createElement('video'));
 
   useEffect(() => {
@@ -50,7 +49,7 @@ const Video = ({ videoSrc }: Props) => {
       </video>
       <p className="text-truncate nickname" title={videoSrc.nickname}>{videoSrc.nickname}</p>
       <div className="video-button p-2 w-100 d-flex justify-content-between">
-        {videoSrc.isVoiceOn ? <div /> : <div className="btn"><FontAwesomeIcon icon={faMicrophoneSlash} className="line-height-mute mr-1 text-white" /></div>}
+        {videoSrc.isMikeOn ? <div /> : <div className="btn"><FontAwesomeIcon icon={faMicrophoneSlash} className="line-height-mute mr-1 text-white" /></div>}
         <button type="button" className="btn " onClick={fullscreen}>
           <FontAwesomeIcon icon={faExpand} className="text-white" />
         </button>

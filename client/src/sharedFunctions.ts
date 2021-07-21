@@ -1,28 +1,3 @@
-export type RoomState = {
-  isStarted: boolean
-  isVoiceOn: boolean
-  isScreenOn: boolean
-  nickname: string
-};
-
-export type VideoSrc = {
-  socketId: string
-  nickname: string
-  isScreenOn: boolean
-  isVoiceOn: boolean
-};
-
-export type Message = {
-  ownedByCurrentUser: boolean
-  body: string
-  senderId: string
-  nickname: string
-  sendedAt: string
-};
-
-export type Sender = {
-  [key: string]: RTCRtpSender
-};
 
 export const urlEscape = (roomId: string) => (
   roomId.replace(/(`|~|!|@|#|\$|%|\^|&|\*|\(|\)|-|_|=|\+|{|}|\[|\]|\\|\||'|"|;|:|,|<|>|\.|\/|\?|\s)/g, '')

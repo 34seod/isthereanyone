@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
+import React, { ComponentProps } from 'react';
 import { Meta, Story } from '@storybook/react';
+import { Provider } from 'react-redux';
+import store from '../../store';
 import FlashMessage from '.';
+import { showFlashMessage } from '../../store/actionCreators';
 
 export default {
   title: 'FlashMessage',
   component: FlashMessage,
+  decorators: [
+    (story: () => JSX.Element) => <Provider store={store}>{story()}</Provider>
+  ]
 } as Meta;
 
-const Template: Story<React.ComponentProps<typeof FlashMessage>> = (args) => {
-  const [, unmount] = useState<boolean>(false);
-  const flashMessageArgs = { ...args, unmount };
-
-  return <FlashMessage {...flashMessageArgs} />;
+type FlashMessageStory = Story<ComponentProps<typeof FlashMessage>>;
+const Template: FlashMessageStory = (args) => {
+  store.dispatch(showFlashMessage(true));
+  return <FlashMessage {...args} />;
 };
 
 export const Default = Template.bind({});

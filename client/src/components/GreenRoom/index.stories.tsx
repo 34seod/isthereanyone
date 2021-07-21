@@ -3,6 +3,9 @@ import { Meta, Story } from '@storybook/react';
 import { Provider } from 'react-redux';
 import store from '../../store';
 import GreenRoom from '.';
+import {
+  changeIsCameraOn, changeIsMikeOn
+} from '../../store/actionCreators';
 
 export default {
   title: 'GreenRoom',
@@ -13,6 +16,10 @@ export default {
 } as Meta;
 
 type GreenRoomStory = Story<ComponentProps<typeof GreenRoom>>;
-const Template: GreenRoomStory = (args) => <GreenRoom {...args} />;
+const Template: GreenRoomStory = (args) => {
+  store.dispatch(changeIsMikeOn(true));
+  store.dispatch(changeIsCameraOn(true));
+  return <GreenRoom {...args} />;
+};
 
 export const Default = Template.bind({});

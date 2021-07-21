@@ -25,7 +25,7 @@ describe('Room', () => {
     expect(title).toBeInTheDocument();
   });
 
-  it('change isVoiceOn when click mute button', () => {
+  it('change isMikeOn when click mute button', () => {
     const history = createMemoryHistory();
     history.push('/test');
 
@@ -41,7 +41,7 @@ describe('Room', () => {
     expect(container.querySelector('.fa-microphone-slash')).toBeInTheDocument();
   });
 
-  it('change isScreenOn when click video button', () => {
+  it('change isCameraOn when click video button', () => {
     const history = createMemoryHistory();
     history.push('/test');
 

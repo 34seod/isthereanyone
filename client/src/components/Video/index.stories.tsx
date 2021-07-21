@@ -34,8 +34,8 @@ NicknameTruncate.args = {
   }
 };
 
-export const VoiceOff = Template.bind({});
-VoiceOff.args = {
+export const MikeOff = Template.bind({});
+MikeOff.args = {
   videoSrc: {
     socketId: 'abcdefg',
     nickname: 'Guest',

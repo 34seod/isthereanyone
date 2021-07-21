@@ -12,11 +12,7 @@ type Props = {
 };
 
 const IconButton: React.FC<Props> = ({
-  icon,
-  className,
-  mr,
-  notification,
-  handleOnclick
+  icon, className, mr, notification, handleOnclick
 }: Props) => (
   <button type="button" className={`btn shadow-none rounded-circle position-relative mr-${mr} icon-button ${className}`} onClick={handleOnclick}>
     {notification ? <div className="new-notification bg-danger rounded-circle" /> : null}

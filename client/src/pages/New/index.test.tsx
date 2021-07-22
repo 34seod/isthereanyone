@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Router, Route } from 'react-router-dom';
-import { render, screen, cleanup, fireEvent } from '@testing-library/react';
+import { render, cleanup, fireEvent } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
 import store from '../../store';
@@ -10,7 +10,7 @@ describe('New', () => {
   afterEach(cleanup);
 
   it('renders new page', () => {
-    render(
+    const { getByText } = render(
       <Provider store={store}>
         <BrowserRouter>
           <Route path="/" component={New} />
@@ -18,8 +18,7 @@ describe('New', () => {
       </Provider>
     );
 
-    const title = screen.getByText(/Is there anyone/);
-    expect(title).toBeInTheDocument();
+    expect(getByText(/Is there anyone/)).toBeInTheDocument();
   });
 
   it('press enter room number', () => {

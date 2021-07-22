@@ -22,8 +22,7 @@ describe('Room', () => {
       </Provider>
     );
 
-    const title = getByText(/Who's there\?/);
-    expect(title).toBeInTheDocument();
+    expect(getByText(/Who's there\?/)).toBeInTheDocument();
   });
 
   it('change isMikeOn when click mute button', () => {
@@ -84,8 +83,7 @@ describe('Room', () => {
     const startBtn = container.querySelector('#start-icon-btn') || document.createElement('button');
     fireEvent.click(startBtn, { button: 0 });
 
-    const title = getByText(/Nobody in here/);
-    expect(title).toBeInTheDocument();
+    expect(getByText(/Nobody in here/)).toBeInTheDocument();
   });
 
   it('go root path when click hangup button', () => {

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef } from 'react';
 import { Socket, io } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';

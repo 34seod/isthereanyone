@@ -1,27 +1,44 @@
-import React, { useState } from 'react';
+import React, { ComponentProps } from 'react';
 import { Meta, Story } from '@storybook/react';
-import { RoomState } from '../../types';
+import { Provider } from 'react-redux';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import store from '../../store';
+import {
+  changeIsMikeOn,
+  changeLock,
+  changeIsCameraOn,
+  changeIsNewMessage,
+  changeIsScreenShare,
+  changeShowMessage
+} from '../../store/actionCreators';
+import * as actionTypes from '../../store/actionTypes';
 import VideoRoom from '.';
 
 export default {
   title: 'VideoRoom',
   component: VideoRoom,
+  decorators: [
+    (story: () => JSX.Element) => (
+      <Provider store={store}>
+        <Router>
+          <Route path="/:roomId">{story()}</Route>
+        </Router>
+      </Provider>
+    )
+  ]
 } as Meta;
 
-const Template: Story<React.ComponentProps<typeof VideoRoom>> = (args) => {
-  const [, setRoomState] = useState<RoomState>(args.roomState);
-  const videoRoomArgs = { ...args, setRoomState };
+const initilizeMessages = () => ({ type: actionTypes.INITIALIZE_MESSAGE, payload: '' });
 
-  return <VideoRoom {...videoRoomArgs} />;
+type VideoRoomStory = Story<ComponentProps<typeof VideoRoom>>;
+const Template: VideoRoomStory = (args) => {
+  store.dispatch(initilizeMessages());
+  store.dispatch(changeShowMessage(false));
+  store.dispatch(changeLock(false));
+  store.dispatch(changeIsMikeOn(true));
+  store.dispatch(changeIsCameraOn(true));
+  store.dispatch(changeIsNewMessage(false));
+  store.dispatch(changeIsScreenShare(false));
+  return <VideoRoom />;
 };
-
 export const Default = Template.bind({});
-Default.args = {
-  roomId: 'test room',
-  roomState: {
-    isStarted: true,
-    isVoiceOn: true,
-    isScreenOn: true,
-    nickname: 'Guest'
-  }
-};

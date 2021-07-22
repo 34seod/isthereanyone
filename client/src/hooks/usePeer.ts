@@ -1,11 +1,12 @@
 /* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
-import { useRef, Dispatch, SetStateAction, RefObject } from 'react';
+import { useRef, RefObject } from 'react';
 import { Socket } from 'socket.io-client';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
-import { RoomState, Sender, VideoSrc } from '../types';
-import handShake from './peer/handShake';
-import screenShare from './peer/screenShare';
+import HandShake from './peer/HandShake';
+import ScreenShare from './peer/ScreenShare';
+import { changeIsCameraOn, changeIsMikeOn, changeLock, updateVideoSrces, removeVideoSrces } from '../store/actionCreators';
 
 type PeerConnection = {
   [key: string]: {
@@ -31,36 +32,30 @@ type RoomStateShare = {
 
 type SocketIO = Socket<DefaultEventsMap> | undefined;
 
-const usePeer = (
-  roomId: string,
-  roomState: RoomState,
-  setVideoSrces: Dispatch<SetStateAction<VideoSrc[]>>,
-  setLock: Dispatch<SetStateAction<boolean>>,
-  setIsScreenShare: Dispatch<SetStateAction<boolean>>
-) => {
+const usePeer = (roomId: string) => {
   const socketRef = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>();
   const senderRef = useRef<Sender>({});
   const screenShareRef = useRef<boolean>(false);
   const localStreamRef = useRef<MediaStream | null>(null);
   const screenShareStreamRef = useRef<MediaStream>(new MediaStream);
-  const myRoomState = useRef<RoomState>({ ...roomState });
   const peersRef = useRef<PeerConnection>({});
   const localVideoRef = useRef<HTMLVideoElement | null | undefined>(null);
   const joinSoundRef = useRef(new Audio('./join.wav'));
-  const { handleScreenShare, stopCapture } = screenShare(
-    setIsScreenShare, localVideoRef, senderRef, screenShareStreamRef, localStreamRef, screenShareRef
+  const dispatch = useDispatch();
+  const { isCameraOn, isMikeOn, nickname } = useSelector((state: State) => state, shallowEqual);
+
+  const { handleScreenShare, stopCapture } = ScreenShare(
+    localVideoRef, senderRef, screenShareStreamRef, localStreamRef, screenShareRef
   );
 
-  const { createPeerConnection, doCall, doAnswer } = handShake(
-    setVideoSrces, peersRef, myRoomState, socketRef, joinSoundRef
-  );
+  const { createPeerConnection, doCall, doAnswer } = HandShake(peersRef, socketRef, joinSoundRef);
 
   const setSocket = (socket: SocketIO) => {
     socketRef.current = socket;
   };
 
   const start = (ref: RefObject<HTMLVideoElement> | null) => {
-    socketRef.current?.emit('create or join', roomId, myRoomState.current.nickname);
+    socketRef.current?.emit('create or join', roomId, nickname);
     localVideoRef.current = ref?.current;
   };
 
@@ -76,8 +71,8 @@ const usePeer = (
 
   const gotStream = (stream: MediaStream) => {
     localStreamRef.current = stream;
-    if (!myRoomState.current.isVoiceOn) handleMute(myRoomState.current.isVoiceOn, false);
-    if (!myRoomState.current.isScreenOn) handleScreen(myRoomState.current.isScreenOn, false);
+    if (!isMikeOn) handleMute(isMikeOn, false);
+    if (!isCameraOn) handleScreen(isCameraOn, false);
     if (localVideoRef.current) {
       localVideoRef.current.srcObject = stream;
       sendMessageRTC('got user media');
@@ -85,7 +80,7 @@ const usePeer = (
   };
 
   const sendMessageRTC = (message: string) => {
-    socketRef.current?.emit('message', message, myRoomState.current.nickname);
+    socketRef.current?.emit('message', message, nickname);
   };
 
   const maybeStart = (socketId: string) => {
@@ -110,11 +105,17 @@ const usePeer = (
 
   const peerConnectOn = () => {
     socketRef.current?.on('lock', (isLock: boolean) => {
-      setLock(isLock);
+      dispatch(changeLock(isLock));
     });
 
-    socketRef.current?.on('roomStateShare', (socketId: string, nickname: string, isScreenOn: boolean, isVoiceOn: boolean) => {
-      updateVideoSrces(socketId, nickname, isScreenOn, isVoiceOn);
+    socketRef.current?.on('roomStateShare', (socketId: string, nicknameParam: string, isCameraOnParam: boolean, isMikeOnParam: boolean) => {
+      const updateSrc = {
+        socketId,
+        nickname: nicknameParam,
+        isCameraOn: isCameraOnParam,
+        isMikeOn: isMikeOnParam
+      };
+      dispatch(updateVideoSrces(updateSrc));
     });
 
     socketRef.current?.on('full', () => {
@@ -125,24 +126,24 @@ const usePeer = (
       getStream();
     });
 
-    socketRef.current?.on('join', (socketId: string, nickname: string)=> {
+    socketRef.current?.on('join', (socketId: string, nicknameParam: string)=> {
       peersRef.current[socketId] = {
         pc: undefined,
         isStarted: false,
         isChannelReady: true,
         isInitiator: true,
-        nickname
+        nickname: nicknameParam
       };
     });
 
-    socketRef.current?.on('message', (socketId: string, message: RTCSessionDescriptionInit | ICECandidate | RoomStateShare, nickname: string) => {
+    socketRef.current?.on('message', (socketId: string, message: RTCSessionDescriptionInit | ICECandidate | RoomStateShare | 'got user media', nicknameParam: string) => {
       if (!peersRef.current[socketId]) {
         peersRef.current[socketId] = {
           pc: undefined,
           isStarted: false,
           isChannelReady: true,
           isInitiator: false,
-          nickname
+          nickname: nicknameParam
         };
       }
 
@@ -171,23 +172,14 @@ const usePeer = (
         handleRemoteHangup(socketId || '');
       } else if (message.type === 'roomStateShare') {
         const msg = message as RoomStateShare;
-        updateVideoSrces(socketId, msg.roomState.nickname, msg.roomState.isScreenOn, msg.roomState.isVoiceOn);
+        const updateSrc: VideoSrc = {
+          socketId,
+          nickname: msg.roomState.nickname,
+          isCameraOn: msg.roomState.isCameraOn,
+          isMikeOn: msg.roomState.isMikeOn
+        };
+        dispatch(updateVideoSrces(updateSrc));
       }
-    });
-  };
-
-  const updateVideoSrces = (socketId: string, nickname: string, isScreenOn: boolean, isVoiceOn: boolean) => {
-    setVideoSrces((prev) => {
-      const tmp = prev.slice();
-      const index = tmp.findIndex((p) => p.socketId === socketId);
-
-      if (index > -1) {
-        tmp.splice(index, 1, { ...tmp[index], isScreenOn, isVoiceOn });
-      } else {
-        const newData = { socketId, nickname, isScreenOn, isVoiceOn };
-        tmp.push(newData);
-      }
-      return tmp;
     });
   };
 
@@ -195,27 +187,27 @@ const usePeer = (
     peersRef.current[socketId]?.pc?.close();
     delete peersRef.current[socketId];
     delete senderRef.current[socketId];
-
-    setVideoSrces((prev) => prev.filter((e) => e.socketId !== socketId));
+    const removeSrc = { socketId, nickname: '', isCameraOn: false, isMikeOn: false };
+    dispatch(removeVideoSrces(removeSrc));
   };
 
-  const handleMute = (isVoiceOn: boolean, doUpdate = true) => {
+  const handleMute = (isMikeOnParam: boolean, doUpdate = true) => {
     if (localStreamRef.current) {
-      myRoomState.current.isVoiceOn = isVoiceOn;
+      dispatch(changeIsMikeOn(isMikeOnParam));
       localStreamRef.current.getAudioTracks().forEach((track) => {
         track.enabled = !track.enabled;
       });
-      if (doUpdate) socketRef.current?.emit('roomStateShare', myRoomState.current.nickname, myRoomState.current.isScreenOn, isVoiceOn);
+      if (doUpdate) socketRef.current?.emit('roomStateShare', nickname, isCameraOn, isMikeOnParam);
     }
   };
 
-  const handleScreen = (isScreenOn: boolean, doUpdate = true) => {
+  const handleScreen = (isCameraOnParam: boolean, doUpdate = true) => {
     if (localStreamRef.current) {
-      myRoomState.current.isScreenOn = isScreenOn;
+      dispatch(changeIsCameraOn(isCameraOnParam));
       localStreamRef.current.getVideoTracks().forEach((track) => {
         track.enabled = !track.enabled;
       });
-      if (doUpdate) socketRef.current?.emit('roomStateShare', myRoomState.current.nickname, isScreenOn, myRoomState.current.isVoiceOn);
+      if (doUpdate) socketRef.current?.emit('roomStateShare', nickname, isCameraOnParam, isMikeOn);
     }
   };
 

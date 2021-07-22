@@ -1,30 +1,84 @@
-import React, { Dispatch, SetStateAction } from 'react';
-import { render, screen, cleanup, fireEvent } from '@testing-library/react';
+import React from 'react';
+import { render, cleanup, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { addMessage, changeShowMessage } from '../../store/actionCreators';
 import store from '../../store';
 import Chat from '.';
+import * as actionTypes from '../../store/actionTypes';
+import { formatDate } from '../../sharedFunctions';
+
+const initilizeMessages = () => ({ type: actionTypes.INITIALIZE_MESSAGE, payload: '' });
+const sendMessage = (newMessage: string, nickname: string) =>
+  store.dispatch(addMessage({ ownedByCurrentUser: true, body: newMessage, senderId: 'abcdefg', nickname, sendedAt: formatDate(new Date()) }));
+const args = { sendMessage };
 
 describe('Chat', () => {
+  beforeEach(() => {
+    store.dispatch(changeShowMessage(true));
+    store.dispatch(initilizeMessages());
+  });
+
   afterEach(cleanup);
 
-  it('renders Chat page', () => {
-    store.dispatch(changeShowMessage(true));
-    store.dispatch(addMessage({ ownedByCurrentUser: true, body: 'test message1', senderId: 'abcdefg', nickname: 'nickname1', sendedAt: '21/07/12 13:44:10' }));
-    store.dispatch(addMessage({ ownedByCurrentUser: false, body: 'test message2', senderId: 'abcdefg', nickname: 'nickname2', sendedAt: '21/07/12 13:44:10' }));
-    store.dispatch(addMessage({ ownedByCurrentUser: true, body: 'test message3', senderId: 'abcdefg', nickname: 'nickname1', sendedAt: '21/07/12 13:44:10' }));
-    store.dispatch(addMessage({ ownedByCurrentUser: false, body: 'test message4', senderId: 'abcdefg', nickname: 'nickname4', sendedAt: '21/07/12 13:44:10' }));
-
-    const sendMessage = (newMessage: string, nickname: string) => null;
-    const args = { sendMessage };
-
+  it('renders Chat', () => {
     const { getByText } = render(
       <Provider store={store}>
         <Chat {...args} />
       </Provider>
     );
 
-    const title = getByText(/test message3/);
-    expect(title).toBeInTheDocument();
+    expect(getByText(/Messages/)).toBeInTheDocument();
+  });
+
+  it('send new message when press button', () => {
+    const { container, getByText } = render(
+      <Provider store={store}>
+        <Chat {...args} />
+      </Provider>
+    );
+    const input = container.querySelector('#new-message') || document.createElement('input');
+    const sendBtn = container.querySelector('#message-send-btn') || document.createElement('button');
+    fireEvent.change(input, { target: { value: 'testMsg' } });
+    fireEvent.click(sendBtn, { button: 0 });
+
+    expect(getByText(/testMsg/)).toBeInTheDocument();
+  });
+
+  it('send new message when press enter key', () => {
+    const { container, getByText } = render(
+      <Provider store={store}>
+        <Chat {...args} />
+      </Provider>
+    );
+    const input = container.querySelector('#new-message') || document.createElement('input');
+    fireEvent.change(input, { target: { value: 'testMsg' } });
+    fireEvent.keyPress(input, { key: 'Enter', code: 13, charCode: 13 });
+
+    expect(getByText(/testMsg/)).toBeInTheDocument();
+  });
+
+  it('change link message to anchor tag', () => {
+    const { container } = render(
+      <Provider store={store}>
+        <Chat {...args} />
+      </Provider>
+    );
+    const input = container.querySelector('#new-message') || document.createElement('input');
+    fireEvent.change(input, { target: { value: 'https://www.google.com' } });
+    fireEvent.keyPress(input, { key: 'Enter', code: 13, charCode: 13 });
+
+    expect(container.querySelector('a')).toBeInTheDocument();
+  });
+
+  it('will close when press close button', () => {
+    const { container } = render(
+      <Provider store={store}>
+        <Chat {...args} />
+      </Provider>
+    );
+    const close = container.querySelector('.close') || document.createElement('button');
+    fireEvent.click(close, { button: 0 });
+
+    expect(container.querySelector('.d-none')).toBeInTheDocument();
   });
 });

@@ -5,7 +5,7 @@ type Props = {
   videoSrces: VideoSrc[]
 };
 
-const VideoRoom: React.FC<Props> = ({ videoSrces }: Props) => {
+const VideoRow: React.FC<Props> = ({ videoSrces }: Props) => {
   const remoteVideoes = () =>
     videoSrces.map((videoSrc) =>
       <div className="col video-padding" key={`${videoSrc.socketId}`}>
@@ -30,4 +30,4 @@ const VideoRoom: React.FC<Props> = ({ videoSrces }: Props) => {
   );
 };
 
-export default VideoRoom;
+export default VideoRow;

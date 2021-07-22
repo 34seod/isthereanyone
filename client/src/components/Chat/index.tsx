@@ -97,13 +97,14 @@ const Chat: React.FC<Props> = ({ sendMessage }: Props) => {
         </div>
         <div className="modal-footer justify-content-center p-2">
           <input
+            id="new-message"
             type="text"
             value={newMessage}
             onChange={handleNewMessageChange}
             className="new-message-input-field rounded border border-dark"
             onKeyPress={handleKeyPress}
           />
-          <button type="button" onClick={handleSendMessage} className="btn btn-primary shadow-none">
+          <button type="button" id="message-send-btn" onClick={handleSendMessage} className="btn btn-primary shadow-none">
             <FontAwesomeIcon icon={faPaperPlane} />
           </button>
         </div>

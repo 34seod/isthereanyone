@@ -28,9 +28,7 @@ const ScreenShare = (
     if (localVideoRef.current) localVideoRef.current.srcObject = stream;
     screenShareStreamRef.current = stream;
     Object.values(senderRef.current).forEach((sender) => {
-      if (sender?.track?.kind === 'video') {
-        sender.replaceTrack(stream.getVideoTracks()[0]);
-      }
+      sender.video?.replaceTrack(stream.getVideoTracks()[0]);
     });
 
     stream.getVideoTracks()[0].addEventListener('ended', () => {
@@ -42,8 +40,8 @@ const ScreenShare = (
 
   const stopCapture = () => {
     Object.values(senderRef.current).forEach((sender) => {
-      if (sender?.track?.kind === 'video' && localStreamRef.current !== null) {
-        sender.replaceTrack(localStreamRef.current.getVideoTracks()[0]);
+      if (localStreamRef.current) {
+        sender.video?.replaceTrack(localStreamRef.current.getVideoTracks()[0]);
       }
     });
 

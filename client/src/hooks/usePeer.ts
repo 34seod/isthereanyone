@@ -95,10 +95,12 @@ const usePeer = (roomId: string) => {
   };
 
   const addTrack = (pc: RTCPeerConnection | undefined, stream: MediaStream, socketId: string) => {
+    senderRef.current[socketId] = { audio: null, video: null };
+
     stream.getTracks().forEach((track) => {
-      if (stream) {
-        const sender = pc?.addTrack(track, stream);
-        if (sender !== undefined) senderRef.current[socketId] = sender;
+      const sender = pc?.addTrack(track, stream);
+      if (sender !== undefined) {
+        senderRef.current[socketId][track.kind as 'audio' | 'video'] = sender;
       }
     });
   };
@@ -204,9 +206,28 @@ const usePeer = (roomId: string) => {
   const handleScreen = (isCameraOnParam: boolean, doUpdate = true) => {
     if (localStreamRef.current) {
       dispatch(changeIsCameraOn(isCameraOnParam));
-      localStreamRef.current.getVideoTracks().forEach((track) => {
-        track.enabled = !track.enabled;
-      });
+
+      if (isCameraOnParam) {
+        // 카메라 끌때 스트림을 종료했으므로 재연결한다.
+        const newStream = navigator.mediaDevices.getUserMedia({ video: true });
+        newStream.then((stream) => {
+          stream.getVideoTracks().forEach((track) => {
+            localStreamRef.current?.addTrack(track);
+            Object.values(senderRef.current).forEach((sender) => {
+              sender.video?.replaceTrack(track);
+            });
+          });
+        });
+      } else {
+        localStreamRef.current.getVideoTracks().forEach((track) => {
+          track.enabled = false;
+          setTimeout(() => {
+            track.stop();
+            localStreamRef.current?.removeTrack(track);
+          }, 500);
+        });
+      }
+
       if (doUpdate) socketRef.current?.emit('roomStateShare', nickname, isCameraOnParam, isMikeOn);
     }
   };

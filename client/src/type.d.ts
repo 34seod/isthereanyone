@@ -43,7 +43,10 @@ type RoomStateShare = {
 };
 
 type Sender = {
-  [key: string]: RTCRtpSender
+  [key: string]: {
+    audio: RTCRtpSender | null,
+    video: RTCRtpSender | null,
+  }
 };
 
 type Action<T> = {

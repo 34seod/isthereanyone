@@ -30,25 +30,25 @@ const Buttons: React.FC<Props> = ({ handleStartButton }: Props) => {
           id="mike-icon-btn"
           icon={isMikeOn ? faMicrophone : faMicrophoneSlash}
           handleOnclick={() => dispatch(changeIsMikeOn(!isMikeOn))}
-          className={isMikeOn ? 'bg-success text-white' : 'bg-danger text-white'}
+          className={isMikeOn ? 'btn-success text-white' : 'btn-danger text-white'}
         />
         <IconButton
           id="camera-icon-btn"
           icon={isCameraOn ? faVideo : faVideoSlash}
           handleOnclick={() => dispatch(changeIsCameraOn(!isCameraOn))}
-          className={isCameraOn ? 'bg-success text-white' : 'bg-danger text-white'}
+          className={isCameraOn ? 'btn-success text-white' : 'btn-danger text-white'}
         />
         <IconButton
           id="start-icon-btn"
           icon={faSignInAlt}
           handleOnclick={handleStartButton}
-          className="bg-primary text-white"
+          className="btn-primary text-white"
         />
         <IconButton
           id="hangup-icon-btn"
           icon={faSignOutAlt}
           handleOnclick={() => history.push('/')}
-          className="bg-danger text-white"
+          className="btn-danger text-white"
         />
       </div>
     </div>

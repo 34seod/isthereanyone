@@ -60,7 +60,7 @@ const Buttons: React.FC<Props> = ({
           id="screen-share-icon-btn"
           icon={faDesktop}
           handleOnclick={handleScreenShareButton}
-          className={isScreenShare ? 'bg-danger text-white' : 'bg-primary text-white'}
+          className={isScreenShare ? 'btn-danger text-white' : 'btn-primary text-white'}
         />
       );
     }
@@ -79,33 +79,33 @@ const Buttons: React.FC<Props> = ({
           id="lock-icon-btn"
           icon={lock ? faLock : faLockOpen}
           handleOnclick={handleLockButton}
-          className={lock ? 'bg-danger text-white' : 'bg-warning'}
+          className={lock ? 'btn-danger text-white' : 'btn-warning'}
         />
         <IconButton
           id="mike-icon-btn"
           icon={isMikeOn ? faMicrophone : faMicrophoneSlash}
           handleOnclick={handleMuteButton}
-          className={isMikeOn ? 'bg-success text-white' : 'bg-danger text-white'}
+          className={isMikeOn ? 'btn-success text-white' : 'btn-danger text-white'}
         />
         <IconButton
           id="camera-icon-btn"
           icon={isCameraOn ? faVideo : faVideoSlash}
           handleOnclick={handleVideoButton}
-          className={isCameraOn ? 'bg-success text-white' : 'bg-danger text-white'}
+          className={isCameraOn ? 'btn-success text-white' : 'btn-danger text-white'}
         />
         {screenShareButton()}
         <IconButton
           id="message-icon-btn"
           icon={faComments}
           handleOnclick={handleOpenMessage}
-          className="bg-warning text-white"
+          className="btn-warning text-white"
           notification={isNewMessage}
         />
         <IconButton
           id="hangup-icon-btn"
           icon={faSignOutAlt}
           handleOnclick={handleHangUpButton}
-          className="bg-danger text-white"
+          className="btn-danger text-white"
           mr={0}
         />
       </div>

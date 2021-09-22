@@ -19,7 +19,7 @@ const Template: IconButtonStory = (args) => <IconButton {...args} />;
 export const Default = Template.bind({});
 Default.args = {
   icon: faComments,
-  className: 'bg-warning text-white',
+  className: 'btn-warning text-white',
   mr: 3,
   notification: false,
   handleOnclick: () => null
@@ -28,7 +28,7 @@ Default.args = {
 export const Notification = Template.bind({});
 Notification.args = {
   icon: faComments,
-  className: 'bg-warning text-white',
+  className: 'btn-warning text-white',
   notification: true,
   mr: 0,
   handleOnclick: () => null

@@ -79,18 +79,14 @@ const usePeer = (roomId: string) => {
     }
   };
 
-  const sendMessageRTC = (message: string) => {
-    socketRef.current?.emit('message', message, nickname);
-  };
+  const sendMessageRTC = (message: string) => socketRef.current?.emit('message', message, nickname);
 
   const maybeStart = (socketId: string) => {
     if (!peersRef.current[socketId].isStarted && localStreamRef.current !== null && peersRef.current[socketId].isChannelReady) {
       const pc = createPeerConnection(socketId);
       screenShareRef.current ? addTrack(pc, screenShareStreamRef.current, socketId) : addTrack(pc, localStreamRef.current, socketId);
       peersRef.current[socketId].isStarted = true;
-      if (peersRef.current[socketId].isInitiator) {
-        doCall(socketId);
-      }
+      if (peersRef.current[socketId].isInitiator) doCall(socketId);
     }
   };
 
@@ -99,16 +95,12 @@ const usePeer = (roomId: string) => {
 
     stream.getTracks().forEach((track) => {
       const sender = pc?.addTrack(track, stream);
-      if (sender !== undefined) {
-        senderRef.current[socketId][track.kind as 'audio' | 'video'] = sender;
-      }
+      if (sender !== undefined) senderRef.current[socketId][track.kind as 'audio' | 'video'] = sender;
     });
   };
 
   const peerConnectOn = () => {
-    socketRef.current?.on('lock', (isLock: boolean) => {
-      dispatch(changeLock(isLock));
-    });
+    socketRef.current?.on('lock', (isLock: boolean) => dispatch(changeLock(isLock)));
 
     socketRef.current?.on('roomStateShare', (socketId: string, nicknameParam: string, isCameraOnParam: boolean, isMikeOnParam: boolean) => {
       const updateSrc = {
@@ -124,9 +116,7 @@ const usePeer = (roomId: string) => {
       window.location.href = '/?locked=true';
     });
 
-    socketRef.current?.on('getin', () => {
-      getStream();
-    });
+    socketRef.current?.on('getin', () => getStream());
 
     socketRef.current?.on('join', (socketId: string, nicknameParam: string)=> {
       peersRef.current[socketId] = {
@@ -152,16 +142,12 @@ const usePeer = (roomId: string) => {
       if (message === 'got user media') {
         maybeStart(socketId);
       } else if (message.type === 'offer' && !peersRef.current[socketId].isInitiator) {
-        if (!peersRef.current[socketId].isStarted) {
-          maybeStart(socketId);
-        }
-        const newSDP = new RTCSessionDescription(
-          message as RTCSessionDescriptionInit);
+        if (!peersRef.current[socketId].isStarted) maybeStart(socketId);
+        const newSDP = new RTCSessionDescription(message as RTCSessionDescriptionInit);
         peersRef.current[socketId]?.pc?.setRemoteDescription(newSDP);
         doAnswer(socketId);
       } else if (message.type === 'answer' && peersRef.current[socketId].isStarted) {
-        const newSDP = new RTCSessionDescription(
-          message as RTCSessionDescriptionInit);
+        const newSDP = new RTCSessionDescription(message as RTCSessionDescriptionInit);
         peersRef.current[socketId]?.pc?.setRemoteDescription(newSDP);
       } else if (message.type === 'candidate' && peersRef.current[socketId].isStarted) {
         const msg = message as ICECandidate;
@@ -196,9 +182,14 @@ const usePeer = (roomId: string) => {
   const handleMute = (isMikeOnParam: boolean, doUpdate = true) => {
     if (localStreamRef.current) {
       dispatch(changeIsMikeOn(isMikeOnParam));
-      localStreamRef.current.getAudioTracks().forEach((track) => {
-        track.enabled = !track.enabled;
-      });
+
+      if (isMikeOnParam) {
+        const newStream = navigator.mediaDevices.getUserMedia({ audio: true });
+        newStream.then((stream) => mediaOn(stream.getAudioTracks(), 'audio'));
+      } else {
+        mediaOff(localStreamRef.current.getAudioTracks());
+      }
+
       if (doUpdate) socketRef.current?.emit('roomStateShare', nickname, isCameraOn, isMikeOnParam);
     }
   };
@@ -210,31 +201,35 @@ const usePeer = (roomId: string) => {
       if (isCameraOnParam) {
         // 카메라 끌때 스트림을 종료했으므로 재연결한다.
         const newStream = navigator.mediaDevices.getUserMedia({ video: true });
-        newStream.then((stream) => {
-          stream.getVideoTracks().forEach((track) => {
-            localStreamRef.current?.addTrack(track);
-            Object.values(senderRef.current).forEach((sender) => {
-              sender.video?.replaceTrack(track);
-            });
-          });
-        });
+        newStream.then((stream) => mediaOn(stream.getVideoTracks(), 'video'));
       } else {
-        localStreamRef.current.getVideoTracks().forEach((track) => {
-          track.enabled = false;
-          setTimeout(() => {
-            track.stop();
-            localStreamRef.current?.removeTrack(track);
-          }, 500);
-        });
+        mediaOff(localStreamRef.current.getVideoTracks());
       }
 
       if (doUpdate) socketRef.current?.emit('roomStateShare', nickname, isCameraOnParam, isMikeOn);
     }
   };
 
-  const handleLock = () => {
-    socketRef.current?.emit('lock');
+  const mediaOn = (tracks: MediaStreamTrack[], key: 'video' | 'audio') => {
+    tracks.forEach((track) => {
+      localStreamRef.current?.addTrack(track);
+      Object.values(senderRef.current).forEach((sender) => {
+        sender[key]?.replaceTrack(track);
+      });
+    });
   };
+
+  const mediaOff = (tracks: MediaStreamTrack[]) => {
+    tracks.forEach((track) => {
+      track.enabled = false;
+      setTimeout(() => {
+        track.stop();
+        localStreamRef.current?.removeTrack(track);
+      }, 500);
+    });
+  };
+
+  const handleLock = () => socketRef.current?.emit('lock');
 
   return {
     start,

@@ -31,9 +31,7 @@ const ScreenShare = (
       sender.video?.replaceTrack(stream.getVideoTracks()[0]);
     });
 
-    stream.getVideoTracks()[0].addEventListener('ended', () => {
-      stopCapture();
-    });
+    stream.getVideoTracks()[0].addEventListener('ended', () => stopCapture());
     dispatch(changeIsScreenShare(true));
     screenShareRef.current = true;
   };
